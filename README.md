@@ -1,10 +1,10 @@
-Filmon from Albatros modded by Lululla
+FilmXY by Lululla
 
-<img src="https://github.com/Belfagor2005/Filmon/blob/main/usr/lib/enigma2/python/Plugins/Extensions/Filmon/plugin.png">
+<img src="https://github.com/Belfagor2005/Ffilmxy/blob/main/usr/lib/enigma2/python/Plugins/Extensions/filmxy/logo.png">
 
 Enigma2 project
 Only Free Channels ( no Pay Tv ) 
-Filmon free link stream (no pay)
+Filmxy free link stream (no pay)
 
 No video files are stored in this repository. The repository simply contains user-submitted links to publicly available video stream URLs, which to the best of our knowledge have been intentionally made publicly by the copyright holders. If any links in these playlists infringe on your rights as a copyright holder, they may be removed by sending a pull request or opening an issue.
 
