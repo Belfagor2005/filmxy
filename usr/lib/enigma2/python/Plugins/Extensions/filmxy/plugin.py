@@ -476,8 +476,7 @@ class Filmxymain(Screen):
         self.idx = 0
         self.menulist = []
         self['title'] = Label(title_plug)
-        self['actions'] = ActionMap(['SetupActions',
-                                     'DirectionActions',
+        self['actions'] = ActionMap(['DirectionActions',
                                      'EPGSelectActions',
                                      'ColorActions',
                                      'MenuActions'], {'ok': self.okRun,
@@ -703,8 +702,7 @@ class live_to_stream(Screen):
         self.currentList = 'list'
         self.idx = 0
         self['title'] = Label(title_plug)
-        self['actions'] = ActionMap(['SetupActions',
-                                     'EPGSelectActions',
+        self['actions'] = ActionMap(['EPGSelectActions',
                                      'DirectionActions',
                                      'ColorActions'], {'ok': self.okRun,
                                                        'red': self.cancel,
@@ -1043,8 +1041,7 @@ class pagesX(Screen):
         self.downloading = False
         self.currentList = 'list'
         self['title'] = Label(title_plug)
-        self['actions'] = ActionMap(['SetupActions',
-                                     'DirectionActions',
+        self['actions'] = ActionMap(['DirectionActions',
                                      'ColorActions'], {'ok': self.okRun,
                                                        'red': self.cancel,
                                                        'up': self.up,
@@ -1208,8 +1205,7 @@ class azvideo(Screen):
         self.downloading = False
         self.currentList = 'list'
         self['title'] = Label(title_plug)
-        self['actions'] = ActionMap(['SetupActions',
-                                     'EPGSelectActions',
+        self['actions'] = ActionMap(['EPGSelectActions',
                                      'DirectionActions',
                                      'ColorActions'], {'ok': self.okRun,
                                                        'red': self.cancel,
@@ -1476,8 +1472,7 @@ class pagevideo3(Screen):
         self.downloading = False
         self.currentList = 'list'
         self['title'] = Label(title_plug)
-        self['actions'] = ActionMap(['SetupActions',
-                                     'EPGSelectActions',
+        self['actions'] = ActionMap(['EPGSelectActions',
                                      'DirectionActions',
                                      'ColorActions'], {'ok': self.okRun,
                                                        'red': self.cancel,
@@ -1773,8 +1768,7 @@ class Video5list(Screen):
         self.downloading = False
         self.currentList = 'list'
         self['title'] = Label(title_plug)
-        self['actions'] = ActionMap(['SetupActions',
-                                     'EPGSelectActions',
+        self['actions'] = ActionMap(['EPGSelectActions',
                                      'DirectionActions',
                                      'ColorActions'], {'ok': self.okRun,
                                                        'red': self.cancel,
@@ -2046,18 +2040,18 @@ class Playchoice(Screen):
         self['progresstext'] = StaticText()
         self["progress"].hide()
         self.downloading = False
-        self['setupActions'] = ActionMap(['SetupActions',
-                                          'ColorActions',
-                                          'TimerEditActions',
-                                          'InfobarInstantRecord'], {'red': self.cancel,
-                                                                    'green': self.okClicked,
-                                                                    'back': self.cancel,
-                                                                    'cancel': self.cancel,
-                                                                    'rec': self.runRec,
-                                                                    'yellow': self.taskManager,
-                                                                    'instantRecord': self.runRec,
-                                                                    'ShortRecord': self.runRec,
-                                                                    'ok': self.okClicked}, -2)
+        self['actions'] = ActionMap(['ColorActions',
+                                     'CancelActions',
+                                     'TimerEditActions',
+                                     'InfobarInstantRecord'], {'red': self.cancel,
+                                                               'green': self.okClicked,
+                                                               'back': self.cancel,
+                                                               'cancel': self.cancel,
+                                                               'rec': self.runRec,
+                                                               'yellow': self.taskManager,
+                                                               'instantRecord': self.runRec,
+                                                               'ShortRecord': self.runRec,
+                                                               'ok': self.okClicked}, -2)
         self.names = []
         self.urls = []
         self.name1 = self.cleantitle(name)
@@ -2668,7 +2662,6 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
                                      'MediaPlayerActions',
                                      'EPGSelectActions',
                                      'MediaPlayerSeekActions',
-                                     'SetupActions',
                                      'ColorActions',
                                      'InfobarShowHideActions',
                                      'InfobarActions',
