@@ -1,6 +1,6 @@
 FilmXY by Lululla
 
-<img src="https://github.com/Belfagor2005/Ffilmxy/blob/main/usr/lib/enigma2/python/Plugins/Extensions/filmxy/logo.png">
+<img src="https://github.com/Belfagor2005/filmxy/blob/main/usr/lib/enigma2/python/Plugins/Extensions/filmxy/logo.png">
 
 Enigma2 project
 Only Free Channels ( no Pay Tv ) 
