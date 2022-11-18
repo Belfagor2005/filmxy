@@ -1,0 +1,191 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: revolution\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-11-05 17:35+0100\n"
+"PO-Revision-Date: \n"
+"Last-Translator: ))^^(( <>\n"
+"Language-Team: *\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Generator: Poedit 1.8.7\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-Basepath: ../../../..\n"
+"X-Poedit-SearchPath-0: plugin.py\n"
+
+#: plugin.py:159
+msgid "ServiceMp3(4097)"
+msgstr ""
+
+#: plugin.py:160
+msgid "Hardware(1)"
+msgstr ""
+
+#: plugin.py:164
+msgid "Gstreamer(5001)"
+msgstr ""
+
+#: plugin.py:166
+msgid "Exteplayer3(5002)"
+msgstr ""
+
+#: plugin.py:168
+msgid "Streamlink(5002)"
+msgstr ""
+
+#: plugin.py:170
+msgid "eServiceUri(8193)"
+msgstr ""
+
+#: plugin.py:418 plugin.py:635 plugin.py:971 plugin.py:1122 plugin.py:1381
+#: plugin.py:1674
+msgid "Cache folder "
+msgstr ""
+
+#: plugin.py:424
+msgid "Exit"
+msgstr "Ausfahrt"
+
+#: plugin.py:553
+msgid ""
+"freearhey Plugin Not Installed!!\n"
+"Use my Plugin Freearhey"
+msgstr ""
+
+#: plugin.py:642 plugin.py:978 plugin.py:1129 plugin.py:1388 plugin.py:1681
+#: plugin.py:1946 plugin.py:2534
+msgid "Back"
+msgstr "Zurück"
+
+#: plugin.py:973
+msgid "Select your Page"
+msgstr ""
+
+#: plugin.py:1124
+msgid "Select you Stream)"
+msgstr ""
+
+#: plugin.py:1947
+msgid "Select"
+msgstr "Wählen"
+
+#: plugin.py:1979
+msgid "You are already downloading!!!"
+msgstr ""
+
+#: plugin.py:1983
+#, python-format
+msgid ""
+"DOWNLOAD VIDEO?\n"
+"%s"
+msgstr ""
+
+#: plugin.py:1986
+msgid "Only VOD Movie allowed or not .ext Filtered!!!"
+msgstr ""
+
+#: plugin.py:1988 plugin.py:2140 plugin.py:2152 plugin.py:2170
+msgid "No link available"
+msgstr ""
+
+#: plugin.py:2013 plugin.py:2033
+msgid "Download Failed!!!"
+msgstr ""
+
+#: plugin.py:2172
+msgid "Install Streamlink first"
+msgstr ""
+
+#: plugin.py:2370
+msgid "4:3 Letterbox"
+msgstr ""
+
+#: plugin.py:2371
+msgid "4:3 PanScan"
+msgstr ""
+
+#: plugin.py:2372
+msgid "16:9"
+msgstr ""
+
+#: plugin.py:2373
+msgid "16:9 always"
+msgstr ""
+
+#: plugin.py:2374
+msgid "16:10 Letterbox"
+msgstr ""
+
+#: plugin.py:2375
+msgid "16:10 PanScan"
+msgstr ""
+
+#: plugin.py:2376
+msgid "16:9 Letterbox"
+msgstr ""
+
+#: plugin.py:2532
+msgid "Choice"
+msgstr ""
+
+#: plugin.py:2533
+msgid "Save"
+msgstr "Speichern"
+
+#: plugin.py:2535
+msgid "Empty Cache"
+msgstr ""
+
+#: plugin.py:2559 plugin.py:2587
+msgid "Set the path to the Cache folder"
+msgstr ""
+
+#: plugin.py:2560 plugin.py:2587
+msgid "Press Ok to select the folder containing the picons files"
+msgstr ""
+
+#: plugin.py:2561 plugin.py:2586
+msgid "Set the path Movie folder"
+msgstr ""
+
+#: plugin.py:2562 plugin.py:2586
+msgid "Folder Movie Path (eg.: /media/hdd/movie), Press OK - Enigma restart required"
+msgstr ""
+
+#: plugin.py:2563 plugin.py:2588
+msgid "Services Player Reference type"
+msgstr ""
+
+#: plugin.py:2564 plugin.py:2588
+msgid "Configure Service Player Reference"
+msgstr ""
+
+#: plugin.py:2581
+#, python-format
+msgid ""
+"Settings FILMXY\n"
+"Your current IP is %s"
+msgstr ""
+
+#: plugin.py:2597
+msgid "All cache fold are empty!"
+msgstr ""
+
+#: plugin.py:2613
+msgid "Settings saved correctly!"
+msgstr ""
+
+#: plugin.py:2636
+msgid "Choose Directory:"
+msgstr ""
+
+#: plugin.py:2637
+msgid "Choose Directory"
+msgstr ""
+
+#: plugin.py:2694
+msgid "Really close without saving the settings?"
+msgstr "Wirklich schließen, ohne die Einstellungen zu speichern?"
