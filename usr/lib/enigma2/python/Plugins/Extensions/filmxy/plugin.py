@@ -12,7 +12,7 @@ Info http://t.me/tivustream
 '''
 from __future__ import print_function
 from . import Utils
-from .__init__ import _
+from . import _
 from Components.AVSwitch import AVSwitch
 from Components.ActionMap import ActionMap
 from Components.Button import Button
@@ -45,9 +45,11 @@ from Tools.Directories import SCOPE_PLUGINS
 from Tools.Directories import resolveFilename, fileExists
 from Tools.Downloader import downloadWithProgress
 # from .Downloader import downloadWithProgress
-from enigma import RT_VALIGN_CENTER, RT_HALIGN_LEFT
+from enigma import RT_VALIGN_CENTER
+from enigma import RT_HALIGN_LEFT
 from enigma import eListboxPythonMultiContent
-from enigma import ePicLoad, loadPNG, gFont, gPixmapPtr
+from enigma import ePicLoad, loadPNG
+from enigma import gFont, gPixmapPtr
 from enigma import eServiceReference
 from enigma import eTimer
 from enigma import iPlayableService
@@ -59,7 +61,7 @@ import re
 import six
 import ssl
 import sys
-
+import time
 PY3 = False
 PY3 = sys.version_info.major >= 3
 print('Py3: ', PY3)
@@ -252,6 +254,8 @@ def returnIMDB(text_clear):
 
 
 status = True
+
+
 def status_site():
     global status
     import requests
@@ -2039,6 +2043,15 @@ class Playchoice(Screen):
         f.close()
         self.setup_title = ('Select Player Stream')
         self.list = []
+        self.names = []
+        self.urls = []
+        self.name1 = self.cleantitle(name)
+        self.url = url
+        self.desc = desc
+        self.pic = pic
+        print('In Playchoice self.pic =', pic)
+        print('In Playchoice self.url =', url)
+        self.srefInit = self.session.nav.getCurrentlyPlayingServiceReference()
         self['list'] = rvList([])
         self['info'] = Label()
         self['info'].setText(name)
@@ -2064,15 +2077,7 @@ class Playchoice(Screen):
                                                                'instantRecord': self.runRec,
                                                                'ShortRecord': self.runRec,
                                                                'ok': self.okClicked}, -2)
-        self.names = []
-        self.urls = []
-        self.name1 = self.cleantitle(name)
-        self.url = url
-        self.desc = desc
-        self.pic = pic
-        print('In Playchoice self.pic =', pic)
-        print('In Playchoice self.url =', url)
-        self.srefInit = self.session.nav.getCurrentlyPlayingServiceReference()
+
         self.leftt = eTimer()
         try:
             self.leftt_conn = self.leftt.timeout.connect(self.load_poster)
@@ -2160,7 +2165,6 @@ class Playchoice(Screen):
                         # sslContext = None
                 try:
 
-
                 # ####################
                 # # test 1  work
                 # try:
@@ -2218,7 +2222,7 @@ class Playchoice(Screen):
                         # except Exception as e:
                             # print(e)
                             # content = ""
-                    ###  with job_manager
+                    # #  with job_manager
                     # useragent = "--header='User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36'"
                     # WGET = '/usr/bin/wget'
                     # if Utils.DreamOS():
@@ -2342,7 +2346,7 @@ class Playchoice(Screen):
         showlist(self.names, self['list'])
 
     def racatyx(self, url):
-        idx = self['list'].getSelectionIndex()
+        # idx = self['list'].getSelectionIndex()
         name = self.name1
         name = name.replace("%28%", "(").replace("%29%", ")")
         urlx = url
@@ -2669,6 +2673,14 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         except:
             self.init_aspect = 0
         self.new_aspect = self.init_aspect
+        self.srefInit = self.session.nav.getCurrentlyPlayingServiceReference()
+        self.service = None
+        self.name = Utils.decodeHtml(name)
+        self.icount = 0
+        url = url.replace(':', '%3a')
+        self.url = url
+        self.desc = desc
+        self.state = self.STATE_PLAYING
         self['actions'] = ActionMap(['MoviePlayerActions',
                                      'MovieSelectionActions',
                                      'MediaPlayerActions',
@@ -2686,14 +2698,7 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
                                                              'red': self.cicleStreamType,
                                                              'cancel': self.cancel,
                                                              'back': self.cancel}, -1)
-        self.service = None
-        self.name = Utils.decodeHtml(name)
-        self.icount = 0
-        url = url.replace(':', '%3a')
-        self.url = url
-        self.desc = desc
-        self.state = self.STATE_PLAYING
-        self.srefInit = self.session.nav.getCurrentlyPlayingServiceReference()
+
         if '8088' in str(self.url):
             self.onFirstExecBegin.append(self.slinkPlay)
         else:
@@ -2824,11 +2829,10 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
             self.doShow()
 
     def cancel(self):
-        SREF = self.srefInit
         if os.path.isfile('/tmp/hls.avi'):
             os.remove('/tmp/hls.avi')
         self.session.nav.stopService()
-        self.session.nav.playService(SREF)
+        self.session.nav.playService(self.srefInit)
         if not self.new_aspect == self.init_aspect:
             try:
                 self.setAspect(self.init_aspect)
@@ -3258,7 +3262,7 @@ class downloadTask(Task):
         self.aborted = True
 
     def download_progress(self, recvbytes, totalbytes):
-        if (recvbytes - self.last_recvbytes) > 10000: # anti-flicker
+        if (recvbytes - self.last_recvbytes) > 10000:  # anti-flicker
             self.progress = int(100 * (float(recvbytes) / float(totalbytes)))
             self.name = _("Downloading") + ' ' + _("%d of %d kBytes") % (recvbytes / 1024, totalbytes / 1024)
             self.last_recvbytes = recvbytes
@@ -3331,6 +3335,7 @@ def main(session, **kwargs):
         import traceback
         traceback.print_exc()
 
+
 def menu(menuid, **kwargs):
     if menuid == 'mainmenu':
         return [(desc_plug, main, title_plug, 44)]
@@ -3346,7 +3351,6 @@ def Plugins(**kwargs):
     ico_path = 'logo.png'
     if not os.path.exists('/var/lib/dpkg/status'):
         ico_path = res_plugin_path + 'pics/logo.png'
-    # result = [PluginDescriptor(name=desc_plug, description=title_plug, where=[PluginDescriptor.WHERE_PLUGINMENU], icon=ico_path, fnc=main)]
     result = [PluginDescriptor(name=desc_plug, description=title_plug, where=[PluginDescriptor.WHERE_SESSIONSTART], fnc=autostart),
               PluginDescriptor(name=desc_plug, description=title_plug, where=PluginDescriptor.WHERE_PLUGINMENU, icon=ico_path, fnc=main)]
     return result
