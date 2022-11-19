@@ -766,6 +766,9 @@ class live_to_stream(Screen):
                 regexvideo = 'name:"(.*?)",link:"(.*?)"'
                 match = re.compile(regexvideo, re.DOTALL).findall(content2)
                 for name, url in match:
+                    if 'adult' in name.lower():
+                        continue
+                
                     pixmaps = piconlocal(name)
                     if os.path.exists(pixmaps):
                         self.downloadPic(None, pixmaps)
