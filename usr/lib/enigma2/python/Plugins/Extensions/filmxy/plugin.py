@@ -477,6 +477,7 @@ class Filmxymain(Screen):
         self.menulist = []
         self['title'] = Label(title_plug)
         self['actions'] = ActionMap(['DirectionActions',
+                                     'OkCancelActions',
                                      'EPGSelectActions',
                                      'ColorActions',
                                      'MenuActions'], {'ok': self.okRun,
@@ -704,6 +705,7 @@ class live_to_stream(Screen):
         self['title'] = Label(title_plug)
         self['actions'] = ActionMap(['EPGSelectActions',
                                      'DirectionActions',
+                                     'OkCancelActions',
                                      'ColorActions'], {'ok': self.okRun,
                                                        'red': self.cancel,
                                                        'up': self.up,
@@ -887,6 +889,7 @@ class live_to_stream(Screen):
         if i > 0:
             idx = self['list'].getSelectionIndex()
             info = self.infos[idx]
+            info = Utils.decodeHtml(info)
             self['desc'].setText(info)
 
     def selectionChanged(self):
@@ -1042,6 +1045,7 @@ class pagesX(Screen):
         self.currentList = 'list'
         self['title'] = Label(title_plug)
         self['actions'] = ActionMap(['DirectionActions',
+                                     'OkCancelActions',
                                      'ColorActions'], {'ok': self.okRun,
                                                        'red': self.cancel,
                                                        'up': self.up,
@@ -1207,6 +1211,7 @@ class azvideo(Screen):
         self['title'] = Label(title_plug)
         self['actions'] = ActionMap(['EPGSelectActions',
                                      'DirectionActions',
+                                     'OkCancelActions',
                                      'ColorActions'], {'ok': self.okRun,
                                                        'red': self.cancel,
                                                        'up': self.up,
@@ -1264,6 +1269,7 @@ class azvideo(Screen):
         if i > 0:
             idx = self['list'].getSelectionIndex()
             info = self.infos[idx]
+            info = Utils.decodeHtml(info)
             self['desc'].setText(info)
 
     def selectionChanged(self):
@@ -1474,6 +1480,7 @@ class pagevideo3(Screen):
         self['title'] = Label(title_plug)
         self['actions'] = ActionMap(['EPGSelectActions',
                                      'DirectionActions',
+                                     'OkCancelActions',
                                      'ColorActions'], {'ok': self.okRun,
                                                        'red': self.cancel,
                                                        'up': self.up,
@@ -1534,6 +1541,7 @@ class pagevideo3(Screen):
             infoadd = self.infosadd[idx]
             size2 = self.sizes[idx]
             info = self.infos[idx]
+            info = Utils.decodeHtml(info)
             intot = str(infoadd) + '\n' + str(size2)
             print('intot = ', intot)
             # self['desc'].setText(info + '\n' + 'Stream N.' + str(i))
@@ -1770,6 +1778,7 @@ class Video5list(Screen):
         self['title'] = Label(title_plug)
         self['actions'] = ActionMap(['EPGSelectActions',
                                      'DirectionActions',
+                                     'OkCancelActions',
                                      'ColorActions'], {'ok': self.okRun,
                                                        'red': self.cancel,
                                                        'up': self.up,
@@ -1827,6 +1836,7 @@ class Video5list(Screen):
         if i > 0:
             idx = self['list'].getSelectionIndex()
             info = self.infos[idx]
+            info = Utils.decodeHtml(info)
             self['desc'].setText(info)
             self['descadd'].setText('Stream Link n°' + str(i))
         else:
@@ -1908,6 +1918,7 @@ class Video5list(Screen):
             name = self.names[idx]
             url = self.urls[idx]
             info = self.infos[idx]
+            info = Utils.decodeHtml(info)
             pic = self.pics[idx]
             print('Video5list okrun')
             logdata("Video5list name: ", name)
@@ -2043,6 +2054,7 @@ class Playchoice(Screen):
         self['actions'] = ActionMap(['ColorActions',
                                      'CancelActions',
                                      'TimerEditActions',
+                                     'OkCancelActions',
                                      'InfobarInstantRecord'], {'red': self.cancel,
                                                                'green': self.okClicked,
                                                                'back': self.cancel,
@@ -2663,6 +2675,7 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
                                      'EPGSelectActions',
                                      'MediaPlayerSeekActions',
                                      'ColorActions',
+                                     'OkCancelActions',
                                      'InfobarShowHideActions',
                                      'InfobarActions',
                                      'InfobarSeekActions'], {'leavePlayer': self.cancel,
@@ -3029,6 +3042,7 @@ class StreamTasks(Screen):
         self["key_green"] = Label(_("Remove"))
         self["key_red"] = Label(_("Close"))
         self["actions"] = ActionMap(["OkCancelActions",
+                                     "SleepTimerEditorActions",
                                      "ColorActions"], {
                                                        "ok": self.keyOK,
                                                        "esc": self.keyClose,
