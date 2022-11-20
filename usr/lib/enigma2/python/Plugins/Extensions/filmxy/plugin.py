@@ -12,6 +12,7 @@ Info http://t.me/tivustream
 '''
 from __future__ import print_function
 from . import Utils
+from . import html_conv
 from . import _
 from Components.AVSwitch import AVSwitch
 from Components.ActionMap import ActionMap
@@ -43,8 +44,9 @@ from Screens.Standby import TryQuitMainloop
 from Screens.TaskView import JobView
 from Tools.Directories import SCOPE_PLUGINS
 from Tools.Directories import resolveFilename, fileExists
-from Tools.Downloader import downloadWithProgress
+# from Tools.Downloader import downloadWithProgress
 # from .Downloader import downloadWithProgress
+from .Downloader import DownloadWithProgress
 from enigma import RT_VALIGN_CENTER
 from enigma import RT_HALIGN_LEFT
 from enigma import eListboxPythonMultiContent
@@ -233,7 +235,7 @@ def returnIMDB(text_clear):
     if Utils.is_tmdb:
         try:
             from Plugins.Extensions.TMBD.plugin import TMBD
-            text = Utils.decodeHtml(text_clear)
+            text = html_conv.html_unescape(text_clear)
             _session.open(TMBD.tmdbScreen, text, 0)
         except Exception as ex:
             print("[XCF] Tmdb: ", str(ex))
@@ -241,13 +243,13 @@ def returnIMDB(text_clear):
     elif Utils.is_imdb:
         try:
             from Plugins.Extensions.IMDb.plugin import main as imdb
-            text = Utils.decodeHtml(text_clear)
+            text = html_conv.html_unescape(text_clear)
             imdb(_session, text)
         except Exception as ex:
             print("[XCF] imdb: ", str(ex))
         return True
     else:
-        text_clear = Utils.decodeHtml(text_clear)
+        text_clear = html_conv.html_unescape(text_clear)
         _session.open(MessageBox, text_clear, MessageBox.TYPE_INFO)
         return True
     return
@@ -512,7 +514,6 @@ class Filmxymain(Screen):
         except Exception as e:
             print('error showIMDB ', str(e))
 
-
     def __layoutFinished(self):
         status = status_site()
         if status is True:
@@ -660,11 +661,10 @@ class Filmxymain(Screen):
                     self['poster'].show()
                 else:
                     print('no cover.. error')
-                return
         except Exception as ex:
             print(str(ex))
             print("Error: can't find file or read data in Playchoice")
-
+        return
 
 class live_to_stream(Screen):
     def __init__(self, session, name, url, pic, nextmodule):
@@ -726,15 +726,13 @@ class live_to_stream(Screen):
             self.readJsonTimer_conn = self.readJsonTimer.timeout.connect(self.readJsonFile)
         except:
             self.readJsonTimer.callback.append(self.readJsonFile)
-        self.readJsonTimer.start(100, True)
-
+        self.readJsonTimer.start(500, True)
         self.leftt = eTimer()
         try:
             self.leftt_conn = self.leftt.timeout.connect(self.left)
         except:
             self.leftt.callback.append(self.left)
-        self.leftt.start(500, True)
-
+        self.leftt.start(1000, True)
         self.onLayoutFinish.append(self.__layoutFinished)
         # self.currentList.moveToIndex(0)
 
@@ -766,9 +764,8 @@ class live_to_stream(Screen):
                 regexvideo = 'name:"(.*?)",link:"(.*?)"'
                 match = re.compile(regexvideo, re.DOTALL).findall(content2)
                 for name, url in match:
-                    if 'adult' in name.lower():
-                        continue
-                
+                    # if 'adult' in name.lower():
+                        # continue
                     pixmaps = piconlocal(name)
                     if os.path.exists(pixmaps):
                         self.downloadPic(None, pixmaps)
@@ -839,10 +836,10 @@ class live_to_stream(Screen):
             logdata("live_to_stream self.next: ", self.next)
             showlist(self.names, self['list'])
             # self['list'].moveToIndex(0)
-
         except Exception as ex:
             print(str(ex))
             print("Error: can't find file or read data in live_to_stream")
+        return
 
     def okRun(self):
         i = len(self.names)
@@ -859,23 +856,23 @@ class live_to_stream(Screen):
                 print('pages next: ', nextmodule)
                 self.session.open(pagesX, name, url, pic, nextmodule)
                 return
-            if nextmodule == 'categories':
+            elif nextmodule == 'categories':
                 print('pages next: ', nextmodule)
                 self.session.open(pagesX, name, url, pic, nextmodule)
                 return
-            if nextmodule == 'years':
+            elif nextmodule == 'years':
                 print('pages next: ', nextmodule)
                 self.session.open(pagesX, name, url, pic, nextmodule)
                 return
             # az
-            if nextmodule == 'az':
+            elif nextmodule == 'az':
                 print('az next: ', nextmodule)
                 self.session.open(azvideo, name, url, pic, nextmodule)
                 return
-            return
         except Exception as ex:
             print(str(ex))
             print("Error: can't find file or read data in live_to_stream")
+        return
 
     def __layoutFinished(self):
         status = status_site()
@@ -897,7 +894,8 @@ class live_to_stream(Screen):
         if i > 0:
             idx = self['list'].getSelectionIndex()
             info = self.infos[idx]
-            info = Utils.decodeHtml(info)
+            # info = Utils.decodeHtml(info)
+            info = html_conv.html_unescape(info)
             self['desc'].setText(info)
 
     def selectionChanged(self):
@@ -909,14 +907,14 @@ class live_to_stream(Screen):
         self.close()
 
     def up(self):
-        idx = self['list'].getSelectionIndex()
-        print('idx: ', idx)
-        if idx and (idx != '' or idx > -1):
-            self[self.currentList].up()
-            self.load_infos()
-            self.load_poster()
-        else:
-            return
+        # idx = self['list'].getSelectionIndex()
+        # print('idx: ', idx)
+        # if idx and (idx != '' or idx > -1):
+        self[self.currentList].up()
+        self.load_infos()
+        self.load_poster()
+        # else:
+            # return
 
     def down(self):
         self[self.currentList].down()
@@ -965,10 +963,10 @@ class live_to_stream(Screen):
                 except Exception as ex:
                     print(str(ex))
                     print("Error: can't find file or read data live_to_stream")
-            return
         except Exception as ex:
             print(str(ex))
             print("Error: can't find file or read data in Playchoice")
+        return
 
     def downloadPic(self, data, pictmp):
         if os.path.exists(pictmp):
@@ -1066,7 +1064,7 @@ class pagesX(Screen):
             self.readJsonTimer_conn = self.readJsonTimer.timeout.connect(self.readJsonFile)
         except:
             self.readJsonTimer.callback.append(self.readJsonFile)
-        self.readJsonTimer.start(200, True)
+        self.readJsonTimer.start(500, True)
         self.onLayoutFinish.append(self.__layoutFinished)
 
     def __layoutFinished(self):
@@ -1113,6 +1111,7 @@ class pagesX(Screen):
         except Exception as ex:
             print(str(ex))
             print("Error: can't find file or read data in pagesX")
+        return
 
     def okRun(self):
         i = len(self.pics)
@@ -1234,13 +1233,13 @@ class azvideo(Screen):
             self.readJsonTimer_conn = self.readJsonTimer.timeout.connect(self.readJsonFile)
         except:
             self.readJsonTimer.callback.append(self.readJsonFile)
-        self.readJsonTimer.start(200, True)
+        self.readJsonTimer.start(500, True)
         self.leftt = eTimer()
         try:
             self.leftt_conn = self.leftt.timeout.connect(self.left)
         except:
             self.leftt.callback.append(self.left)
-        self.leftt.start(300, True)
+        self.leftt.start(1000, True)
         self.onLayoutFinish.append(self.__layoutFinished)
 
     def showIMDB(self):
@@ -1277,7 +1276,7 @@ class azvideo(Screen):
         if i > 0:
             idx = self['list'].getSelectionIndex()
             info = self.infos[idx]
-            info = Utils.decodeHtml(info)
+            info = html_conv.html_unescape(info)
             self['desc'].setText(info)
 
     def selectionChanged(self):
@@ -1303,7 +1302,7 @@ class azvideo(Screen):
             for url, name in match:
                 url = url.strip()
                 name = name.strip()
-                name = Utils.decodeHtml(name)
+                name = html_conv.html_unescape(name)
                 print('azvideo name ', name)
                 print('azvideo url ', url)
                 # print('azvideo pic ' , pic)
@@ -1503,14 +1502,13 @@ class pagevideo3(Screen):
             self.readJsonTimer_conn = self.readJsonTimer.timeout.connect(self.readJsonFile)
         except:
             self.readJsonTimer.callback.append(self.readJsonFile)
-        self.readJsonTimer.start(200, True)
+        self.readJsonTimer.start(500, True)
         self.leftt = eTimer()
         try:
             self.leftt_conn = self.leftt.timeout.connect(self.left)
         except:
             self.leftt.callback.append(self.left)
-        self.leftt.start(300, True)
-
+        self.leftt.start(1000, True)
         self.onLayoutFinish.append(self.__layoutFinished)
 
     def showIMDB(self):
@@ -1549,7 +1547,7 @@ class pagevideo3(Screen):
             infoadd = self.infosadd[idx]
             size2 = self.sizes[idx]
             info = self.infos[idx]
-            info = Utils.decodeHtml(info)
+            info = html_conv.html_unescape(info)
             intot = str(infoadd) + '\n' + str(size2)
             print('intot = ', intot)
             # self['desc'].setText(info + '\n' + 'Stream N.' + str(i))
@@ -1573,46 +1571,57 @@ class pagevideo3(Screen):
             content = six.ensure_str(content)
         print("content pagevideo3 =", content)
         try:
+
+            # <div
             # class="col-md-2 col-sm-3 col-xs-6 custom-col"><div
             # class=single-post><div
             # class=post-thumbnail>
             # <a
-            # href=https://www.filmxy.pw/the-quintessential-quintuplets-movie-2022/ >
+            # href=https://www.filmxy.pw/the-quiet-2005/ >
             # <img
-            # width=250 height=350 data-src=https://www.cdnzone.org/uploads/2022/10/30/The-Quintessential-Quintuplets-Movie-2022-Cover.jpg src=https://www.cdnzone.org/asset/images/1px.png alt="The Quintessential Quintuplets Movie Cover">
+            # width=250 height=350 data-src=https://www.cdnzone.org/uploads/2022/11/04/The-Quiet-2005-Cover.jpg src=https://www.cdnzone.org/asset/images/1px.png alt="The Quiet Cover">
             # </a><div
             # class="m-type post">Movie</div><div
             # class="m-quality green">HD/Web-DL</div></div><div
             # class=post-description><div
-            # class=post-title><h2>The Quintessential Quintuplets Movie (2022)</h2></div><div
-            # class=imdb-details><p><b>IMDb: </b>8.2/10</p></div><div
+            # class=post-title><h2>The Quiet (2005)</h2></div><div
+            # class=imdb-details><p><b>IMDb: </b>6.2/10</p></div><div
             # class=available-quality><p>720p | 1080p</p></div><div
-            # class=genre><p><b>Ganre: </b>Animation, Comedy, Drama</p></div><div
-            # class=mpa><p><b>MPA: </b>N/A</p></div><div
-            # class=size><p><b>Size: </b>1.22 GB | 2.51 GB</p></div><div
-            # class=story><p>I accidentally stumbled up on quintessential quintuplets . I always feared a very bad ending to harem romance series. The protagonist does not choose any girl or chooses everyone of them that the usually happens in these types of stories.But i was wrong about it.It was my first romance anime my first harem anime and [&hellip;]</p></div><div
+            # class=genre><p><b>Ganre: </b>Crime, Drama, Thriller</p></div><div
+            # class=mpa><p><b>MPA: </b>R</p></div><div
+            # class=size><p><b>Size: </b>883.62 MB | 1.6 GB</p></div><div
+            # class=story><p>This film receives a 10 for disturbing subject matter. It is at times very difficult to watch. The characters are troubled, each in his/her own way. It feels edgy and often very foreign. With that warning, I must say that on some level I enjoyed the film. Technically it is superb. The character development is [&hellip;]</p></div><div
             # class=categories><p><b>Category: </b> <a
-            # href=https://www.filmxy.pw/genre/animation/ rel="category tag">Animation</a>, <a
-            # href=https://www.filmxy.pw/genre/comedy/ rel="category tag">Comedy</a>, <a
-            # href=https://www.filmxy.pw/genre/drama/ rel="category tag">Drama</a></p></div></div></div></div><div
-            # class="col-md-2 col-sm-3 col-xs-6 custom-col"><div
+            # href=https://www.filmxy.pw/genre/adult/ rel="category tag">Adult</a>, <a
+            # href=https://www.filmxy.pw/genre/crime/ rel="category tag">Crime</a>, <a
+            # href=https://www.filmxy.pw/genre/drama/ rel="category tag">Drama</a>, <a
+            # href=https://www.filmxy.pw/genre/thriller/ rel="category tag">Thriller</a></p></div></div></div></div><div
 
-            # class=genre><p><b>Ganre: </b>Documentary, Biography, Music</p></div><div
             # regexvideo = 'class=post-thumbnail>.*?href=(.*?)/ >.*?data-src=(.*?) src.*?title><h2>(.*?)<'
-            regexvideo = 'class=post-thumbnail>.*?href=(.*?)/ >.*?data-src=(.*?) src.*?title><h2>(.*?)<.*?Ganre:.*?</b>(.*?)</p>.*?Size:.*?</b>(.*?)</p>.*?story><p>(.*?)</p>'
-            match = re.compile(regexvideo, re.DOTALL).findall(content)
+
+            
+            n1 = content.find("cat-description", 0)
+            n2 = content.find("numeric-pagination>", n1)
+            content2 = content[n1:n2]
+            # regexvideo = 'post-thumbnail>.*?href=(.*?)>.*?data-src=(.*?)src.*?title><h2>(.*?)<.*?Ganre:.*?</b>(.*?)</p>.*?Size:.*?</b>(.*?)</p>.*?story><p>(.*?)</p>'
+            regexvideo = 'post-thumbnail>.*?href=(.*?)>.*?data-src=(.*?)src.*?title><h2>(.*?)<.*?Ganre:.*?</b>(.*?)</p>.*?Size:.*?(.*?)</p>.*?story>(.*?)</p>'           
+            match = re.compile(regexvideo, re.DOTALL).findall(content2)
             for url, pic, name, infoadd, size, info in match:
-                print('pagevideo3 name ', name)
-                print('pagevideo3 url ', url)
-                print('pagevideo3 pic ', pic)
-                print('pagevideo3 infoadd ', infoadd)
-                print('pagevideo3 size ', size)
-                print('pagevideo3 info ', info)
-                url1 = url.strip() + "/"
+                # print('pagevideo3 name ', name)
+                # print('pagevideo3 url ', url)
+                # print('pagevideo3 pic ', pic)
+                # print('pagevideo3 infoadd ', infoadd)
+                # print('pagevideo3 size ', size)
+                # print('pagevideo3 info ', info)
+                url1 = url.replace(' ', '')
+                url1 = url1.strip() #+ "/"
+                pic = pic.strip()
                 name = name.strip()
                 name = name.replace("-Cover", "").replace(" Cover", "")
-                name = Utils.decodeHtml(name)
+                name = html_conv.html_unescape(name)
+                size = size.replace('</b>', '').replace(' ', '')
                 size2 = 'Size ' + str(size)
+                info = info.replace('<p>', '').replace('&hellip;', '...')
                 self.names.append(name)
                 self.urls.append(url1)
                 self.pics.append(pic)
@@ -1624,6 +1633,7 @@ class pagevideo3(Screen):
         except Exception as ex:
             print(str(ex))
             print("Error: can't find file or read data in pagevideo3")
+        return
 
     def okRun(self):
         i = len(self.names)
@@ -1696,10 +1706,10 @@ class pagevideo3(Screen):
                 except Exception as ex:
                     print(str(ex))
                     print("Error: can't find file in pagevideo3")
-            return
         except Exception as ex:
             print(str(ex))
             print("Error: can't find file or read data in Playchoice")
+        return
 
     def downloadPic(self, data, pictmp):
         if os.path.exists(pictmp):
@@ -1801,13 +1811,13 @@ class Video5list(Screen):
             self.readJsonTimer_conn = self.readJsonTimer.timeout.connect(self.readJsonFile)
         except:
             self.readJsonTimer.callback.append(self.readJsonFile)
-        self.readJsonTimer.start(150, True)
+        self.readJsonTimer.start(500, True)
         self.leftt = eTimer()
         try:
             self.leftt_conn = self.leftt.timeout.connect(self.left)
         except:
             self.leftt.callback.append(self.left)
-        self.leftt.start(500, True)
+        self.leftt.start(1000, True)
         self.onLayoutFinish.append(self.__layoutFinished)
 
     def showIMDB(self):
@@ -1844,7 +1854,7 @@ class Video5list(Screen):
         if i > 0:
             idx = self['list'].getSelectionIndex()
             info = self.infos[idx]
-            info = Utils.decodeHtml(info)
+            info = html_conv.html_unescape(info)
             self['desc'].setText(info)
             self['descadd'].setText('Stream Link n°' + str(i))
         else:
@@ -1895,7 +1905,7 @@ class Video5list(Screen):
                     name = vname + "-" + name1 + "-" + name2
 
                     # name = HTMLParser().unescape(name)
-                    name = Utils.decodeHtml(name)
+                    name = html_conv.html_unescape(name)
                     pic = picx
                     info = self.next
                     print('name Video5list', name)
@@ -1914,6 +1924,7 @@ class Video5list(Screen):
         except Exception as ex:
             print(str(ex))
             print("Error: can't find file or read data in Video5list")
+        return
 
     def okRun(self):
         i = len(self.names)
@@ -1926,7 +1937,7 @@ class Video5list(Screen):
             name = self.names[idx]
             url = self.urls[idx]
             info = self.infos[idx]
-            info = Utils.decodeHtml(info)
+            info = html_conv.html_unescape(info)
             pic = self.pics[idx]
             print('Video5list okrun')
             logdata("Video5list name: ", name)
@@ -1989,10 +2000,10 @@ class Video5list(Screen):
                 except Exception as ex:
                     print(str(ex))
                     print("Error: can't find file in Video5list")
-            return
         except Exception as ex:
             print(str(ex))
             print("Error: can't find file or read data in Playchoice")
+            return
 
     def downloadPic(self, data, pictmp):
         if os.path.exists(pictmp):
@@ -2088,7 +2099,7 @@ class Playchoice(Screen):
             self.leftt_conn = self.leftt.timeout.connect(self.load_poster)
         except:
             self.leftt.callback.append(self.load_poster)
-        self.leftt.start(200, True)
+        self.leftt.start(1000, True)
         self.onLayoutFinish.append(self.openTest)
         # return
 
@@ -2161,6 +2172,8 @@ class Playchoice(Screen):
                 # if PY3:
                     # self.urlx = self.urlx.encode()
                 self.downloading = True
+                print('path download = ', self.in_tmp)
+                
                 # self.in_tmp = '/tmp/' + fileTitle
                 # if sys.version_info >= (2, 7, 9):
                     # try:
@@ -2203,8 +2216,9 @@ class Playchoice(Screen):
 
                 # ######################
                 # test 5  no work error twisted.client
-                    # self.download = downloadWithProgress(self.urlx, self.in_tmp)
+                    # self.download = DownloadWithProgress(self.urlx, self.in_tmp)
                     # self.download.addProgress(self.downloadProgress)
+                    # # self.download.start().addEnd(self.finish).addError(self.showError)
                     # self.download.start().addCallback(self.finish).addErrback(self.showError)
 
                 # ######################
@@ -2235,20 +2249,14 @@ class Playchoice(Screen):
                     # cmd = WGET + " %s -c '%s' -O '%s'" % (useragent, self.urlx, self.in_tmp)
                     # cmd2 = WGET + " -c '%s' -O '%s'" % (self.urlx, self.in_tmp)
 
+
+
                     cmd = "wget -U 'Enigma2 - Revolution Plugin' -c '%s' -O '%s'" % (self.urlx, self.in_tmp)
                     if "https" in str(self.urlx):
                         cmd = "wget --no-check-certificate -U 'Enigma2 - Revolution Plugin' -c '%s' -O '%s'" % (self.urlx, self.in_tmp)
-
-                    f = open(self.in_tmp, 'wb')
-                    f.close()
-                    # try:
-                        # print('cmd = ', cmd)
-                       # job_manager.AddJob(downloadJob(self, cmd, self.in_tmp, fileTitle))
-
+                    # f = open(self.in_tmp, 'wb')
+                    # f.close()
                     job_manager.AddJob(downloadJob(self, cmd, self.in_tmp, fileTitle))
-                    # except:
-                        # print('cmd2 = ', cmd2)
-                        # job_manager.AddJob(downloadJob(self, cmd2, self.in_tmp, fileTitle))
 
                     pmovies = True
                     print('self url is : ', self.urlx)
@@ -2340,7 +2348,7 @@ class Playchoice(Screen):
         self.urls = []
         self.names.append('Play Now')
         self.urls.append(url)
-        self.names.append('Download Now')
+        self.names.append('Download Now- Test')
         self.urls.append(url)
         self.names.append('Play HLS')
         self.urls.append(url)
@@ -2350,11 +2358,9 @@ class Playchoice(Screen):
         self.urls.append(url)
         showlist(self.names, self['list'])
 
-    def racatyx(self, url):
-        # idx = self['list'].getSelectionIndex()
-        name = self.name1
-        name = name.replace("%28%", "(").replace("%29%", ")")
+    def racatyx(self, name, url):
         urlx = url
+        name = name
         if ("vidcloud" in name.lower()) or ("googlelink" in name.lower()) or ("dl" in name.lower()) or ("cdn" in name.lower()) or ("gvideo" in name.lower()):
             urlxy = url
         else:
@@ -2383,19 +2389,18 @@ class Playchoice(Screen):
             name = name.replace("%28%", "(").replace("%29%", ")")
             url = self.url
             if idx == 0:
-                self.name = self.name1
-                url = self.racatyx(url)
+                self.racat = eTimer()
+                url = self.racatyx(name, url)
+                self.racat.start(2500, True)
                 print('In playVideo url D=', url)
-                self.play(self.name, url)
-
+                self.play(name, url)
             elif idx == 1:
-                # return
-                self.name = self.name1
                 url = self.url
                 print('In playVideo url D=', url)
-                self.urlx = self.racatyx(url)
+                self.racat = eTimer()
+                self.urlx = self.racatyx(name, url)
+                self.racat.start(2500, True)
                 self.runRec(self.urlx)
-
             elif idx == 2:
                 self.name = self.name1
                 url = self.url
@@ -2680,7 +2685,7 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         self.new_aspect = self.init_aspect
         self.srefInit = self.session.nav.getCurrentlyPlayingServiceReference()
         self.service = None
-        self.name = Utils.decodeHtml(name)
+        self.name = html_conv.html_unescape(name)
         self.icount = 0
         url = url.replace(':', '%3a')
         self.url = url
@@ -3254,9 +3259,11 @@ class downloadTask(Task):
         self.aborted = False
 
     def run(self, callback):
+        from .Downloader import DownloadWithProgress
         self.callback = callback
-        self.download = downloadWithProgress(self.url, self.filename)
+        self.download = DownloadWithProgress(self.url, self.filename)
         self.download.addProgress(self.download_progress)
+        # self.download.start().addEnd(self.download_finished).addError(self.download_failed)
         self.download.start().addCallback(self.download_finished).addErrback(self.download_failed)
         print("[downloadTask] downloading", self.url, "to", self.filename)
 
@@ -3269,8 +3276,9 @@ class downloadTask(Task):
 
     def download_progress(self, recvbytes, totalbytes):
         if (recvbytes - self.last_recvbytes) > 10000:  # anti-flicker
-            self.progress = int(100 * (float(recvbytes) / float(totalbytes)))
-            self.name = _("Downloading") + ' ' + _("%d of %d kBytes") % (recvbytes / 1024, totalbytes / 1024)
+            self.progress = int(100 * (float(recvbytes) // float(totalbytes)))
+            self.name = _("Downloading") + ' ' + _("%d of %d kBytes") % (recvbytes // 1024, totalbytes // 1024)
+            # self.blockSize = max(min(self.totalSize // 100, 1024), 131071) if self.totalSize else 65536
             self.last_recvbytes = recvbytes
 
     def download_failed(self, failure_instance=None, error_message=""):
