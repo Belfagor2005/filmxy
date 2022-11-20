@@ -708,9 +708,10 @@ class live_to_stream(Screen):
         self.currentList = 'list'
         self.idx = 0
         self['title'] = Label(title_plug)
-        self['actions'] = ActionMap(['EPGSelectActions',
-                                     'DirectionActions',
+        self['actions'] = ActionMap(['DirectionActions',
                                      'OkCancelActions',
+                                     'EPGSelectActions',
+                                     'ButtonSetupActions',
                                      'ColorActions'], {'ok': self.okRun,
                                                        'red': self.cancel,
                                                        'up': self.up,
@@ -894,8 +895,6 @@ class live_to_stream(Screen):
         if i > 0:
             idx = self['list'].getSelectionIndex()
             info = self.infos[idx]
-            # info = Utils.decodeHtml(info)
-            info = html_conv.html_unescape(info)
             self['desc'].setText(info)
 
     def selectionChanged(self):
@@ -907,14 +906,9 @@ class live_to_stream(Screen):
         self.close()
 
     def up(self):
-        # idx = self['list'].getSelectionIndex()
-        # print('idx: ', idx)
-        # if idx and (idx != '' or idx > -1):
         self[self.currentList].up()
         self.load_infos()
         self.load_poster()
-        # else:
-            # return
 
     def down(self):
         self[self.currentList].down()
@@ -1107,7 +1101,6 @@ class pagesX(Screen):
                 self.infos.append(info)
             logdata("pages nextmodule: ", self.next)
             showlist(self.names, self['list'])
-            # self.list.moveToIndex(0)
         except Exception as ex:
             print(str(ex))
             print("Error: can't find file or read data in pagesX")
@@ -1276,7 +1269,7 @@ class azvideo(Screen):
         if i > 0:
             idx = self['list'].getSelectionIndex()
             info = self.infos[idx]
-            info = html_conv.html_unescape(info)
+            # info = html_conv.html_unescape(info)
             self['desc'].setText(info)
 
     def selectionChanged(self):
@@ -1508,7 +1501,7 @@ class pagevideo3(Screen):
             self.leftt_conn = self.leftt.timeout.connect(self.left)
         except:
             self.leftt.callback.append(self.left)
-        self.leftt.start(1000, True)
+        self.leftt.start(500, True)
         self.onLayoutFinish.append(self.__layoutFinished)
 
     def showIMDB(self):
@@ -1536,8 +1529,8 @@ class pagevideo3(Screen):
             self['statusred'].show()
             self['status'].setText('SERVER OFF')
         self.setTitle(self.setup_title)
-        self.load_infos()
-        self.load_poster()
+        # self.load_infos()
+        # self.load_poster()
 
     def load_infos(self):
         i = len(self.names)
@@ -1550,9 +1543,11 @@ class pagevideo3(Screen):
             info = html_conv.html_unescape(info)
             intot = str(infoadd) + '\n' + str(size2)
             print('intot = ', intot)
+            print('info = ', info)
             # self['desc'].setText(info + '\n' + 'Stream N.' + str(i))
             self['desc'].setText(info)
             self['descadd'].setText(intot)
+        return
 
     def selectionChanged(self):
         if self['list'].getCurrent():
@@ -1599,34 +1594,34 @@ class pagevideo3(Screen):
 
             # regexvideo = 'class=post-thumbnail>.*?href=(.*?)/ >.*?data-src=(.*?) src.*?title><h2>(.*?)<'
 
-            
+
             n1 = content.find("cat-description", 0)
             n2 = content.find("numeric-pagination>", n1)
             content2 = content[n1:n2]
             # regexvideo = 'post-thumbnail>.*?href=(.*?)>.*?data-src=(.*?)src.*?title><h2>(.*?)<.*?Ganre:.*?</b>(.*?)</p>.*?Size:.*?</b>(.*?)</p>.*?story><p>(.*?)</p>'
-            regexvideo = 'post-thumbnail>.*?href=(.*?)>.*?data-src=(.*?)src.*?title><h2>(.*?)<.*?Ganre:.*?</b>(.*?)</p>.*?Size:.*?(.*?)</p>.*?story>(.*?)</p>'           
+            regexvideo = 'post-thumbnail>.*?href=(.*?)>.*?data-src=(.*?)src.*?title><h2>(.*?)<.*?Ganre:.*?</b>(.*?)</p>.*?Size:.*?(.*?)</p>.*?story><p>(.*?)</p></div>'
             match = re.compile(regexvideo, re.DOTALL).findall(content2)
             for url, pic, name, infoadd, size, info in match:
-                # print('pagevideo3 name ', name)
-                # print('pagevideo3 url ', url)
-                # print('pagevideo3 pic ', pic)
-                # print('pagevideo3 infoadd ', infoadd)
-                # print('pagevideo3 size ', size)
-                # print('pagevideo3 info ', info)
                 url1 = url.replace(' ', '')
-                url1 = url1.strip() #+ "/"
+                url1 = url1.strip()  #+ "/"
                 pic = pic.strip()
                 name = name.strip()
-                name = name.replace("-Cover", "").replace(" Cover", "")
+                # name = name.replace("-Cover", "").replace(" Cover", "")
                 name = html_conv.html_unescape(name)
                 size = size.replace('</b>', '').replace(' ', '')
                 size2 = 'Size ' + str(size)
                 info = info.replace('<p>', '').replace('&hellip;', '...')
-                self.names.append(name)
+                print('pagevideo3 url ', url)
+                print('pagevideo3 pic ', pic)
+                print('pagevideo3 name ', name)
+                print('pagevideo3 infoadd ', infoadd)
+                print('pagevideo3 size ', size)
+                print('pagevideo3 info ', info)
                 self.urls.append(url1)
                 self.pics.append(pic)
-                self.sizes.append(size2)
+                self.names.append(name)
                 self.infosadd.append(infoadd)
+                self.sizes.append(size2)
                 self.infos.append(info)
             logdata("pagevideo3 nextmodule: ", self.next)
             showlist(self.names, self['list'])
@@ -1636,10 +1631,9 @@ class pagevideo3(Screen):
         return
 
     def okRun(self):
-        i = len(self.names)
-        print('pagevideo3 in okrun ', i)
-        if i < 1:
-            return
+        # idx = self['list'].getSelectionIndex()
+        # print('idx: ', idx)
+        # if idx and (idx != '' or idx > -1):
         try:
             idx = self['list'].getSelectionIndex()
             print('video4 idx: ', idx)
@@ -1683,7 +1677,7 @@ class pagevideo3(Screen):
             if i < 1:
                 return
             idx = self['list'].getSelectionIndex()
-            print('idx: ', idx)
+            print('load_poster idx: ', idx)
             # name = self.names[idx]
             # url = self.urls[idx]
             pixmaps = self.pics[idx]
@@ -1708,7 +1702,7 @@ class pagevideo3(Screen):
                     print("Error: can't find file in pagevideo3")
         except Exception as ex:
             print(str(ex))
-            print("Error: can't find file or read data in Playchoice")
+            print("Error: pagevideo3")
         return
 
     def downloadPic(self, data, pictmp):
@@ -1854,7 +1848,7 @@ class Video5list(Screen):
         if i > 0:
             idx = self['list'].getSelectionIndex()
             info = self.infos[idx]
-            info = html_conv.html_unescape(info)
+            # info = html_conv.html_unescape(info)
             self['desc'].setText(info)
             self['descadd'].setText('Stream Link n°' + str(i))
         else:
@@ -1937,7 +1931,7 @@ class Video5list(Screen):
             name = self.names[idx]
             url = self.urls[idx]
             info = self.infos[idx]
-            info = html_conv.html_unescape(info)
+            # info = html_conv.html_unescape(info)
             pic = self.pics[idx]
             print('Video5list okrun')
             logdata("Video5list name: ", name)
@@ -2003,7 +1997,7 @@ class Video5list(Screen):
         except Exception as ex:
             print(str(ex))
             print("Error: can't find file or read data in Playchoice")
-            return
+        return
 
     def downloadPic(self, data, pictmp):
         if os.path.exists(pictmp):
@@ -2093,7 +2087,6 @@ class Playchoice(Screen):
                                                                'instantRecord': self.runRec,
                                                                'ShortRecord': self.runRec,
                                                                'ok': self.okClicked}, -2)
-
         self.leftt = eTimer()
         try:
             self.leftt_conn = self.leftt.timeout.connect(self.load_poster)
@@ -2173,7 +2166,6 @@ class Playchoice(Screen):
                     # self.urlx = self.urlx.encode()
                 self.downloading = True
                 print('path download = ', self.in_tmp)
-                
                 # self.in_tmp = '/tmp/' + fileTitle
                 # if sys.version_info >= (2, 7, 9):
                     # try:
@@ -2708,7 +2700,6 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
                                                              'red': self.cicleStreamType,
                                                              'cancel': self.cancel,
                                                              'back': self.cancel}, -1)
-
         if '8088' in str(self.url):
             self.onFirstExecBegin.append(self.slinkPlay)
         else:

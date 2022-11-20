@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: revolution\n"
-"POT-Creation-Date: 2022-11-20 12:19+0100\n"
+"POT-Creation-Date: 2022-11-18 18:38+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -13,234 +13,231 @@ msgstr ""
 "X-Poedit-Basepath: ../../../..\n"
 "X-Poedit-SearchPath-0: plugin.py\n"
 
-#: plugin.py:161
+#: plugin.py:157
 msgid "ServiceMp3(4097)"
 msgstr ""
 
-#: plugin.py:162
+#: plugin.py:158
 msgid "Hardware(1)"
 msgstr ""
 
-#: plugin.py:166
+#: plugin.py:162
 msgid "Gstreamer(5001)"
 msgstr ""
 
-#: plugin.py:168
+#: plugin.py:164
 msgid "Exteplayer3(5002)"
 msgstr ""
 
-#: plugin.py:170
+#: plugin.py:166
 msgid "Streamlink(5002)"
 msgstr ""
 
-#: plugin.py:172
+#: plugin.py:168
 msgid "eServiceUri(8193)"
 msgstr ""
 
-#: plugin.py:463 plugin.py:685 plugin.py:1029 plugin.py:1195 plugin.py:1462
-#: plugin.py:1773
+#: plugin.py:457 plugin.py:680 plugin.py:1022 plugin.py:1187 plugin.py:1453
+#: plugin.py:1752
 msgid "Cache folder "
 msgstr "Percorso Cache"
 
-#: plugin.py:474
+#: plugin.py:468
 msgid "Exit"
 msgstr "Uscire"
 
-#: plugin.py:600
+#: plugin.py:594
 msgid ""
 "freearhey Plugin Not Installed!!\n"
 "Use my Plugin Freearhey"
 msgstr ""
 
-#: plugin.py:687 plugin.py:1031
+#: plugin.py:682 plugin.py:1024
 #, python-format
 msgid "Select your %s"
-msgstr "Seleziona %s"
+msgstr "Seleziona il tuo %s"
 
-#: plugin.py:697 plugin.py:1041 plugin.py:1207 plugin.py:1474 plugin.py:1785
-#: plugin.py:2075 plugin.py:2874
+#: plugin.py:692 plugin.py:1034 plugin.py:1199 plugin.py:1465 plugin.py:1764
+#: plugin.py:2042 plugin.py:2854
 msgid "Back"
 msgstr "Indietro"
 
-#: plugin.py:1197
+#: plugin.py:1189
 msgid "Select you Stream"
 msgstr "Seeleziona il tuo stream"
 
-#: plugin.py:2076
+#: plugin.py:2043
 msgid "Select"
 msgstr "Seleziona"
 
-#: plugin.py:2077
+#: plugin.py:2044
 msgid "Movie"
 msgstr "Film"
 
-#: plugin.py:2125
+#: plugin.py:2098
 msgid "Download Complete...."
 msgstr ""
 
-#: plugin.py:2128
+#: plugin.py:2101
 msgid "Downloading...."
 msgstr ""
 
-#: plugin.py:2142
+#: plugin.py:2115
 msgid "You are already downloading!!!"
 msgstr "Stai già scaricando!!!"
 
-#: plugin.py:2146
+#: plugin.py:2119
 #, python-format
 msgid ""
 "DOWNLOAD VIDEO?\n"
 "%s"
 msgstr ""
 
-#: plugin.py:2149
+#: plugin.py:2122
 msgid "Only VOD Movie allowed or not .ext Filtered!!!"
 msgstr ""
 
-#: plugin.py:2151 plugin.py:2448 plugin.py:2460 plugin.py:2478
+#: plugin.py:2124 plugin.py:2428 plugin.py:2440 plugin.py:2458
 msgid "No link available"
 msgstr ""
 
-#: plugin.py:2278 plugin.py:2308
+#: plugin.py:2255 plugin.py:2285
 msgid "Download Failed !!"
 msgstr ""
 
-#: plugin.py:2311
+#: plugin.py:2288
 msgid "Download..."
 msgstr ""
 
-#: plugin.py:2321
+#: plugin.py:2298
 msgid "Please select ..."
 msgstr ""
 
-#: plugin.py:2327
+#: plugin.py:2304
 msgid "File Downloaded ..."
 msgstr ""
 
-#: plugin.py:2334
+#: plugin.py:2311
 msgid "Download Failed!!!"
 msgstr ""
 
-#: plugin.py:2480
+#: plugin.py:2460
 msgid "Install Streamlink first"
 msgstr ""
 
-#: plugin.py:2722
+#: plugin.py:2701
 msgid "4:3 Letterbox"
 msgstr ""
 
-#: plugin.py:2723
+#: plugin.py:2702
 msgid "4:3 PanScan"
 msgstr ""
 
-#: plugin.py:2724
+#: plugin.py:2703
 msgid "16:9"
 msgstr ""
 
-#: plugin.py:2725
+#: plugin.py:2704
 msgid "16:9 always"
 msgstr ""
 
-#: plugin.py:2726
+#: plugin.py:2705
 msgid "16:10 Letterbox"
 msgstr ""
 
-#: plugin.py:2727
+#: plugin.py:2706
 msgid "16:10 PanScan"
 msgstr ""
 
-#: plugin.py:2728
+#: plugin.py:2707
 msgid "16:9 Letterbox"
 msgstr ""
 
-#: plugin.py:2872
+#: plugin.py:2852
 msgid "Choice"
 msgstr "Scegli"
 
-#: plugin.py:2873
+#: plugin.py:2853
 msgid "Save"
 msgstr "Salva"
 
-#: plugin.py:2875
+#: plugin.py:2855
 msgid "Empty Cache"
 msgstr "Vuota Cache"
 
-#: plugin.py:2900 plugin.py:2928
+#: plugin.py:2879 plugin.py:2907
 msgid "Set the path to the Cache folder"
 msgstr "Configura percorso cache"
 
-#: plugin.py:2901 plugin.py:2928
+#: plugin.py:2880 plugin.py:2907
 msgid "Press Ok to select the folder containing the picons files"
 msgstr "Premere Ok per selezionare la cartella contenente i file picons"
 
-#: plugin.py:2902 plugin.py:2927
+#: plugin.py:2881 plugin.py:2906
 msgid "Set the path Movie folder"
 msgstr "Configura percorso Movie"
 
-#: plugin.py:2903 plugin.py:2927
-msgid ""
-"Folder Movie Path (eg.: /media/hdd/movie), Press OK - Enigma restart required"
-msgstr ""
-"Percorso Movie (es.: /media/hdd/movie), premere OK - è necessario riavviare "
-"Enigma"
+#: plugin.py:2882 plugin.py:2906
+msgid "Folder Movie Path (eg.: /media/hdd/movie), Press OK - Enigma restart required"
+msgstr "Percorso Movie (es.: /media/hdd/movie), premere OK - è necessario riavviare Enigma"
 
-#: plugin.py:2904 plugin.py:2929
+#: plugin.py:2883 plugin.py:2908
 msgid "Services Player Reference type"
-msgstr "Tipo Reference Service in Player"
+msgstr ""
 
-#: plugin.py:2905 plugin.py:2929
+#: plugin.py:2884 plugin.py:2908
 msgid "Configure Service Player Reference"
-msgstr "Impostazioni Srvice Reference"
+msgstr ""
 
-#: plugin.py:2922
+#: plugin.py:2901
 #, python-format
 msgid ""
 "Settings FILMXY\n"
 "Your current IP is %s"
 msgstr ""
 
-#: plugin.py:2938
+#: plugin.py:2917
 msgid "All cache fold are empty!"
 msgstr "Cache Poster libera!"
 
-#: plugin.py:2954
+#: plugin.py:2933
 msgid "Settings saved correctly!"
 msgstr "Impostazioni salvate correttamente!"
 
-#: plugin.py:2977
+#: plugin.py:2956
 msgid "Choose Directory:"
 msgstr "Scegli cartella"
 
-#: plugin.py:2978
+#: plugin.py:2957
 msgid "Choose Directory"
 msgstr "Scegli percorso"
 
-#: plugin.py:3035
+#: plugin.py:3014
 msgid "Really close without saving the settings?"
 msgstr "Uscire senza salvare le impostazioni?"
 
-#: plugin.py:3057
+#: plugin.py:3036
 msgid "Remove"
 msgstr "Rimuovi"
 
-#: plugin.py:3058
+#: plugin.py:3037
 msgid "Close"
 msgstr "Esci"
 
-#: plugin.py:3135
+#: plugin.py:3113
 msgid "Finished"
 msgstr "Finito"
 
-#: plugin.py:3154
+#: plugin.py:3132
 msgid "Is Directory or file not exist"
 msgstr "La cartella o il file non è disponibile"
 
-#: plugin.py:3174
+#: plugin.py:3152
 #, python-format
 msgid "Do you want to remove %s ?"
 msgstr "Vuoi rimuovere %s?"
 
-#: plugin.py:3187
+#: plugin.py:3165
 msgid ""
 " Movie has been successfully deleted\n"
 "wait time to refresh the list..."
@@ -248,43 +245,41 @@ msgstr ""
 "Il Film è stato rimosso con successo\n"
 "attendi un attimo, carico la lista..."
 
-#: plugin.py:3189
+#: plugin.py:3167
 msgid ""
 "The movie not exist!\n"
 "wait time to refresh the list..."
 msgstr ""
-"Il film non esiste!\n"
-"attendi ricarico la lista..."
 
-#: plugin.py:3237 plugin.py:3238 plugin.py:3239 plugin.py:3240 plugin.py:3241
+#: plugin.py:3215 plugin.py:3216 plugin.py:3217 plugin.py:3218 plugin.py:3219
 msgid "MOVIE DOWNLOAD FAILED!"
 msgstr ""
 
-#: plugin.py:3237
+#: plugin.py:3215
 msgid "DOWNLOADED FILE CORRUPTED:"
 msgstr ""
 
-#: plugin.py:3238
+#: plugin.py:3216
 msgid "COULD NOT READ RTMP PACKET:"
 msgstr ""
 
-#: plugin.py:3239
+#: plugin.py:3217
 msgid "SEGMENTATION FAULT:"
 msgstr ""
 
-#: plugin.py:3240
+#: plugin.py:3218
 msgid "SERVER RETURNED ERROR:"
 msgstr ""
 
-#: plugin.py:3241
+#: plugin.py:3219
 msgid "UNKNOWN ERROR:"
 msgstr ""
 
-#: plugin.py:3280
+#: plugin.py:3256
 msgid "Downloading"
 msgstr ""
 
-#: plugin.py:3280
+#: plugin.py:3256
 #, python-format
 msgid "%d of %d kBytes"
 msgstr ""
