@@ -1,0 +1,293 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: revolution\n"
+"POT-Creation-Date: 2022-11-18 18:38+0100\n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ru_RU\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.7\n"
+"X-Poedit-Basepath: ../../../..\n"
+"X-Poedit-SearchPath-0: plugin.py\n"
+
+#: plugin.py:157
+msgid "ServiceMp3(4097)"
+msgstr "ServiceMp3(4097)"
+
+#: plugin.py:158
+msgid "Hardware(1)"
+msgstr "Оборудование(1)"
+
+#: plugin.py:162
+msgid "Gstreamer(5001)"
+msgstr "Gstreamer(5001)"
+
+#: plugin.py:164
+msgid "Exteplayer3(5002)"
+msgstr "Exteplayer3(5002)"
+
+#: plugin.py:166
+msgid "Streamlink(5002)"
+msgstr "Streamlink(5002)"
+
+#: plugin.py:168
+msgid "eServiceUri(8193)"
+msgstr "eServiceUri(8193)"
+
+#: plugin.py:457 plugin.py:680 plugin.py:1022 plugin.py:1187 plugin.py:1453
+#: plugin.py:1752
+msgid "Cache folder "
+msgstr "Папка кэша"
+
+#: plugin.py:468
+msgid "Exit"
+msgstr "Выход"
+
+#: plugin.py:594
+msgid ""
+"freearhey Plugin Not Installed!!\n"
+"Use my Plugin Freearhey"
+msgstr ""
+"бесплатный плагин не установлен!!\n"
+"Используйте мой бесплатный плагин"
+
+#: plugin.py:682 plugin.py:1024
+#, python-format
+msgid "Select your %s"
+msgstr "Выберите свой %s"
+
+#: plugin.py:692 plugin.py:1034 plugin.py:1199 plugin.py:1465 plugin.py:1764
+#: plugin.py:2042 plugin.py:2854
+msgid "Back"
+msgstr "Назад"
+
+#: plugin.py:1189
+msgid "Select you Stream"
+msgstr "Выберите свой поток"
+
+#: plugin.py:2043
+msgid "Select"
+msgstr "Выбрать"
+
+#: plugin.py:2044
+msgid "Movie"
+msgstr "Фильм"
+
+#: plugin.py:2098
+msgid "Download Complete...."
+msgstr "Загрузка завершена...."
+
+#: plugin.py:2101
+msgid "Downloading...."
+msgstr "Загрузка...."
+
+#: plugin.py:2115
+msgid "You are already downloading!!!"
+msgstr "Вы уже скачиваете!!!"
+
+#: plugin.py:2119
+#, python-format
+msgid ""
+"DOWNLOAD VIDEO?\n"
+"%s"
+msgstr ""
+"СКАЧАТЬ ВИДЕО?\n"
+"%s"
+
+#: plugin.py:2122
+msgid "Only VOD Movie allowed or not .ext Filtered!!!"
+msgstr "Разрешен только фильм VOD или нет .ext отфильтрован!!!"
+
+#: plugin.py:2124 plugin.py:2428 plugin.py:2440 plugin.py:2458
+msgid "No link available"
+msgstr "Ссылка недоступна"
+
+#: plugin.py:2255 plugin.py:2285
+msgid "Download Failed !!"
+msgstr "Загрузка не удалась!!"
+
+#: plugin.py:2288
+msgid "Download..."
+msgstr "Скачать..."
+
+#: plugin.py:2298
+msgid "Please select ..."
+msgstr "Пожалуйста выберите..."
+
+#: plugin.py:2304
+msgid "File Downloaded ..."
+msgstr "Файл скачан ..."
+
+#: plugin.py:2311
+msgid "Download Failed!!!"
+msgstr "Загрузка не удалась!!!"
+
+#: plugin.py:2460
+msgid "Install Streamlink first"
+msgstr "Сначала установите ссылку на поток"
+
+#: plugin.py:2701
+msgid "4:3 Letterbox"
+msgstr "4:3 Letterbox"
+
+#: plugin.py:2702
+msgid "4:3 PanScan"
+msgstr "4:3 PanScan"
+
+#: plugin.py:2703
+msgid "16:9"
+msgstr "16:9"
+
+#: plugin.py:2704
+msgid "16:9 always"
+msgstr "16:9 always"
+
+#: plugin.py:2705
+msgid "16:10 Letterbox"
+msgstr "16:10 Letterbox"
+
+#: plugin.py:2706
+msgid "16:10 PanScan"
+msgstr "16:10 PanScan"
+
+#: plugin.py:2707
+msgid "16:9 Letterbox"
+msgstr "16:9 Letterbox"
+
+#: plugin.py:2852
+msgid "Choice"
+msgstr "Выбор"
+
+#: plugin.py:2853
+msgid "Save"
+msgstr "Сохранить"
+
+#: plugin.py:2855
+msgid "Empty Cache"
+msgstr "Пустой кэш"
+
+#: plugin.py:2879 plugin.py:2907
+msgid "Set the path to the Cache folder"
+msgstr "Задайте путь к папке кэша"
+
+#: plugin.py:2880 plugin.py:2907
+msgid "Press Ok to select the folder containing the picons files"
+msgstr "Нажмите Ok, чтобы выбрать папку, содержащую файлы значков"
+
+#: plugin.py:2881 plugin.py:2906
+msgid "Set the path Movie folder"
+msgstr "Задайте путь к папке фильма"
+
+#: plugin.py:2882 plugin.py:2906
+msgid "Folder Movie Path (eg.: /media/hdd/movie), Press OK - Enigma restart required"
+msgstr "Путь к папке с фильмом (например: /media/hdd/movie), нажмите OK - требуется перезапуск Enigma"
+
+#: plugin.py:2883 plugin.py:2908
+msgid "Services Player Reference type"
+msgstr "Ссылочный тип проигрывателя служб"
+
+#: plugin.py:2884 plugin.py:2908
+msgid "Configure Service Player Reference"
+msgstr "Настройка ссылки на сервис-плеер"
+
+#: plugin.py:2901
+#, python-format
+msgid ""
+"Settings FILMXY\n"
+"Your current IP is %s"
+msgstr ""
+"Настройки FILMXY\n"
+"Ваш текущий IP-адрес является %s"
+
+#: plugin.py:2917
+msgid "All cache fold are empty!"
+msgstr "Все ячейки кэша пусты!"
+
+#: plugin.py:2933
+msgid "Settings saved correctly!"
+msgstr "Настройки сохранены правильно!"
+
+#: plugin.py:2956
+msgid "Choose Directory:"
+msgstr "Выберите каталог:"
+
+#: plugin.py:2957
+msgid "Choose Directory"
+msgstr "Выберите каталог"
+
+#: plugin.py:3014
+msgid "Really close without saving the settings?"
+msgstr "Действительно закрыть без сохранения настроек?"
+
+#: plugin.py:3036
+msgid "Remove"
+msgstr "Удалить"
+
+#: plugin.py:3037
+msgid "Close"
+msgstr "Закрывать"
+
+#: plugin.py:3113
+msgid "Finished"
+msgstr "Завершить"
+
+#: plugin.py:3132
+msgid "Is Directory or file not exist"
+msgstr "Каталог или файл не существует"
+
+#: plugin.py:3152
+#, python-format
+msgid "Do you want to remove %s ?"
+msgstr "Вы хотите удалить %s?"
+
+#: plugin.py:3165
+msgid ""
+" Movie has been successfully deleted\n"
+"wait time to refresh the list..."
+msgstr ""
+" Фильм был успешно удален\n"
+"подождите некоторое время, чтобы обновить список..."
+
+#: plugin.py:3167
+msgid ""
+"The movie not exist!\n"
+"wait time to refresh the list..."
+msgstr ""
+"Фильма не существует!\n"
+"подождите некоторое время, чтобы обновить список..."
+
+#: plugin.py:3215 plugin.py:3216 plugin.py:3217 plugin.py:3218 plugin.py:3219
+msgid "MOVIE DOWNLOAD FAILED!"
+msgstr "ЗАГРУЗКА ФИЛЬМА НЕ УДАЛАСЬ!"
+
+#: plugin.py:3215
+msgid "DOWNLOADED FILE CORRUPTED:"
+msgstr "ЗАГРУЖЕННЫЙ ФАЙЛ ПОВРЕЖДЕН:"
+
+#: plugin.py:3216
+msgid "COULD NOT READ RTMP PACKET:"
+msgstr "НЕ УДАЛОСЬ ПРОЧИТАТЬ RTMP-ПАКЕТ:"
+
+#: plugin.py:3217
+msgid "SEGMENTATION FAULT:"
+msgstr "ОШИБКА СЕГМЕНТАЦИИ:"
+
+#: plugin.py:3218
+msgid "SERVER RETURNED ERROR:"
+msgstr "СЕРВЕР ВЕРНУЛ ОШИБКУ:"
+
+#: plugin.py:3219
+msgid "UNKNOWN ERROR:"
+msgstr "неизвестная ошибка:"
+
+#: plugin.py:3256
+msgid "Downloading"
+msgstr "Загрузка"
+
+#: plugin.py:3256
+#, python-format
+msgid "%d of %d kBytes"
+msgstr "%d от %d Кбайт"
