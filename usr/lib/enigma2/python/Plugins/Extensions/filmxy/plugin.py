@@ -773,6 +773,8 @@ class live_to_stream(Screen):
                         pic = pixmaps
                     else:
                         pic = no_cover
+                    print('name categories', name)
+                    print('url categories', url)
                     self.names.append(name)
                     self.urls.append(url)
                     self.pics.append(pic)
@@ -785,8 +787,8 @@ class live_to_stream(Screen):
                 regexvideo = 'name:"(.*?)",link:"(.*?)"'
                 match = re.compile(regexvideo, re.DOTALL).findall(content2)
                 for name, url in match:
-                    # print('name country', name)
-                    # print('url country', url)
+                    print('name country', name)
+                    print('url country', url)
                     pixmaps = piconlocal(name)
                     if os.path.exists(pixmaps):
                         self.downloadPic(None, pixmaps)
@@ -811,6 +813,9 @@ class live_to_stream(Screen):
                         pic = pixmaps
                     else:
                         pic = no_cover
+                    print('name years', name)
+                    print('url years', url)
+                        
                     self.names.append(name)
                     self.urls.append(url)
                     self.pics.append(pic)
@@ -830,6 +835,8 @@ class live_to_stream(Screen):
                         pic = pixmaps
                     else:
                         pic = no_cover
+                    print('name az', name)
+                    print('url az', url)
                     self.names.append(name)
                     self.urls.append(url1)
                     self.pics.append(pic)
@@ -1085,14 +1092,15 @@ class pagesX(Screen):
         self.urls = []
         self.pics = []
         self.infos = []
+        #https://www.filmxy.pw/genre/action/page/2/
         pages = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
         try:
             for page in pages:
                 url1 = self.url + "page/" + str(page) + "/"
                 name = "Page " + str(page)
                 # name = name.upper()
-                print('name: ', name)
-                print('url: ', url1)
+                print('name pagesX: ', name)
+                print('url pagesX: ', url1)
                 info = self.name
                 self.names.append(name)
                 self.urls.append(url1)
@@ -1118,6 +1126,8 @@ class pagesX(Screen):
             url = self.urls[idx]
             pic = self.pics[idx]
             # desc = self.infos[idx]
+            print('name okRun pagesX: ', name)
+            print('url okRun pagesX: ', url)
             logdata("pages nextmodule: ", self.next)
             self.session.open(pagevideo3, name, url, pic, self.next)
         except Exception as ex:
@@ -1586,6 +1596,9 @@ class pagevideo3(Screen):
             # class=mpa><p><b>MPA: </b>R</p></div><div
             # class=size><p><b>Size: </b>883.62 MB | 1.6 GB</p></div><div
             # class=story><p>This film receives a 10 for disturbing subject matter. It is at times very difficult to watch. The characters are troubled, each in his/her own way. It feels edgy and often very foreign. With that warning, I must say that on some level I enjoyed the film. Technically it is superb. The character development is [&hellip;]</p></div><div
+            
+            # class=story></div><div
+            
             # class=categories><p><b>Category: </b> <a
             # href=https://www.filmxy.pw/genre/adult/ rel="category tag">Adult</a>, <a
             # href=https://www.filmxy.pw/genre/crime/ rel="category tag">Crime</a>, <a
@@ -1595,12 +1608,38 @@ class pagevideo3(Screen):
             # regexvideo = 'class=post-thumbnail>.*?href=(.*?)/ >.*?data-src=(.*?) src.*?title><h2>(.*?)<'
 
 
-            n1 = content.find("cat-description", 0)
-            n2 = content.find("numeric-pagination>", n1)
-            content2 = content[n1:n2]
+
+            # class=single-post><div
+            # class=post-thumbnail>
+            # <a
+            # href=https://www.filmxy.pw/route-10-2022/ >
+            # <img
+            # width=250 height=350 data-src=https://www.cdnzone.org/uploads/2022/10/30/Route-10-2022-Cover.jpg src=https://www.cdnzone.org/asset/images/1px.png alt="Route 10 Cover">
+            # </a><div
+            # class="m-type post">Movie</div><div
+            # class="m-quality green">HD/Web-DL</div></div><div
+            # class=post-description><div
+            # class=post-title><h2>Route 10 (2022)</h2></div><div
+            # class=imdb-details><p><b>IMDb: </b>6.1/10</p></div><div
+            # class=available-quality><p>720p | 1080p</p></div><div
+            # class=genre><p><b>Ganre: </b>Action, Drama, Thriller</p></div><div
+            # class=mpa><p><b>MPA: </b>N/A</p></div><div
+            # class=size><p><b>Size: </b>749.68 MB | 1.5 GB</p></div><div
+            # class=story></div><div
+            # class=categories><p><b>Category: </b> <a
+            # href=https://www.filmxy.pw/genre/action/ rel="category tag">Action</a>, <a
+            # href=https://www.filmxy.pw/genre/drama/ rel="category tag">Drama</a>, <a
+            # href=https://www.filmxy.pw/genre/thriller/ rel="category tag">Thriller</a></p></div></div></div></div><div
+
+
+
+
+            # n1 = content.find("cat-description", 0)
+            # n2 = content.find("numeric-pagination>", n1)
+            # content2 = content[n1:n2]
             # regexvideo = 'post-thumbnail>.*?href=(.*?)>.*?data-src=(.*?)src.*?title><h2>(.*?)<.*?Ganre:.*?</b>(.*?)</p>.*?Size:.*?</b>(.*?)</p>.*?story><p>(.*?)</p>'
-            regexvideo = 'post-thumbnail>.*?href=(.*?)>.*?data-src=(.*?)src.*?title><h2>(.*?)<.*?Ganre:.*?</b>(.*?)</p>.*?Size:.*?(.*?)</p>.*?story><p>(.*?)</p></div>'
-            match = re.compile(regexvideo, re.DOTALL).findall(content2)
+            regexvideo = 'post-thumbnail>.*?href=(.*?)>.*?data-src=(.*?)src.*?title><h2>(.*?)<.*?Ganre:.*?</b>(.*?)</p>.*?Size:.*?(.*?)</p>.*?story>(.*?)</div>'
+            match = re.compile(regexvideo, re.DOTALL).findall(content)
             for url, pic, name, infoadd, size, info in match:
                 url1 = url.replace(' ', '')
                 url1 = url1.strip()  #+ "/"
@@ -1610,7 +1649,7 @@ class pagevideo3(Screen):
                 name = html_conv.html_unescape(name)
                 size = size.replace('</b>', '').replace(' ', '')
                 size2 = 'Size ' + str(size)
-                info = info.replace('<p>', '').replace('&hellip;', '...')
+                info = info.replace('<p>', '').replace('</p>', '').replace('&hellip;', '...')
                 print('pagevideo3 url ', url)
                 print('pagevideo3 pic ', pic)
                 print('pagevideo3 name ', name)
@@ -1880,6 +1919,7 @@ class Video5list(Screen):
             regexvideo = 'class=movie-poster.*?data-src=(.*?)src.*?id=main-down.*?href=(.*?)target'
             match = re.compile(regexvideo, re.DOTALL).findall(content)
             for pic, url in match:
+            # for url, pic in match:
                 picx = pic.replace(' ', '').strip()
                 url = url.replace(" ", "").strip()
                 print('contentglob pic ----', pic)
