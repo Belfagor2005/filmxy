@@ -24,9 +24,10 @@ try:
     from urllib import quote_plus
 except:
     from urllib.parse import quote_plus
-
+import six
+from six.moves import urllib_parse, urllib_request, urllib_error
 # from urlresolver.resolver import ResolverError
-
+from . import Utils
 """
 from resolveurl import common
 from resolveurl.lib import helpers
@@ -46,7 +47,8 @@ from resolver import ResolveUrl, ResolverError
 # class RacatyResolver(ResolveUrl):
 class RacatyResolver():
     name = 'Racaty'
-    domains = ['racaty.net', 'racaty.io']
+    # domains = ['racaty.net', 'racaty.io']
+    domains = ['racaty.io']    
     # pattern = r'(?://|\.)(racaty\.net)/([0-9a-zA-Z]+)'
     pattern = r'(?://|\.)(racaty\.(?:net|io))/(?:embed-)?([0-9a-zA-Z]+)'
 
@@ -66,7 +68,8 @@ class RacatyResolver():
         headers = {
             'Origin': rurl[:-1],
             'Referer': rurl,
-            'User-Agent': RAND_UA
+            # 'User-Agent': RAND_UA
+            'User-Agent': Utils.RequestAgent()
         }
         payload = {
             'op': 'download2',
@@ -74,11 +77,15 @@ class RacatyResolver():
             'referer': rurl
         }
         html = self.net.http_POST(web_url, form_data=payload, headers=headers).content
+        
         url = re.search(r'id="uniqueExpirylink"\s*href="([^"]+)', html)
+
         if url:
             headers.update({'verifypeer': 'false'})
-            # return url.group(1).replace(' ', '%20') + helpers.append_headers(headers)
+            # return url.group(1).replace(' ', '%20') + append_headers(headers)
             return url.group(1).replace(' ', '%20')
+        else:
+            return None
         # raise ResolverError('File Not Found or Removed')
 
     def get_url(self, host, media_id):
@@ -113,4 +120,4 @@ def get_packed_data(html):
 
 
 def append_headers(headers):
-    return '|%s' % '&'.join(['%s=%s' % (key, quote_plus(headers[key])) for key in headers])
+    return '|%s' % '&'.join(['%s=%s' % (key, urllib_parse.quote_plus(headers[key])) for key in headers])

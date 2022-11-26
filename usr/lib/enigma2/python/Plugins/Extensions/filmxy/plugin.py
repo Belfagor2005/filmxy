@@ -81,8 +81,13 @@ except ImportError:
     from urllib import urlretrieve
     # from urllib2 import Request
     from urllib import unquote
-    from urllib2 import urlopen, Request
+    from urllib2 import urlopen
     from urllib2 import URLError
+
+# if sys.version_info.major == 3:
+	 # import urllib.request as urllib2
+# elif sys.version_info.major == 2:
+	 # import urllib2
 
 if PY3:
     print('six.PY3: True ')
@@ -2265,6 +2270,7 @@ class Playchoice(Screen):
                 from .resolver.streamsb import StreamSBResolver
                 res = StreamSBResolver()
                 urlxy = res.get_media_url(urlx)
+        # self.urlxy = urlxy
         return urlxy
 
     def okClicked(self):
@@ -2278,14 +2284,20 @@ class Playchoice(Screen):
             name = name.replace("%28%", "(").replace("%29%", ")")
             url = self.url
             if idx == 0:
-                self.racat = eTimer()
+                # from Tools.BoundFunction import boundFunction
+                # self.racat = eTimer()
+                # try:
+                    # self.racat_conn = self.racat.timeout.connect(self.racatyx(name, url))
+                # except:
+                    # self.racat.callback.append(self.racatyx(name, url))
                 url = self.racatyx(name, url)
-                self.racat.start(2500, True)
+                # self.racat.start(2500, True)
+                # url = self.urlxy
                 print('In playVideo url D=', url)
                 self.play(name, url)
             elif idx == 1:
                 url = self.url
-                print('In playVideo url D=', url)
+                print('In playVideo runRec url D=', url)
                 self.racat = eTimer()
                 self.urlx = self.racatyx(name, url)
                 self.racat.start(2500, True)

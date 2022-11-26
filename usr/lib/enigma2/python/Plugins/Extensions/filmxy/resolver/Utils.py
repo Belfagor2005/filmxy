@@ -16,7 +16,18 @@ from random import choice
 # pythonVer = sys.version_info.major
 # PY3 = version_info[0] == 3
 
-PY3 = sys.version_info.major >= 3
+PY2 = False
+PY3 = False
+PY34 = False
+PY39 = False
+print("sys.version_info =", sys.version_info)
+PY2 = sys.version_info[0] == 2
+PY3 = sys.version_info[0] == 3
+PY34 = sys.version_info[0:2] >= (3, 4)
+PY39 = sys.version_info[0:2] >= (3, 9)
+
+
+# PY3 = sys.version_info.major >= 3
 if PY3:
     # Python 3
     PY3 = True
@@ -604,14 +615,32 @@ def ConverDateBack(data):
     return year + month + day
 
 
+def isPythonFolder():
+    import os
+    path = ('/usr/lib/')
+    for name in os.listdir(path):
+        fullname = path + name
+        if not os.path.isfile(fullname) and 'python' in fullname:
+            print(fullname)
+            import sys
+            print("sys.version_info =", sys.version_info)
+            pythonvr = fullname
+            print('pythonvr is ', pythonvr)
+            x = ('%s/site-packages/streamlink' % pythonvr)
+            print(x)
+            # /usr/lib/python3.9/site-packages/streamlink
+    return x
+
+
+def isStreamlinkAvailable():
+    pythonvr = isPythonFolder()
+    return pythonvr
+
+
 def isExtEplayer3Available():
     from enigma import eEnv
     return os.path.isfile(eEnv.resolve('$bindir/exteplayer3'))
 
-
-def isStreamlinkAvailable():
-    from enigma import eEnv
-    return os.path.isdir(eEnv.resolve('/usr/lib/python2.7/site-packages/streamlink'))
 
 # def Controlexteplayer():
     # exteplayer = False
@@ -739,27 +768,96 @@ ListAgent = [
 
 
 def RequestAgent():
+    from random import choice
     RandomAgent = choice(ListAgent)
     return RandomAgent
 
 
-def ReadUrl2(url):
+# def ReadUrl2(url):
+    # import sys
+    # if sys.version_info.major == 3:
+        # import urllib.request as urllib2
+    # elif sys.version_info.major == 2:
+        # import urllib2
+    # req = urllib2.Request(url)
+    # req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.8.1.14) Gecko/20080404 Firefox/2.0.0.14')
+    # r = urllib2.urlopen(req, None, 15)
+    # link = r.read()
+    # r.close()
+    # content = link
+    # if str(type(content)).find('bytes') != -1:
+        # try:
+            # content = content.decode('utf-8')
+        # except Exception as e:
+            # print('error: ', str(e))
+    # return content
+
+
+def ReadUrl2(url, referer):
     if sys.version_info.major == 3:
         import urllib.request as urllib2
     elif sys.version_info.major == 2:
         import urllib2
-    req = urllib2.Request(url)
-    req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.8.1.14) Gecko/20080404 Firefox/2.0.0.14')
-    r = urllib2.urlopen(req, None, 15)
-    link = r.read()
-    r.close()
-    content = link
-    if str(type(content)).find('bytes') != -1:
+
+    try:
+        import ssl
+        CONTEXT = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
+    except:
+        CONTEXT = None
+
+    TIMEOUT_URL = 15
+    print(_('ReadUrl1:\n  url = %s') % url)
+    try:
+
+        req = urllib2.Request(url)
+        req.add_header('User-Agent', RequestAgent())
+        req.add_header('Referer', referer)
+        # req = urllib2.Request(url)
+        # req.add_header('User-Agent', RequestAgent())
         try:
-            content = content.decode('utf-8')
+            r = urllib2.urlopen(req, None, TIMEOUT_URL, context=CONTEXT)
         except Exception as e:
-            print('error: ', str(e))
-    return content
+            r = urllib2.urlopen(req, None, TIMEOUT_URL)
+            print('CreateLog Codifica ReadUrl: %s.' % str(e))
+        link = r.read()
+        r.close()
+
+        dec = 'Null'
+        dcod = 0
+        tlink = link
+        if str(type(link)).find('bytes') != -1:
+            try:
+                tlink = link.decode('utf-8')
+                dec = 'utf-8'
+            except Exception as e:
+                dcod = 1
+                print('ReadUrl2 - Error: ', str(e))
+            if dcod == 1:
+                dcod = 0
+                try:
+                    tlink = link.decode('cp437')
+                    dec = 'cp437'
+                except Exception as e:
+                    dcod = 1
+                    print('ReadUrl3 - Error:', str(e))
+            if dcod == 1:
+                dcod = 0
+                try:
+                    tlink = link.decode('iso-8859-1')
+                    dec = 'iso-8859-1'
+                except Exception as e:
+                    dcod = 1
+                    print('CreateLog Codific ReadUrl: ', str(e))
+            link = tlink
+
+        elif str(type(link)).find('str') != -1:
+            dec = 'str'
+
+        print('CreateLog Codifica ReadUrl: %s.' % dec)
+    except Exception as e:
+        print('ReadUrl5 - Error: ', str(e))
+        link = None
+    return link
 
 
 def ReadUrl(url):
@@ -826,8 +924,14 @@ def ReadUrl(url):
 
 
 if PY3:
+    import sys
+    if sys.version_info.major == 3:
+        import urllib.request as urllib2
+    elif sys.version_info.major == 2:
+        import urllib2
+
     def getUrl(url):
-        req = Request(url)
+        req = urllib2.Request(url)
         req.add_header('User-Agent', RequestAgent())
         try:
             response = urlopen(req)
@@ -843,7 +947,7 @@ if PY3:
             return link
 
     def getUrl2(url, referer):
-        req = Request(url)
+        req = urllib2.Request(url)
         req.add_header('User-Agent', RequestAgent())
         req.add_header('Referer', referer)
         try:
@@ -860,7 +964,7 @@ if PY3:
             return link
 
     def getUrlresp(url):
-        req = Request(url)
+        req = urllib2.Request(url)
         req.add_header('User-Agent', RequestAgent())
         try:
             response = urlopen(req)
@@ -871,8 +975,14 @@ if PY3:
             response = urlopen(req, context=gcontext)
             return response
 else:
+    import sys
+    if sys.version_info.major == 3:
+        import urllib.request as urllib2
+    elif sys.version_info.major == 2:
+        import urllib2
+
     def getUrl(url):
-        req = Request(url)
+        req = urllib2.Request(url)
         req.add_header('User-Agent', RequestAgent())
         try:
             response = urlopen(req)
@@ -888,7 +998,7 @@ else:
             return link
 
     def getUrl2(url, referer):
-        req = Request(url)
+        req = urllib2.Request(url)
         req.add_header('User-Agent', RequestAgent())
         req.add_header('Referer', referer)
         try:
@@ -905,7 +1015,7 @@ else:
             return link
 
     def getUrlresp(url):
-        req = Request(url)
+        req = urllib2.Request(url)
         req.add_header('User-Agent', RequestAgent())
         try:
             response = urlopen(req)
@@ -934,6 +1044,35 @@ def decodeUrl(text):
     text = text.replace('%3F', '?')
     text = text.replace('%40', '@')
     return text
+
+
+# import re
+# from six import ensure_str, unichr, iteritems
+# from six.moves import html_entities
+# _UNICODE_MAP = { k:unichr(v) for k,v in iteritems(html_entities.name2codepoint) }
+# _ESCAPE_RE = re.compile("[&<>\"']")
+# _UNESCAPE_RE = re.compile(r"&\s*(#?)(\w+?)\s*;")        # Whitespace handling added due to "hand-assed" parsers of html pages
+# _ESCAPE_DICT = {
+                # "&": "&amp;",
+                # "<": "&lt;",
+                # ">": "&gt;",
+                # '"': "&quot;",
+                # "'": "&apos;",
+                # }
+
+# def html_escape(value):
+    # return _ESCAPE_RE.sub(lambda match: _ESCAPE_DICT[match.group(0)], ensure_str(value).strip())
+
+# def html_unescape(value):
+    # return _UNESCAPE_RE.sub(_convert_entity, ensure_str(value).strip())
+
+# def _convert_entity(m):
+    # if m.group(1) == "#":
+        # try:
+            # return unichr(int(m.group(2)[1:], 16)) if m.group(2)[:1].lower() == "x" else unichr(int(m.group(2)))
+        # except ValueError:
+            # return "&#%s;" % m.group(2)
+    # return _UNICODE_MAP.get(m.group(2), "&%s;" % m.group(2))
 
 
 def decodeHtml(text):
@@ -1122,93 +1261,87 @@ def cyr2lat(text):
 
 def charRemove(text):
     char = ['1080p',
-             # '2018',
-             # '2019',
-             # '2020',
-             # '2021',
-             # '2022'
-             'PF1',
-             'PF2',
-             'PF3',
-             'PF4',
-             'PF5',
-             'PF6',
-             'PF7',
-             'PF8',
-             'PF9',
-             'PF10',
-             'PF11',
-             'PF12',
-             'PF13',
-             'PF14',
-             'PF15',
-             'PF16',
-             'PF17',
-             'PF18',
-             'PF19',
-             'PF20',
-             'PF21',
-             'PF22',
-             'PF23',
-             'PF24',
-             'PF25',
-             'PF26',
-             'PF27',
-             'PF28',
-             'PF29',
-             'PF30'
-             '480p',
-             '4K',
-             '720p',
-             'ANIMAZIONE',
-             # 'APR',
-             # 'AVVENTURA',
-             'BIOGRAFICO',
-             'BDRip',
-             'BluRay',
-             'CINEMA',
-             # 'COMMEDIA',
-             'DOCUMENTARIO',
-             'DRAMMATICO',
-             'FANTASCIENZA',
-             'FANTASY',
-             # 'FEB',
-             # 'GEN',
-             # 'GIU',
-             'HDCAM',
-             'HDTC',
-             'HDTS',
-             'LD',
-             'MAFIA',
-             # 'MAG',
-             'MARVEL',
-             'MD',
-             # 'ORROR',
-             'NEW_AUDIO',
-             'POLIZ',
-             'R3',
-             'R6',
-             'SD',
-             'SENTIMENTALE',
-             'TC',
-             'TEEN',
-             'TELECINE',
-             'TELESYNC',
-             'THRILLER',
-             'Uncensored',
-             'V2',
-             'WEBDL',
-             'WEBRip',
-             'WEB',
-             'WESTERN',
-             '-',
-             '_',
-             '.',
-             '+',
-             '[',
-             ']'
-             ]              
-
+            'PF1',
+            'PF2',
+            'PF3',
+            'PF4',
+            'PF5',
+            'PF6',
+            'PF7',
+            'PF8',
+            'PF9',
+            'PF10',
+            'PF11',
+            'PF12',
+            'PF13',
+            'PF14',
+            'PF15',
+            'PF16',
+            'PF17',
+            'PF18',
+            'PF19',
+            'PF20',
+            'PF21',
+            'PF22',
+            'PF23',
+            'PF24',
+            'PF25',
+            'PF26',
+            'PF27',
+            'PF28',
+            'PF29',
+            'PF30'
+            '480p',
+            '4K',
+            '720p',
+            'ANIMAZIONE',
+            # 'APR',
+            # 'AVVENTURA',
+            'BIOGRAFICO',
+            'BDRip',
+            'BluRay',
+            'CINEMA',
+            # 'COMMEDIA',
+            'DOCUMENTARIO',
+            'DRAMMATICO',
+            'FANTASCIENZA',
+            'FANTASY',
+            # 'FEB',
+            # 'GEN',
+            # 'GIU',
+            'HDCAM',
+            'HDTC',
+            'HDTS',
+            'LD',
+            'MAFIA',
+            # 'MAG',
+            'MARVEL',
+            'MD',
+            # 'ORROR',
+            'NEW_AUDIO',
+            'POLIZIE',
+            'R3',
+            'R6',
+            'SD',
+            'SENTIMENTALE',
+            'TC',
+            'TEEN',
+            'TELECINE',
+            'TELESYNC',
+            'THRILLER',
+            'Uncensored',
+            'V2',
+            'WEBDL',
+            'WEBRip',
+            'WEB',
+            'WESTERN',
+            '-',
+            '_',
+            '.',
+            '+',
+            '[',
+            ']',
+            ]
     myreplace = text  # .lower()
     for ch in char:  # .lower():
         # ch= ch #.lower()
@@ -1222,9 +1355,11 @@ def clean_html(html):
     '''Clean an HTML snippet into a readable string'''
     import xml.sax.saxutils as saxutils
     # saxutils.unescape('Suzy &amp; John')
-    if type(html) == type(u''):
+    # if type(html) == type(u''):
+    if isinstance(html, u''):
         strType = 'unicode'
-    elif type(html) == type(''):
+    # elif type(html) == type(''):
+    elif isinstance(html, ''):
         strType = 'utf-8'
         html = html.decode('utf-8', 'ignore')
     # Newline vs <br />
@@ -1238,21 +1373,23 @@ def clean_html(html):
     if strType == 'utf-8':
         html = html.encode('utf-8')
     return html.strip()
+#######################################
 
 
 def get_title(title):
     import re
     if title is None:
         return
-    try:
-        title = title.encode('utf-8')
-    except:
-        pass
+    # try:
+        # title = title.encode('utf-8')
+    # except:
+        # pass
     title = re.sub('&#(\d+);', '', title)
     title = re.sub('(&#[0-9]+)([^;^0-9]+)', '\\1;\\2', title)
     title = title.replace('&quot;', '\"').replace('&amp;', '&')
     title = re.sub('\n|([[].+?[]])|([(].+?[)])|\s(vs|v[.])\s|(:|;|-|–|"|,|\'|\_|\.|\?)|\s', '', title).lower()
     return title
+
 
 def addstreamboq(bouquetname=None):
     boqfile = '/etc/enigma2/bouquets.tv'

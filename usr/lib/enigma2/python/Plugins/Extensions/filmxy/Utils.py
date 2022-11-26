@@ -284,7 +284,7 @@ CountConnOk = 0
 def zCheckInternet(opt=1, server=None, port=None):  # opt=5 custom server and port.
     global CountConnOk
     sock = False
-    checklist = [('8.8.4.4', 53), ('8.8.8.8', 53), ('www.lululla.altervista.org/', 80), ('www.e2skin.blogspot.com', 443), ('www.google.com', 443)]
+    checklist = [('8.8.44.4', 53), ('8.8.88.8', 53), ('www.lululla.altervista.org/', 80), ('www.e2skin.blogspot.com', 443), ('www.google.com', 443)]
     if opt < 5:
         srv = checklist[opt]
     else:
@@ -924,8 +924,14 @@ def ReadUrl(url):
 
 
 if PY3:
+    import sys
+    if sys.version_info.major == 3:
+        import urllib.request as urllib2
+    elif sys.version_info.major == 2:
+        import urllib2
+
     def getUrl(url):
-        req = Request(url)
+        req = urllib2.Request(url)
         req.add_header('User-Agent', RequestAgent())
         try:
             response = urlopen(req)
@@ -941,7 +947,7 @@ if PY3:
             return link
 
     def getUrl2(url, referer):
-        req = Request(url)
+        req = urllib2.Request(url)
         req.add_header('User-Agent', RequestAgent())
         req.add_header('Referer', referer)
         try:
@@ -958,7 +964,7 @@ if PY3:
             return link
 
     def getUrlresp(url):
-        req = Request(url)
+        req = urllib2.Request(url)
         req.add_header('User-Agent', RequestAgent())
         try:
             response = urlopen(req)
@@ -969,8 +975,14 @@ if PY3:
             response = urlopen(req, context=gcontext)
             return response
 else:
+    import sys
+    if sys.version_info.major == 3:
+        import urllib.request as urllib2
+    elif sys.version_info.major == 2:
+        import urllib2
+
     def getUrl(url):
-        req = Request(url)
+        req = urllib2.Request(url)
         req.add_header('User-Agent', RequestAgent())
         try:
             response = urlopen(req)
@@ -986,7 +998,7 @@ else:
             return link
 
     def getUrl2(url, referer):
-        req = Request(url)
+        req = urllib2.Request(url)
         req.add_header('User-Agent', RequestAgent())
         req.add_header('Referer', referer)
         try:
@@ -1003,7 +1015,7 @@ else:
             return link
 
     def getUrlresp(url):
-        req = Request(url)
+        req = urllib2.Request(url)
         req.add_header('User-Agent', RequestAgent())
         try:
             response = urlopen(req)
@@ -1032,6 +1044,35 @@ def decodeUrl(text):
     text = text.replace('%3F', '?')
     text = text.replace('%40', '@')
     return text
+
+
+# import re
+# from six import ensure_str, unichr, iteritems
+# from six.moves import html_entities
+# _UNICODE_MAP = { k:unichr(v) for k,v in iteritems(html_entities.name2codepoint) }
+# _ESCAPE_RE = re.compile("[&<>\"']")
+# _UNESCAPE_RE = re.compile(r"&\s*(#?)(\w+?)\s*;")        # Whitespace handling added due to "hand-assed" parsers of html pages
+# _ESCAPE_DICT = {
+                # "&": "&amp;",
+                # "<": "&lt;",
+                # ">": "&gt;",
+                # '"': "&quot;",
+                # "'": "&apos;",
+                # }
+
+# def html_escape(value):
+    # return _ESCAPE_RE.sub(lambda match: _ESCAPE_DICT[match.group(0)], ensure_str(value).strip())
+
+# def html_unescape(value):
+    # return _UNESCAPE_RE.sub(_convert_entity, ensure_str(value).strip())
+
+# def _convert_entity(m):
+    # if m.group(1) == "#":
+        # try:
+            # return unichr(int(m.group(2)[1:], 16)) if m.group(2)[:1].lower() == "x" else unichr(int(m.group(2)))
+        # except ValueError:
+            # return "&#%s;" % m.group(2)
+    # return _UNICODE_MAP.get(m.group(2), "&%s;" % m.group(2))
 
 
 def decodeHtml(text):
