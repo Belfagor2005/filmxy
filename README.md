@@ -2,6 +2,10 @@ FilmXY by Lululla
 
 <img src="https://github.com/Belfagor2005/filmxy/blob/main/usr/lib/enigma2/python/Plugins/Extensions/filmxy/logo.png">
 
+
+<img src="https://github.com/Belfagor2005/filmxy/blob/main/screenshot/screenshot.png?raw=true">
+
+
 Enigma2 project
 Only Free Channels ( no Pay Tv ) 
 Filmxy free link stream (no pay)
