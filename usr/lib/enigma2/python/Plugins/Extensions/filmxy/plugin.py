@@ -44,8 +44,8 @@ from Screens.Standby import TryQuitMainloop
 from Screens.TaskView import JobView
 from Tools.Directories import SCOPE_PLUGINS
 from Tools.Directories import resolveFilename, fileExists
-from Tools.Downloader import downloadWithProgress
-from .Downloader import DownloadWithProgress
+# from Tools.Downloader import downloadWithProgress
+# from .Downloader import DownloadWithProgress
 from enigma import RT_VALIGN_CENTER
 from enigma import RT_HALIGN_LEFT
 from enigma import eListboxPythonMultiContent
