@@ -47,8 +47,8 @@ from resolver import ResolveUrl, ResolverError
 # class RacatyResolver(ResolveUrl):
 class RacatyResolver():
     name = 'Racaty'
-    # domains = ['racaty.net', 'racaty.io']
-    domains = ['racaty.io']    
+    domains = ['racaty.net', 'racaty.io']
+    # domains = ['racaty.io']    
     # pattern = r'(?://|\.)(racaty\.net)/([0-9a-zA-Z]+)'
     pattern = r'(?://|\.)(racaty\.(?:net|io))/(?:embed-)?([0-9a-zA-Z]+)'
 
@@ -77,7 +77,9 @@ class RacatyResolver():
             'referer': rurl
         }
         html = self.net.http_POST(web_url, form_data=payload, headers=headers).content
-        
+        import time
+        print("Printed immediately.")
+        time.sleep(7.5)
         url = re.search(r'id="uniqueExpirylink"\s*href="([^"]+)', html)
 
         if url:

@@ -66,31 +66,34 @@ import time
 PY3 = False
 PY3 = sys.version_info.major >= 3
 print('Py3: ', PY3)
-
+if PY3:
+    print('six.PY3: True ')
+# from six.moves.urllib.parse import urljoin, unquote_plus, quote_plus, quote, unquote
 
 try:
-    from urllib.parse import urlparse, unquote
-    from urllib.request import urlretrieve, urlopen
+    from urllib.parse import urlparse
+    from urllib.parse import unquote
     from urllib.error import URLError
+    # from urllib.request import urlretrieve
+    # from urllib.request import urlopen
     PY3 = True
-    unicode = str
-    unichr = chr
-    long = int
+    # unicode = str
+    # unichr = chr
+    # long = int
 except ImportError:
     from urlparse import urlparse
-    from urllib import urlretrieve
-    # from urllib2 import Request
     from urllib import unquote
-    from urllib2 import urlopen
     from urllib2 import URLError
+    # from urllib import urlretrieve
+    # from urllib2 import Request
+    # from urllib2 import urlopen
+    
 
 # if sys.version_info.major == 3:
 	 # import urllib.request as urllib2
 # elif sys.version_info.major == 2:
 	 # import urllib2
 
-if PY3:
-    print('six.PY3: True ')
 
 plugin_path = os.path.dirname(sys.modules[__name__].__file__)
 global skin_path, cachefold, pngs, nextmodule, pictmp, Path_Movies
@@ -212,7 +215,6 @@ prevpng = 'prev.png'
 Path_Tmp = "/tmp"
 cachefold = config.plugins.filmxy.cachefold.value.strip()
 pictmp = cachefold + "/poster.jpg"
-
 pmovies = False
 
 if cachefold.endswith('\/\/'):
@@ -1548,21 +1550,25 @@ class pagevideo3(Screen):
         # self.load_poster()
 
     def load_infos(self):
-        i = len(self.names)
-        print('iiiiii=pagevideo3 ', i)
-        if i > 0:
-            idx = self['list'].getSelectionIndex()
-            infoadd = self.infosadd[idx]
-            size2 = self.sizes[idx]
-            info = self.infos[idx]
-            info = html_conv.html_unescape(info)
-            intot = str(infoadd) + '\n' + str(size2)
-            print('intot = ', intot)
-            print('info = ', info)
-            # self['desc'].setText(info + '\n' + 'Stream N.' + str(i))
-            self['desc'].setText(info)
-            self['descadd'].setText(intot)
-        return
+        try:
+            i = len(self.names)
+            print('iiiiii=pagevideo3 ', i)
+            if i > 0:
+                idx = self['list'].getSelectionIndex()
+                infoadd = self.infosadd[idx]
+                size2 = self.sizes[idx]
+                info = self.infos[idx]
+                info = html_conv.html_unescape(info)
+                intot = str(infoadd) + '\n' + str(size2)
+                print('intot = ', intot)
+                print('info = ', info)
+                # self['desc'].setText(info + '\n' + 'Stream N.' + str(i))
+                self['desc'].setText(info)
+                self['descadd'].setText(intot)
+            return
+        except Exception as ex:
+            print(str(ex))
+            print("Error: can't find pagevideo3 in load_infos")
 
     def selectionChanged(self):
         if self['list'].getCurrent():
@@ -3084,7 +3090,7 @@ class StreamTasks(Screen):
                     self.Timer.stop()
                 cmd = 'rm -f ' + sel
                 os.system(cmd)
-                self.session.open(MessageBox, sel + _(" Movie has been successfully deleted\nwait time to refresh the list..."), MessageBox.TYPE_INFO, timeout=5)
+                self.session.open(MessageBox, sel + _("Movie has been successfully deleted\nwait time to refresh the list..."), MessageBox.TYPE_INFO, timeout=5)
             else:
                 self.session.open(MessageBox, _("The movie not exist!\nwait time to refresh the list..."), MessageBox.TYPE_INFO, timeout=5)
             self.onShown.append(self.rebuildMovieList)

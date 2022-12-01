@@ -64,7 +64,7 @@ msgstr "Indietro"
 
 #: plugin.py:1189
 msgid "Select you Stream"
-msgstr "Seeleziona il tuo stream"
+msgstr "Seleziona il tuo stream"
 
 #: plugin.py:2043
 msgid "Select"
@@ -239,7 +239,7 @@ msgstr "Vuoi rimuovere %s?"
 
 #: plugin.py:3165
 msgid ""
-" Movie has been successfully deleted\n"
+"Movie has been successfully deleted\n"
 "wait time to refresh the list..."
 msgstr ""
 "Il Film è stato rimosso con successo\n"
