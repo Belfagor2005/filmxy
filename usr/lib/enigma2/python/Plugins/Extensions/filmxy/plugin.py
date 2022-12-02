@@ -214,10 +214,7 @@ nextpng = 'next.png'
 prevpng = 'prev.png'
 Path_Tmp = "/tmp"
 cachefold = config.plugins.filmxy.cachefold.value.strip()
-pictmp = cachefold + "/poster.jpg"
-pmovies = False
-
-if cachefold.endswith('\/\/'):
+if cachefold.endswith('//'):
     cachefold = cachefold[:-1]
 if not os.path.exists(cachefold):
     try:
@@ -225,6 +222,9 @@ if not os.path.exists(cachefold):
     except OSError as e:
         print(('Error creating directory %s:\n%s') % (cachefold, str(e)))
 logdata("path cachefold: ", str(cachefold))
+pictmp = cachefold + "poster.jpg"
+pmovies = False
+
 
 
 if Utils.isFHD():
@@ -1560,11 +1560,12 @@ class pagevideo3(Screen):
                 info = self.infos[idx]
                 info = html_conv.html_unescape(info)
                 intot = str(infoadd) + '\n' + str(size2)
-                print('intot = ', intot)
-                print('info = ', info)
-                # self['desc'].setText(info + '\n' + 'Stream N.' + str(i))
-                self['desc'].setText(info)
-                self['descadd'].setText(intot)
+                if info != '':
+                    print('info = ', info)   
+                    self['desc'].setText(info)
+                if intot != ''    
+                    print('intot = ', intot)
+                    self['descadd'].setText(intot)
             return
         except Exception as ex:
             print(str(ex))
