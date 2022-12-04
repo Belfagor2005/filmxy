@@ -8,18 +8,16 @@ PY3 = sys.version_info.major >= 3
 print('Py3: ', PY3)
 
 try:
-    from urllib.request import urlopen
-    PY3 = True
-    unicode = str
-    unichr = chr
-    long = int
-except ImportError:
     from urllib2 import urlopen
+except:
+    PY3 = True
+    from urllib.request import urlopen
 
 if sys.version_info.major == 3:
 	 import urllib.request as urllib2
 elif sys.version_info.major == 2:
 	 import urllib2
+
 
 class DownloadWithProgress:
 	def __init__(self, url, outputFile):

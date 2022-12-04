@@ -68,31 +68,31 @@ PY3 = sys.version_info.major >= 3
 print('Py3: ', PY3)
 if PY3:
     print('six.PY3: True ')
-# from six.moves.urllib.parse import urljoin, unquote_plus, quote_plus, quote, unquote
 
 try:
-    from urllib.parse import urlparse
-    from urllib.parse import unquote
-    from urllib.error import URLError
-    # from urllib.request import urlretrieve
-    # from urllib.request import urlopen
-    PY3 = True
-    # unicode = str
-    # unichr = chr
-    # long = int
-except ImportError:
-    from urlparse import urlparse
     from urllib import unquote
-    from urllib2 import URLError
-    # from urllib import urlretrieve
-    # from urllib2 import Request
-    # from urllib2 import urlopen
-    
+except:
+    from urllib.parse import unquote
 
-# if sys.version_info.major == 3:
-	 # import urllib.request as urllib2
-# elif sys.version_info.major == 2:
-	 # import urllib2
+try:
+    from urllib2 import URLError
+except:
+    from urllib.request import URLError
+
+try:
+    from urlparse import urlparse
+except:
+    from urllib.parse import urlparse
+
+try:
+    from urllib2 import urlopen
+except:
+    from urllib.request import urlopen
+
+try:
+    from urllib2 import Request
+except:
+    from urllib.request import Request
 
 
 plugin_path = os.path.dirname(sys.modules[__name__].__file__)
@@ -822,7 +822,6 @@ class live_to_stream(Screen):
                         pic = no_cover
                     print('name years', name)
                     print('url years', url)
-
                     self.names.append(name)
                     self.urls.append(url)
                     self.pics.append(pic)
@@ -952,7 +951,6 @@ class live_to_stream(Screen):
             if str(res_plugin_path) in pixmaps:
                 self.downloadPic(None, pixmaps)
                 return
-            # pixmaps = six.ensure_binary(self.pics[idx])
             if pixmaps != "" or pixmaps != "n/A" or pixmaps is not None or pixmaps != "null":
                 try:
                     if PY3:
@@ -963,8 +961,8 @@ class live_to_stream(Screen):
                         parsed_uri = urlparse(pixmaps)
                         domain = parsed_uri.hostname
                         sniFactory = SNIFactory(domain)
-                        # if six.PY3:
-                            # pixmaps = pixmaps.encode()
+                        if six.PY3:
+                            pixmaps = pixmaps.encode()
                         downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
                     else:
                         downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
@@ -1392,24 +1390,24 @@ class azvideo(Screen):
                 try:
                     if PY3:
                         pixmaps = six.ensure_binary(self.pics[idx])
-                    print("debug pixmaps p:", pixmaps)
-                    print("debug pixmaps p:", type(pixmaps))
+                    # print("debug pixmaps p:", pixmaps)
+                    # print("debug pixmaps p:", type(pixmaps))
                     if pixmaps.startswith(b"https") and sslverify:
                         parsed_uri = urlparse(pixmaps)
                         domain = parsed_uri.hostname
                         sniFactory = SNIFactory(domain)
-                        # if six.PY3:
-                            # pixmaps = pixmaps.encode()
+                        if six.PY3:
+                            pixmaps = pixmaps.encode()
                         downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
                     else:
                         downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
                 except Exception as ex:
                     print(str(ex))
                     print("Error: can't find file in azvideo")
-            return
         except Exception as ex:
             print(str(ex))
             print("Error: can't find file or read data in Playchoice")
+        return
 
     def downloadPic(self, data, pictmp):
         if os.path.exists(pictmp):
@@ -1555,16 +1553,18 @@ class pagevideo3(Screen):
             print('iiiiii=pagevideo3 ', i)
             if i > 0:
                 idx = self['list'].getSelectionIndex()
+                info = self.infos[idx]
                 infoadd = self.infosadd[idx]
                 size2 = self.sizes[idx]
-                info = self.infos[idx]
-                info = html_conv.html_unescape(info)
-                intot = str(infoadd) + '\n' + str(size2)
-                if info != '':
+                if info:
+                    info = html_conv.html_unescape(info)
                     print('info = ', info)   
-                    self['desc'].setText(info)
-                if intot != ''    
+                    self['desc'].setText(info)  
+                if infoadd:    
+                    intot = str(infoadd) #+ '\n' + str(size2)
                     print('intot = ', intot)
+                    if size2:
+                        intot = str(infoadd) + '\n' + str(size2)
                     self['descadd'].setText(intot)
             return
         except Exception as ex:
@@ -1588,7 +1588,6 @@ class pagevideo3(Screen):
             content = six.ensure_str(content)
         print("content pagevideo3 =", content)
         try:
-
             # <div
             # class="col-md-2 col-sm-3 col-xs-6 custom-col"><div
             # class=single-post><div
@@ -1677,9 +1676,6 @@ class pagevideo3(Screen):
         return
 
     def okRun(self):
-        # idx = self['list'].getSelectionIndex()
-        # print('idx: ', idx)
-        # if idx and (idx != '' or idx > -1):
         try:
             idx = self['list'].getSelectionIndex()
             print('video4 idx: ', idx)
@@ -1724,10 +1720,7 @@ class pagevideo3(Screen):
                 return
             idx = self['list'].getSelectionIndex()
             print('load_poster idx: ', idx)
-            # name = self.names[idx]
-            # url = self.urls[idx]
             pixmaps = self.pics[idx]
-            # pixmaps = six.ensure_binary(self.pics[idx])
             if pixmaps != "" or pixmaps != "n/A" or pixmaps is not None or pixmaps != "null":
                 try:
                     if PY3:
@@ -1738,8 +1731,8 @@ class pagevideo3(Screen):
                         parsed_uri = urlparse(pixmaps)
                         domain = parsed_uri.hostname
                         sniFactory = SNIFactory(domain)
-                        # if six.PY3:
-                            # pixmaps = pixmaps.encode()
+                        if six.PY3:
+                            pixmaps = pixmaps.encode()
                         downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
                     else:
                         downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
@@ -1938,7 +1931,6 @@ class Video5list(Screen):
                     vname = unquote(self.name)
                     print("In Video5list vname 2 =", vname)
                     name = vname + "-" + name1 + "-" + name2
-                    # name = HTMLParser().unescape(name)
                     name = html_conv.html_unescape(name)
                     pic = picx
                     info = html_conv.html_unescape(self.next)
@@ -2011,10 +2003,7 @@ class Video5list(Screen):
                 return
             idx = self['list'].getSelectionIndex()
             print('idx: ', idx)
-            # name = self.names[idx]
-            # url = self.urls[idx]
             pixmaps = self.pics[idx]
-            # # pixmaps = six.ensure_binary(self.pics[idx])
             if pixmaps != "" or pixmaps != "n/A" or pixmaps is not None or pixmaps != "null":
                 try:
                     if PY3:
@@ -2025,8 +2014,8 @@ class Video5list(Screen):
                         parsed_uri = urlparse(pixmaps)
                         domain = parsed_uri.hostname
                         sniFactory = SNIFactory(domain)
-                        # if six.PY3:
-                            # pixmaps = pixmaps.encode()
+                        if six.PY3:
+                            pixmaps = pixmaps.encode()
                         downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
                     else:
                         downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
@@ -2162,58 +2151,61 @@ class Playchoice(Screen):
 
     def download_m3u(self, result):
         if result:
-            # if 'm3u8' not in self.urlx:
-                print('--------------not m3u8-----------------')
-                path = urlparse(self.urlx).path
+            print('--------------not m3u8-----------------')
+            path = urlparse(self.urlx).path
+            ext = '.mp4'
+            ext = splitext(path)[1]
+            if ext != '.mp4' or ext != '.mkv' or ext != '.avi' or ext != '.flv':  # or ext != 'm3u8':
                 ext = '.mp4'
-                ext = splitext(path)[1]
-                if ext != '.mp4' or ext != '.mkv' or ext != '.avi' or ext != '.flv':  # or ext != 'm3u8':
-                    ext = '.mp4'
-                fileTitle = re.sub(r'[\<\>\:\"\/\\\|\?\*\[\]]', '_', self.namem3u)
-                fileTitle = re.sub(r' ', '_', fileTitle)
-                fileTitle = re.sub(r'_+', '_', fileTitle)
-                fileTitle = fileTitle.replace("(", "_").replace(")", "_").replace("#", "").replace("+", "_").replace("\'", "_").replace("'", "_")
-                fileTitle = fileTitle.replace(":", "").replace("[", "").replace("]", "").replace("!", "_").replace("&", "_")
-                fileTitle = fileTitle.lower() + ext
-                self.in_tmp = Path_Movies + fileTitle
-                # self.urlx = self.urlx.strip()
-                # if PY3:
-                    # self.urlx = self.urlx.encode()
-                print('path download = ', self.in_tmp)
-                try:
-                    import subprocess
-                    useragent = "--header='User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36'"
-                    WGET = '/usr/bin/wget'
-                    if "https" in str(self.urlx):
-                        WGET = '/usr/bin/wget --no-check-certificate'
-                    cmd = WGET + " %s -c '%s' -O '%s'" % (useragent, self.urlx, self.in_tmp)
-                    myCmd = "%s" % str(cmd)
-                    subprocess.Popen(myCmd, shell=True, executable='/bin/bash')
-                    self['info'].setText(_('Download in progress... %s' % fileTitle))
-                    self.downloading = True
-                    pmovies = True
-                    print('self url is : ', self.urlx)
-                    print('url type: ', type(self.urlx))
+            fileTitle = re.sub(r'[\<\>\:\"\/\\\|\?\*\[\]]', '_', self.namem3u)
+            fileTitle = re.sub(r' ', '_', fileTitle)
+            fileTitle = re.sub(r'_+', '_', fileTitle)
+            fileTitle = fileTitle.replace("(", "_").replace(")", "_").replace("#", "").replace("+", "_").replace("\'", "_").replace("'", "_")
+            fileTitle = fileTitle.replace(":", "").replace("[", "").replace("]", "").replace("!", "_").replace("&", "_")
+            fileTitle = fileTitle.lower() + ext
+            self.in_tmp = Path_Movies + fileTitle
+            # self.urlx = self.urlx.strip()
+            # if PY3:
+                # self.urlx = self.urlx.encode()
+            print('path download = ', self.in_tmp)
+            try:
+                import subprocess
+                useragent = "--header='User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36'"
+                WGET = '/usr/bin/wget'
+                if "https" in str(self.urlx):
+                    WGET = '/usr/bin/wget --no-check-certificate'
+                cmd = WGET + " %s -c '%s' -O '%s'" % (useragent, self.urlx, self.in_tmp)
+                myCmd = "%s" % str(cmd)
+                subprocess.Popen(myCmd, shell=True, executable='/bin/bash')
+                self['info'].setText(_('Download in progress... %s' % fileTitle))
+                self.downloading = True
+                pmovies = True
+                print('self url is : ', self.urlx)
+                print('url type: ', type(self.urlx))
+                # #################
+                # # self.LastJobView()
+                # # # test another ufff   --->>   urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1129)
+                # # url = urlopen(self.urlx.decode('ASCII')) #.read()
+                # # f = open(self.in_tmp, 'wb')
+                # # f.close()
+                # #################
+                
+                # request = Request(self.urlx, headers=useragent)
+                # if six.PY2:
+                    # url = urlopen(request, timeout=10).read()
+                # else:
+                    # url = urlopen(request, timeout=10).read().decode('utf-8')                    
+                # job = downloadJob(url, self.in_tmp, fileTitle)
+                # job.afterEvent = "close"
+                # job_manager.AddJob(job)
+                # job_manager.failed_jobs = []
+                # self.session.openWithCallback(self.ImageDownloadCB, JobView, job, backgroundable=False, afterEventChangeable=False)
 
-                    # self.LastJobView()
-                    # # test another ufff   --->>   urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1129)
-                    # url = urlopen(self.urlx.decode('ASCII')) #.read()
-                    # f = open(self.in_tmp, 'wb')
-                    # f.close()
-                    # job = downloadJob(url, self.in_tmp, fileTitle)
-                    # job.afterEvent = "close"
-                    # job_manager.AddJob(job)
-                    # job_manager.failed_jobs = []
-                    # self.session.openWithCallback(self.ImageDownloadCB, JobView, job, backgroundable=False, afterEventChangeable=False)
-
-                except URLError as e:
-                    print("Download failed !!\n%s" % e)
-                    self.session.openWithCallback(self.ImageDownloadCB, MessageBox, _("Download Failed !!") + "\n%s" % e, type=MessageBox.TYPE_ERROR)
-                    self.downloading = False
-                    pmovies = False
-            # else:
-                # self['info'].setText(_('Download failed!') + self.dom + _('... Not supported'))
-
+            except URLError as e:
+                print("Download failed !!\n%s" % e)
+                self.session.openWithCallback(self.ImageDownloadCB, MessageBox, _("Download Failed !!") + "\n%s" % e, type=MessageBox.TYPE_ERROR)
+                self.downloading = False
+                pmovies = False
         else:
             self.downloading = False
 
@@ -2405,7 +2397,6 @@ class Playchoice(Screen):
             if str(res_plugin_path) in pixmaps:
                 self.downloadPic(None, pixmaps)
                 return
-            # pixmaps = six.ensure_binary(self.pics[idx])
             if pixmaps != "" or pixmaps != "n/A" or pixmaps is not None or pixmaps != "null":
                 try:
                     if PY3:
@@ -2416,8 +2407,8 @@ class Playchoice(Screen):
                         parsed_uri = urlparse(pixmaps)
                         domain = parsed_uri.hostname
                         sniFactory = SNIFactory(domain)
-                        # if six.PY3:
-                            # pixmaps = pixmaps.encode()
+                        if six.PY3:
+                            pixmaps = pixmaps.encode()
                         downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
                     else:
                         downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
