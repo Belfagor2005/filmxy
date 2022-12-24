@@ -95,6 +95,47 @@ def DreamOS():
         DreamOS = True
         return DreamOS
 
+def getEnigmaVersionString():
+    try:
+        from enigma import getEnigmaVersionString
+        return getEnigmaVersionString()
+    except:
+        return "N/A"
+
+def getImageVersionString():
+    try:
+        from Tools.Directories import resolveFilename, SCOPE_SYSETC
+        file = open(resolveFilename(SCOPE_SYSETC, 'image-version'), 'r')
+        lines = file.readlines()
+        for x in lines:
+            splitted = x.split('=')
+            if splitted[0] == "version":
+                #     YYYY MM DD hh mm
+                #0120 2005 11 29 01 16
+                #0123 4567 89 01 23 45
+                version = splitted[1]
+                image_type = version[0] # 0 = release, 1 = experimental
+                major = version[1]
+                minor = version[2]
+                revision = version[3]
+                year = version[4:8]
+                month = version[8:10]
+                day = version[10:12]
+                date = '-'.join((year, month, day))
+                if image_type == '0':
+                    image_type = "Release"
+                else:
+                    image_type = "Experimental"
+                version = '.'.join((major, minor, revision))
+                if version != '0.0.0':
+                    return ' '.join((image_type, version, date))
+                else:
+                    return ' '.join((image_type, date))
+        file.close()
+    except IOError:
+        pass
+
+    return "unavailable"
 
 def mySkin():
     from Components.config import config
@@ -108,6 +149,73 @@ if os.path.exists('/usr/lib/enigma2/python/Plugins/Extensions/MediaPlayer'):
 else:
     MediaPlayerInstalled = False
 
+
+def getFreeMemory():
+    mem_free=None
+    mem_total=None
+    try:
+        with open('/proc/meminfo', 'r') as f:
+            for line in f.readlines():
+                if line.find('MemFree') != -1:
+                    parts = line.strip().split()
+                    mem_free = float(parts[1])
+                elif line.find('MemTotal') != -1:
+                    parts = line.strip().split()
+                    mem_total = float(parts[1])
+            f.close()
+    except:
+        pass
+    return (mem_free,mem_total)
+
+def sizeToString(nbytes):
+    suffixes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
+    size="0 B"
+    if nbytes > 0:
+        i = 0
+        while nbytes >= 1024 and i < len(suffixes)-1:
+            nbytes /= 1024.
+            i += 1
+        f = ('%.2f' % nbytes).rstrip('0').rstrip('.').replace(".",",")
+        size = '%s %s' % (f, suffixes[i])
+    return size  
+
+def getMountPoint(path):
+    pathname= os.path.realpath(path)
+    parent_device=os.stat(pathname).st_dev
+    path_device= os.stat(pathname).st_dev
+    mount_point=""
+    while parent_device == path_device:
+        mount_point=pathname
+        pathname= os.path.dirname(pathname)
+        if pathname == mount_point:
+            break
+        parent_device= os.stat(pathname).st_dev
+    return mount_point
+
+def getMointedDevice(pathname):
+    md=None
+    try:
+        with open("/proc/mounts", "r") as f:
+            for line in f:
+                fields= line.rstrip('\n').split()
+                if fields[1] == pathname:
+                    md=fields[0]
+                    break
+            f.close()
+    except:
+        pass
+    return md
+
+def getFreeSpace(path):
+    try:
+        moin_point=getMountPoint(path)
+        device=getMointedDevice(moin_point)
+        print(moin_point+"|"+device)
+        stat= os.statvfs(device)  # @UndefinedVariable
+        print(stat)
+        return sizeToString(stat.f_bfree*stat.f_bsize)
+    except:
+        return "N/A"
 
 def listDir(what):
     f = None
