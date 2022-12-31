@@ -135,8 +135,8 @@ def get_packed_data(html):
 def append_headers(headers):
     return '|%s' % '&'.join(['%s=%s' % (key, quote_plus(headers[key])) for key in headers])
 
-import requests
-from bs4 import BeautifulSoup
+# import requests
+# from bs4 import BeautifulSoup
 
 
 """
@@ -169,22 +169,22 @@ https://racaty.net/10w86dphf8y2
 
 # this Work
 
-def racaty_bypass(url: str) -> str:
-    """ Racaty direct link generator
-    based on https://github.com/SlamDevs/slam-mirrorbot"""
-    dl_url = ''
-    try:
-        link = re.findall(r'\bhttps?://.*racaty\.net\S+', url)[0]
-    except IndexError:
-        link = re.findall(r'\bhttps?://.*racaty\.io\S+', url)[0]
-        print("No Racaty links found\n")
-    from . import cfscrape
-    scraper = cfscrape.create_scraper()
-    r = scraper.get(url)
-    soup = BeautifulSoup(r.text, "lxml")
-    op = soup.find("input", {"name": "op"})["value"]
-    ids = soup.find("input", {"name": "id"})["value"]
-    rpost = scraper.post(url, data = {"op": op, "id": ids})
-    rsoup = BeautifulSoup(rpost.text, "lxml")
-    dl_url = rsoup.find("a", {"id": "uniqueExpirylink"})["href"].replace(" ", "%20")
-    return dl_url
+# def racaty_bypass(url: str) -> str:
+    # """ Racaty direct link generator
+    # based on https://github.com/SlamDevs/slam-mirrorbot"""
+    # dl_url = ''
+    # try:
+        # link = re.findall(r'\bhttps?://.*racaty\.net\S+', url)[0]
+    # except IndexError:
+        # link = re.findall(r'\bhttps?://.*racaty\.io\S+', url)[0]
+        # print("No Racaty links found\n")
+    # from . import cfscrape
+    # scraper = cfscrape.create_scraper()
+    # r = scraper.get(url)
+    # soup = BeautifulSoup(r.text, "lxml")
+    # op = soup.find("input", {"name": "op"})["value"]
+    # ids = soup.find("input", {"name": "id"})["value"]
+    # rpost = scraper.post(url, data = {"op": op, "id": ids})
+    # rsoup = BeautifulSoup(rpost.text, "lxml")
+    # dl_url = rsoup.find("a", {"id": "uniqueExpirylink"})["href"].replace(" ", "%20")
+    # return dl_url

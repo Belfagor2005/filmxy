@@ -8,6 +8,8 @@
 	<eLabel position="860,499" size="352,155" backgroundColor="#30000000" zPosition="1" />
 	<widget name="poster" position="924,169" size="205,282" alphatest="blend" scale="1" zPosition="3" />
 	<ePixmap position="924,169" size="205,282" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/img/tvposter.png" zPosition="2" scale="1" />
+	<widget source="desc" render="xyRunningText" position="863,499" size="352,155" font="Regular;20" foregroundColor="#ffb75b" backgroundColor="#20000000" halign="center" transparent="0" zPosition="5" options="movetype=running,startpoint=0,direction=top,steptime=80,repeat=0,always=0,oneshot=0,startdelay=6000,wrap" />
+	<eLabel position="863,499" size="352,152" backgroundColor="#30000000" zPosition="1" />
 	<!-- Menu List -->
 	<widget name="info" position="140,86" size="561,40" font="Regular; 24" halign="center" valign="center" foregroundColor="yellow" backgroundColor="#202020" transparent="0" zPosition="5" />
 	<widget name="list" position="147,138" size="545,411" scrollbarMode="showOnDemand" transparent="1" zPosition="5" foregroundColor="#ffffff" backgroundColor="#000000" backgroundColorSelected="barColor" />
