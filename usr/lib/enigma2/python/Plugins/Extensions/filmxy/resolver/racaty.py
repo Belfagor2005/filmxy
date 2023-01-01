@@ -79,7 +79,7 @@ class RacatyResolver():
         html = self.net.http_POST(web_url, form_data=payload, headers=headers).content
         import time
         print("Printed immediately.")
-        time.sleep(20.5)
+        time.sleep(10.5)
         print('html : ', html)
         try:
             url = re.search(r'id="uniqueExpirylink"\s*href="([^"]+)', html)

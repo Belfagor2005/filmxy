@@ -67,7 +67,7 @@ PY3 = False
 PY3 = sys.version_info.major >= 3
 print('Py3: ', PY3)
 if PY3:
-    print('six.PY3: True ')
+    print('PY3: True ')
 
 try:
     from urllib import unquote
@@ -665,35 +665,33 @@ class Filmxymain(Screen):
                     pixmaps = piconsearch
                 else:
                     pixmaps = piconmovie
-                # size = self['poster'].instance.size()
-                # if Utils.DreamOS():
-                    # self['poster'].instance.setPixmap(gPixmapPtr())
-                # else:
-                    # self['poster'].instance.setPixmap(None)
-                # self.scale = AVSwitch().getFramebufferScale()
-                # self.picload = ePicLoad()
-                # self.picload.setPara((size.width(),
-                                      # size.height(),
-                                      # self.scale[0],
-                                      # self.scale[1],
-                                      # False,
-                                      # 1,
-                                      # '#FF000000'))
-                # ptr = self.picload.getData()
-                # if Utils.DreamOS():
-                    # if self.picload.startDecode(pixmaps, False) == 0:
-                        # ptr = self.picload.getData()
-                # else:
-                    # if self.picload.startDecode(pixmaps, 0, 0, False) == 0:
-                        # ptr = self.picload.getData()
-                # if ptr is not None:
-                    # self['poster'].instance.setPixmap(ptr)
-                    # self['poster'].show()
-                # else:
-                    # print('no cover.. error')
-                if fileExists(pixmaps):
-                    self["poster"].instance.setPixmapFromFile(pixmaps)
+                size = self['poster'].instance.size()
+                if Utils.DreamOS():
+                    self['poster'].instance.setPixmap(gPixmapPtr())
+                else:
+                    self['poster'].instance.setPixmap(None)
+                self.scale = AVSwitch().getFramebufferScale()
+                self.picload = ePicLoad()
+                self.picload.setPara((size.width(),
+                                      size.height(),
+                                      self.scale[0],
+                                      self.scale[1],
+                                      False,
+                                      1,
+                                      '#FF000000'))
+                ptr = self.picload.getData()
+                if Utils.DreamOS():
+                    if self.picload.startDecode(pixmaps, False) == 0:
+                        ptr = self.picload.getData()
+                else:
+                    if self.picload.startDecode(pixmaps, 0, 0, False) == 0:
+                        ptr = self.picload.getData()
+                if ptr is not None:
+                    self['poster'].instance.setPixmap(ptr)
                     self['poster'].show()
+                # if fileExists(pixmaps):
+                    # self["poster"].instance.setPixmapFromFile(pixmaps)
+                    # self['poster'].show()
         except Exception as ex:
             print(str(ex))
             print("Error: can't find file or read data in Playchoice")
@@ -761,13 +759,13 @@ class live_to_stream(Screen):
             self.readJsonTimer_conn = self.readJsonTimer.timeout.connect(self.readJsonFile)
         except:
             self.readJsonTimer.callback.append(self.readJsonFile)
-        self.readJsonTimer.start(500, True)
+        self.readJsonTimer.start(300, True)
         self.leftt = eTimer()
         try:
             self.leftt_conn = self.leftt.timeout.connect(self.left)
         except:
             self.leftt.callback.append(self.left)
-        self.leftt.start(1000, True)
+        self.leftt.start(500, True)
         self.onLayoutFinish.append(self.__layoutFinished)
         # self.currentList.moveToIndex(0)
 
@@ -974,19 +972,16 @@ class live_to_stream(Screen):
             idx = self['list'].getSelectionIndex()
             print('idx: ', idx)
             pixmaps = self.pics[idx]
-            # if six.PY3::
+            # if PY3:
                 # pixmaps = six.ensure_binary(self.pics[idx])
-            # if six.PY3:
-                # pixmaps = pixmaps.encode()
-            print("debug pixmaps p:", pixmaps)
-            print("debug pixmaps p:", type(pixmaps))
+            # print("debug pixmaps p:", pixmaps)
+            # print("debug pixmaps p:", type(pixmaps))
             if str(res_plugin_path) in pixmaps:
-                print('--------------------------')
                 self.downloadPic(None, pixmaps)
                 return
             if pixmaps != "" or pixmaps != "n/A" or pixmaps is not None or pixmaps != "null":
                 try:
-                    # if six.PY3::
+                    # if PY3:
                         # pixmaps = six.ensure_binary(self.pics[idx])
                     # print("debug pixmaps p:", pixmaps)
                     # print("debug pixmaps p:", type(pixmaps))
@@ -994,7 +989,7 @@ class live_to_stream(Screen):
                         # parsed_uri = urlparse(pixmaps)
                         # domain = parsed_uri.hostname
                         # sniFactory = SNIFactory(domain)
-                    if six.PY3:
+                    if PY3:
                         pixmaps = pixmaps.encode()
                     callInThread(threadGetPage, url=pixmaps, file=pictmp, success=self.downloadPic, fail=self.downloadError)
                 except Exception as ex:
@@ -1011,13 +1006,12 @@ class live_to_stream(Screen):
                 f = open(poster, 'wb')
                 f.write(output)
                 f.close()
-                # self.poster_resize(poster)
-                self["poster"].instance.setScale(1)
-                self["poster"].instance.setPixmapFromFile(poster)
-                self['poster'].show()
+            # self.poster_resize(poster)
+            self["poster"].instance.setScale(1)
+            self["poster"].instance.setPixmapFromFile(poster)
+            self['poster'].show()
         except Exception as e:
             print('error ', str(e))
-            # self['poster'].hide()
         return
 
     def downloadError(self, output):
@@ -1025,9 +1019,9 @@ class live_to_stream(Screen):
 
     def poster_resize(self, png):
         self["poster"].hide()
-        # self.picload = ePicLoad()
         if not fileExists(png):
             png = no_cover
+        # self.picload = ePicLoad()
         # size = self['poster'].instance.size()
         # self.scale = AVSwitch().getFramebufferScale()
         # self.picload.setPara((size.width(),
@@ -1049,6 +1043,7 @@ class live_to_stream(Screen):
         if fileExists(png):
             self["poster"].instance.setPixmapFromFile(png)
             self['poster'].show()
+
 
 class pagesX(Screen):
     def __init__(self, session, name, url, pic, nextmodule):
@@ -1194,9 +1189,9 @@ class pagesX(Screen):
 
     def poster_resize(self, png):
         self["poster"].hide()
-        # self.picload = ePicLoad()
         if not fileExists(png):
             png = no_cover
+        # self.picload = ePicLoad()
         # size = self['poster'].instance.size()
         # self.scale = AVSwitch().getFramebufferScale()
         # self.picload.setPara((size.width(),
@@ -1421,12 +1416,11 @@ class azvideo(Screen):
             pixmaps = self.pics[idx]
             # if PY3:
                 # pixmaps = six.ensure_binary(self.pics[idx])
-            # if six.PY3:
+            # if PY3:
                 # pixmaps = pixmaps.encode()
             if str(res_plugin_path) in pixmaps:
                 self.downloadPic(None, pixmaps)
                 return
-
             if pixmaps != "" or pixmaps != "n/A" or pixmaps is not None or pixmaps != "null":
                 try:
                     # if PY3:
@@ -1437,7 +1431,7 @@ class azvideo(Screen):
                         # parsed_uri = urlparse(pixmaps)
                         # domain = parsed_uri.hostname
                         # sniFactory = SNIFactory(domain)
-                    if six.PY3:
+                    if PY3:
                         pixmaps = pixmaps.encode()
                     callInThread(threadGetPage, url=pixmaps, file=pictmp, success=self.downloadPic, fail=self.downloadError)
                 except Exception as ex:
@@ -1454,23 +1448,39 @@ class azvideo(Screen):
                 f = open(poster, 'wb')
                 f.write(output)
                 f.close()
-                # self.poster_resize(poster)
-                self["poster"].instance.setScale(1)
-                self["poster"].instance.setPixmapFromFile(poster)
-                self['poster'].show()
+            # self.poster_resize(poster)
+            self["poster"].instance.setScale(1)
+            self["poster"].instance.setPixmapFromFile(poster)
+            self['poster'].show()
         except Exception as e:
             print('error ', str(e))
-            # self['poster'].hide()
         return
 
     def downloadError(self, output):
         pass
 
+    # def downloadPic(self, data, pictmp):
+        # if os.path.exists(pictmp):
+            # try:
+                # self.poster_resize(pictmp)
+            # except Exception as ex:
+                # print("* error ** %s" % ex)
+                # pass
+
+    # def downloadError(self, png):
+        # try:
+            # if fileExists(png):
+                # self.poster_resize(png)
+        # except Exception as ex:
+            # self.poster_resize(no_cover)
+            # print(str(ex))
+            # print('exe downloadError')
+
     def poster_resize(self, png):
         self["poster"].hide()
-        # self.picload = ePicLoad()
         if not fileExists(png):
             png = no_cover
+        # self.picload = ePicLoad()
         # size = self['poster'].instance.size()
         # self.scale = AVSwitch().getFramebufferScale()
         # self.picload.setPara((size.width(),
@@ -1766,23 +1776,22 @@ class pagevideo3(Screen):
             pixmaps = self.pics[idx]
             # if PY3:
                 # pixmaps = six.ensure_binary(self.pics[idx])
-            # if six.PY3:
+            # if PY3:
                 # pixmaps = pixmaps.encode()
             if str(res_plugin_path) in pixmaps:
                 self.downloadPic(None, pixmaps)
                 return
-
             if pixmaps != "" or pixmaps != "n/A" or pixmaps is not None or pixmaps != "null":
                 try:
-                    if PY3:
-                        pixmaps = six.ensure_binary(self.pics[idx])
-                    print("debug pixmaps p:", pixmaps)
-                    print("debug pixmaps p:", type(pixmaps))
+                    # if PY3:
+                        # pixmaps = six.ensure_binary(self.pics[idx])
+                    # print("debug pixmaps p:", pixmaps)
+                    # print("debug pixmaps p:", type(pixmaps))
                     # if pixmaps.startswith(b"https") and sslverify:
                         # parsed_uri = urlparse(pixmaps)
                         # domain = parsed_uri.hostname
                         # sniFactory = SNIFactory(domain)
-                    if six.PY3:
+                    if PY3:
                         pixmaps = pixmaps.encode()
                     callInThread(threadGetPage, url=pixmaps, file=pictmp, success=self.downloadPic, fail=self.downloadError)
                 except Exception as ex:
@@ -1799,17 +1808,33 @@ class pagevideo3(Screen):
                 f = open(poster, 'wb')
                 f.write(output)
                 f.close()
-                # self.poster_resize(poster)
-                self["poster"].instance.setScale(1)
-                self["poster"].instance.setPixmapFromFile(poster)
-                self['poster'].show()
+            # self.poster_resize(poster)
+            self["poster"].instance.setScale(1)
+            self["poster"].instance.setPixmapFromFile(poster)
+            self['poster'].show()
         except Exception as e:
             print('error ', str(e))
-            # self['poster'].hide()
         return
 
     def downloadError(self, output):
         pass
+
+    # def downloadPic(self, data, pictmp):
+        # if os.path.exists(pictmp):
+            # try:
+                # self.poster_resize(pictmp)
+            # except Exception as ex:
+                # print("* error ** %s" % ex)
+                # pass
+
+    # def downloadError(self, png):
+        # try:
+            # if fileExists(png):
+                # self.poster_resize(png)
+        # except Exception as ex:
+            # self.poster_resize(no_cover)
+            # print(str(ex))
+            # print('exe downloadError')
 
     def poster_resize(self, png):
         self["poster"].hide()
@@ -1834,10 +1859,6 @@ class pagevideo3(Screen):
             self['poster'].instance.setPixmap(ptr)
             self['poster'].show()
         del self.picload
-        # if fileExists(png):
-            # self["poster"].instance.setPixmapFromFile(png)
-            # self['poster'].show()
-
 
 class Video5list(Screen):
     def __init__(self, session, name, url, pic, info):
@@ -1920,7 +1941,7 @@ class Video5list(Screen):
             print("Error: can't find Video5list in Video5list")
 
     def __layoutFinished(self):
-        self.setTitle(self.setup_title)    
+        self.setTitle(self.setup_title)
         status = status_site()
         if status is True:
             self['statusgreen'].show()
@@ -1930,7 +1951,7 @@ class Video5list(Screen):
             self['statusgreen'].hide()
             self['statusred'].show()
             self['status'].setText('SERVER OFF')
-        self.load_poster()        
+        self.load_poster()
         self.load_infos()
 
     def load_infos(self):
@@ -1940,9 +1961,6 @@ class Video5list(Screen):
             idx = self['list'].getSelectionIndex()
             info = self.infos[idx]
             self['desc'].setText(info)
-            # print('info  ', info)
-            # print("debug info p:", info)
-            # print("debug info p:", type(info))
             self['descadd'].setText('Stream Link n°' + str(i))
         else:
             self['desc'].setText('')
@@ -2062,7 +2080,7 @@ class Video5list(Screen):
             pixmaps = self.pics[idx]
             # if PY3:
                 # pixmaps = six.ensure_binary(self.pics[idx])
-            # if six.PY3:
+            # if PY3:
                 # pixmaps = pixmaps.encode()
             if str(res_plugin_path) in pixmaps:
                 self.poster_resize(pixmaps)
@@ -2077,7 +2095,7 @@ class Video5list(Screen):
                         # parsed_uri = urlparse(pixmaps)
                         # domain = parsed_uri.hostname
                         # sniFactory = SNIFactory(domain)
-                    if six.PY3:
+                    if PY3:
                         pixmaps = pixmaps.encode()
                     callInThread(threadGetPage, url=pixmaps, file=pictmp, success=self.downloadPic, fail=self.downloadError)
                 except Exception as ex:
@@ -2088,6 +2106,23 @@ class Video5list(Screen):
             print("Error: load_poster in Video5list")
         return
 
+    def downloadPic(self, output, poster):
+        try:
+            if output is not None:
+                f = open(poster, 'wb')
+                f.write(output)
+                f.close()
+            # self.poster_resize(poster)
+            self["poster"].instance.setScale(1)
+            self["poster"].instance.setPixmapFromFile(poster)
+            self['poster'].show()
+        except Exception as e:
+            print('error ', str(e))
+        return
+
+    def downloadError(self, output):
+        pass
+
     # def showPoster(self, poster):
         # if fileExists(poster):
             # self["poster"].instance.setScale(1)
@@ -2095,23 +2130,22 @@ class Video5list(Screen):
             # self['poster'].show()
         # return
 
-    def downloadPic(self, output, poster):
-        try:
-            if output is not None:
-                f = open(poster, 'wb')
-                f.write(output)
-                f.close()
-                # self.poster_resize(poster)
-                self["poster"].instance.setScale(1)
-                self["poster"].instance.setPixmapFromFile(poster)
-                self['poster'].show()
-        except Exception as e:
-            print('error ', str(e))
-            # self['poster'].hide()
-        return
+    # def downloadPic(self, data, pictmp):
+        # if os.path.exists(pictmp):
+            # try:
+                # self.poster_resize(pictmp)
+            # except Exception as ex:
+                # print("* error ** %s" % ex)
+                # pass
 
-    def downloadError(self, output):
-        pass
+    # def downloadError(self, png):
+        # try:
+            # if fileExists(png):
+                # self.poster_resize(png)
+        # except Exception as ex:
+            # self.poster_resize(no_cover)
+            # print(str(ex))
+            # print('exe downloadError')
 
     def poster_resize(self, png):
         self["poster"].hide()
@@ -2136,9 +2170,6 @@ class Video5list(Screen):
             self['poster'].instance.setPixmap(ptr)
             self['poster'].show()
         del self.picload
-        # if fileExists(png):
-            # self["poster"].instance.setPixmapFromFile(png)
-            # self['poster'].show()
 
 
 class Playchoice(Screen):
@@ -2164,7 +2195,7 @@ class Playchoice(Screen):
         self['list'] = rvList([])
         self['info'] = Label()
         self['info'].setText(name)
-        self['desc'] = StaticText()
+        self['desc'] = StaticText(desc)
         self['title'] = Label(title_plug)
         self['poster'] = Pixmap()
         self['key_red'] = Button(_('Back'))
@@ -2194,10 +2225,9 @@ class Playchoice(Screen):
         except:
             self.leftt.callback.append(self.load_poster)
         self.leftt.start(1000, True)
-        self.onLayoutFinish.append(self.load_infos)        
+        self.onLayoutFinish.append(self.load_infos)
         self.onLayoutFinish.append(self.openTest)
         # return
-
 
     def load_infos(self):
         i = len(self.names)
@@ -2337,27 +2367,21 @@ class Playchoice(Screen):
         urlx = url
         name = name
         if ("vidcloud" in name.lower()) or ("googlelink" in name.lower()) or ("dl" in name.lower()) or ("cdn" in name.lower()) or ("gvideo" in name.lower()):
-            return url
+            return urlx
         else:
             if "mediashore" in name.lower():
                 from .resolver.fembed import FEmbedResolver
                 res = FEmbedResolver()
                 return res.get_media_url(urlx)
             elif "racaty" in name.lower():
-                # from .resolver.racaty import racaty_bypass
-                # res = racaty_bypass(urlx)
-                # return res
-                
                 from .resolver.racaty import RacatyResolver
                 res = RacatyResolver()
-                urlxy = res.get_media_url(urlx)                
-                
+                urlxy = res.get_media_url(urlx)
+                return res.get_media_url(urlx)
             elif "sbfast" in name.lower():
                 from .resolver.streamsb import StreamSBResolver
                 res = StreamSBResolver()
                 return res.get_media_url(urlx)
-        # self.urlxy = urlxy
-        return urlxy
 
     def okClicked(self):
         i = len(self.names)
@@ -2482,8 +2506,8 @@ class Playchoice(Screen):
             pixmaps = self.pic
             print('pixmap  : ', pixmaps)
             # if PY3:
-                # pixmaps = six.ensure_binary(self.pics[idx])
-            # if six.PY3:
+                # pixmaps = six.ensure_binary(self.pic)
+            # if PY3:
                 # pixmaps = pixmaps.encode()
             if str(res_plugin_path) in pixmaps:
                 self.downloadPic(None, pixmaps)
@@ -2491,14 +2515,12 @@ class Playchoice(Screen):
             if pixmaps != "" or pixmaps != "n/A" or pixmaps is not None or pixmaps != "null":
                 try:
                     # if PY3:
-                        # pixmaps = six.ensure_binary(self.pics[idx])
-                    # print("debug pixmaps p:", pixmaps)
-                    # print("debug pixmaps p:", type(pixmaps))
+                        # pixmaps = six.ensure_binary(self.pic)
                     # if pixmaps.startswith(b"https") and sslverify:
                         # parsed_uri = urlparse(pixmaps)
                         # domain = parsed_uri.hostname
                         # sniFactory = SNIFactory(domain)
-                    if six.PY3:
+                    if PY3:
                         pixmaps = pixmaps.encode()
                     callInThread(threadGetPage, url=pixmaps, file=pictmp, success=self.downloadPic, fail=self.downloadError)
                 except Exception as ex:
@@ -2515,44 +2537,60 @@ class Playchoice(Screen):
                 f = open(poster, 'wb')
                 f.write(output)
                 f.close()
-                # self.poster_resize(poster)
-                self["poster"].instance.setScale(1)
-                self["poster"].instance.setPixmapFromFile(poster)
-                self['poster'].show()
+            # self.poster_resize(poster)
+            self["poster"].instance.setScale(1)
+            self["poster"].instance.setPixmapFromFile(poster)
+            self['poster'].show()
         except Exception as e:
             print('error ', str(e))
-            # self['poster'].hide()
         return
 
     def downloadError(self, output):
         pass
 
+    # def downloadPic(self, data, pictmp):
+        # if os.path.exists(pictmp):
+            # try:
+                # self.poster_resize(pictmp)
+            # except Exception as ex:
+                # print("* error ** %s" % ex)
+                # pass
+
+    # def downloadError(self, png):
+        # try:
+            # if fileExists(png):
+                # self.poster_resize(png)
+        # except Exception as ex:
+            # self.poster_resize(no_cover)
+            # print(str(ex))
+            # print('exe downloadError')
     def poster_resize(self, png):
         self["poster"].hide()
-        # self.picload = ePicLoad()
+        self.picload = ePicLoad()
         if not fileExists(png):
             png = no_cover
-        # size = self['poster'].instance.size()
-        # self.scale = AVSwitch().getFramebufferScale()
-        # self.picload.setPara((size.width(),
-                              # size.height(),
-                              # self.scale[0],
-                              # self.scale[1],
-                              # False,
-                              # 1,
-                              # '#FF000000'))
-        # if Utils.DreamOS():
-            # self.picload.startDecode(png, False)
-        # else:
-            # self.picload.startDecode(png, 0, 0, False)
-        # ptr = self.picload.getData()
-        # if ptr is not None:
-            # self['poster'].instance.setPixmap(ptr)
-            # self['poster'].show()
-        # del self.picload
-        if fileExists(png):
-            self["poster"].instance.setPixmapFromFile(png)
+        size = self['poster'].instance.size()
+        self.scale = AVSwitch().getFramebufferScale()
+        self.picload.setPara((size.width(),
+                              size.height(),
+                              self.scale[0],
+                              self.scale[1],
+                              False,
+                              1,
+                              '#FF000000'))
+        if Utils.DreamOS():
+            self.picload.startDecode(png, False)
+        else:
+            self.picload.startDecode(png, 0, 0, False)
+        ptr = self.picload.getData()
+        if ptr is not None:
+            self['poster'].instance.setPixmap(ptr)
             self['poster'].show()
+        del self.picload
+        # if fileExists(png):
+            # self["poster"].instance.setPixmapFromFile(png)
+            # self['poster'].show()
+
 
 class TvInfoBarShowHide():
     """ InfoBar show/hide control, accepts toggleShow and hide actions, might start
@@ -2656,11 +2694,11 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
 
     def __init__(self, session, name, url, desc):
         global streaml
+        global _session
         Screen.__init__(self, session)
         self.session = session
-        global _session
-        _session = session
         self.skinName = 'MoviePlayer'
+        _session = session
         streaml = False
         InfoBarMenu.__init__(self)
         InfoBarNotifications.__init__(self)
@@ -2691,6 +2729,7 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
                                      'OkCancelActions',
                                      'InfobarShowHideActions',
                                      'InfobarActions',
+                                     'ColorActions',
                                      'InfobarSeekActions'], {'leavePlayer': self.cancel,
                                                              'epg': self.showIMDB,
                                                              'info': self.showIMDB,
@@ -2774,16 +2813,16 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
     def cicleStreamType(self):
         global streml
         streaml = False
-        from itertools import cycle, islice
-        self.servicetype = '4097'
+        # from itertools import cycle, islice
+        # self.servicetype = '4097'
         self.servicetype = str(config.plugins.filmxy.services.value)
         print('servicetype1: ', self.servicetype)
         url = str(self.url)
-        if str(splitext(url)[-1]) == ".m3u8":
+        if str(os.path.splitext(self.url)[-1]) == ".m3u8":
             if self.servicetype == "1":
                 self.servicetype = "4097"
-        currentindex = 0
-        streamtypelist = ["4097"]
+        # currentindex = 0
+        # streamtypelist = ["4097"]
         # # if "youtube" in str(url):
             # # self.mbox = self.session.open(MessageBox, _('For Stream Youtube coming soon!'), MessageBox.TYPE_INFO, timeout=5)
             # # return
@@ -2794,14 +2833,14 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
             # streamtypelist.append("5001")
         # if os.path.exists("/usr/bin/exteplayer3"):
             # streamtypelist.append("5002")
-        if os.path.exists("/usr/bin/apt-get"):
-            streamtypelist.append("8193")
-        for index, item in enumerate(streamtypelist, start=0):
-            if str(item) == str(self.servicetype):
-                currentindex = index
-                break
-        nextStreamType = islice(cycle(streamtypelist), currentindex + 1, None)
-        self.servicetype = str(next(nextStreamType))
+        # if os.path.exists("/usr/bin/apt-get"):
+            # streamtypelist.append("8193")
+        # for index, item in enumerate(streamtypelist, start=0):
+            # if str(item) == str(self.servicetype):
+                # currentindex = index
+                # break
+        # nextStreamType = islice(cycle(streamtypelist), currentindex + 1, None)
+        # self.servicetype = str(next(nextStreamType))
         print('servicetype2: ', self.servicetype)
         self.openPlay(self.servicetype, url)
 
@@ -2897,7 +2936,7 @@ class myconfig(Screen, ConfigListScreen):
 
     def paypal2(self):
         conthelp = "If you like what I do you\n"
-        conthelp += " can contribute with a coffee\n\n"
+        conthelp += "can contribute with a coffee\n\n"
         conthelp += "scan the qr code and donate € 1.00"
         return conthelp
 
