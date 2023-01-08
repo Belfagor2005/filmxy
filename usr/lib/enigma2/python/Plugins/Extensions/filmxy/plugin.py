@@ -31,6 +31,7 @@ from Components.Task import Task, Condition, Job, job_manager
 from Components.config import ConfigDirectory, ConfigSubsection
 from Components.config import ConfigYesNo, ConfigSelection
 from Components.config import config, ConfigEnableDisable
+from Components.config import ConfigOnOff, NoSave
 from Components.config import getConfigListEntry
 from Plugins.Plugin import PluginDescriptor
 from Screens.InfoBar import MoviePlayer
@@ -214,6 +215,8 @@ except:
     if os.path.exists("/usr/bin/apt-get"):
         config.plugins.filmxy.movie = ConfigDirectory(default='/media/hdd/movie/')
 config.plugins.filmxy.services = ConfigSelection(default='4097', choices=modechoices)
+config.plugins.filmxy.servicesforce = ConfigOnOff(default=False)
+
 cfg = config.plugins.filmxy
 
 
@@ -581,7 +584,7 @@ class Filmxymain(Screen):
     def keyNumberGlobalCB(self, idx):
         i = len(self.menu_list)
         print('iiiiii= ', i)
-        if i < 1:
+        if i < 0:
             return
 
         # if status is True:
@@ -734,7 +737,7 @@ class live_to_stream(Screen):
         self.name = name
         self.url = url
         self.pic = pic
-        self.next = nextmodule
+        self.desc = nextmodule
         self.type = self.name
         self.downloading = False
         self.currentList = 'list'
@@ -773,7 +776,7 @@ class live_to_stream(Screen):
         try:
             i = len(self.names)
             print('iiiiii= ', i)
-            if i < 1:
+            if i < 0:
                 return
             idx = self['list'].getSelectionIndex()
             text_clear = self.names[idx]
@@ -789,7 +792,7 @@ class live_to_stream(Screen):
         self.pics = []
         self.infos = []
         try:
-            if 'categories' in self.next:
+            if 'categories' in self.desc:
                 content = Utils.ReadUrl(Host)
                 n1 = content.find("var genre=", 0)
                 n2 = content.find("var years=", n1)
@@ -810,8 +813,8 @@ class live_to_stream(Screen):
                     self.names.append(name)
                     self.urls.append(url)
                     self.pics.append(pic)
-                    self.infos.append(self.next)
-            elif 'countries' in self.next:
+                    self.infos.append(self.desc)
+            elif 'countries' in self.desc:
                 content = Utils.ReadUrl(Host)
                 n1 = content.find("var country=", 0)
                 n2 = content.find("</script>", n1)
@@ -830,8 +833,8 @@ class live_to_stream(Screen):
                     self.names.append(name)
                     self.urls.append(url)
                     self.pics.append(pic)
-                    self.infos.append(self.next)
-            elif 'years' in self.next:
+                    self.infos.append(self.desc)
+            elif 'years' in self.desc:
                 content = Utils.ReadUrl(Host)
                 n1 = content.find("var years=", 0)
                 n2 = content.find("var country", n1)
@@ -850,8 +853,8 @@ class live_to_stream(Screen):
                     self.names.append(name)
                     self.urls.append(url)
                     self.pics.append(pic)
-                    self.infos.append(self.next)
-            elif 'az' in self.next:
+                    self.infos.append(self.desc)
+            elif 'az' in self.desc:
                 content = Utils.ReadUrl(Host)
                 n1 = content.find('class="numeric-pagination post-list"><ul>', 0)
                 n2 = content.find("/div><div", n1)
@@ -871,8 +874,8 @@ class live_to_stream(Screen):
                     self.names.append(name)
                     self.urls.append(url1)
                     self.pics.append(pic)
-                    self.infos.append(self.next)
-            logdata("live_to_stream self.next: ", self.next)
+                    self.infos.append(self.desc)
+            logdata("live_to_stream self.desc: ", self.desc)
             showlist(self.names, self['list'])
             # self['list'].moveToIndex(0)
         except Exception as ex:
@@ -883,7 +886,7 @@ class live_to_stream(Screen):
     def okRun(self):
         i = len(self.names)
         print('iiiiii= ', i)
-        if i < 1:
+        if i < 0:
             return
         try:
             idx = self['list'].getSelectionIndex()
@@ -928,12 +931,16 @@ class live_to_stream(Screen):
         self.setTitle(self.setup_title)
 
     def load_infos(self):
-        i = len(self.names)
-        print('iiiiii= ', i)
-        if i > 0:
-            idx = self['list'].getSelectionIndex()
-            info = self.infos[idx]
-            self['desc'].setText(info)
+        try:
+            i = len(self.names)
+            print('iiiiii= ', i)
+            if i > 0:
+                idx = self['list'].getSelectionIndex()
+                info = self.infos[idx]
+                if info != '' or info != 'None':
+                    self['desc'] = StaticText(info)
+        except Exception as e:
+            print('error info - v3', str(e))
 
     def selectionChanged(self):
         if self['list'].getCurrent():
@@ -967,7 +974,7 @@ class live_to_stream(Screen):
         try:
             i = len(self.pics)
             print('live_to_stream ', i)
-            if i < 1:
+            if i < 0:
                 return
             idx = self['list'].getSelectionIndex()
             print('idx: ', idx)
@@ -1081,7 +1088,7 @@ class pagesX(Screen):
         self.name = name
         self.url = url
         self.pic = pic
-        self.next = nextmodule
+        self.desc = nextmodule
         self.downloading = False
         self.currentList = 'list'
         self['title'] = Label(title_plug)
@@ -1141,7 +1148,7 @@ class pagesX(Screen):
                 pic = self.pic
                 self.pics.append(pic)
                 self.infos.append(info)
-            logdata("pages nextmodule: ", self.next)
+            logdata("pages nextmodule: ", self.desc)
             showlist(self.names, self['list'])
         except Exception as ex:
             print(str(ex))
@@ -1151,7 +1158,7 @@ class pagesX(Screen):
     def okRun(self):
         i = len(self.pics)
         print('iiiiii= ', i)
-        if i < 1:
+        if i < 0:
             return
         try:
             idx = self['list'].getSelectionIndex()
@@ -1162,8 +1169,8 @@ class pagesX(Screen):
             # desc = self.infos[idx]
             print('name okRun pagesX: ', name)
             print('url okRun pagesX: ', url)
-            logdata("pages nextmodule: ", self.next)
-            self.session.open(pagevideo3, name, url, pic, self.next)
+            logdata("pages nextmodule: ", self.desc)
+            self.session.open(pagevideo3, name, url, pic, self.desc)
         except Exception as ex:
             print(str(ex))
             print("Error: can't find file or read data in pagesX")
@@ -1251,7 +1258,7 @@ class azvideo(Screen):
         self.name = name
         self.url = url
         self.pic = pic
-        self.next = nextmodule
+        self.desc = nextmodule
         self.downloading = False
         self.currentList = 'list'
         self['title'] = Label(title_plug)
@@ -1285,7 +1292,7 @@ class azvideo(Screen):
         try:
             i = len(self.names)
             print('iiiiii= ', i)
-            if i < 1:
+            if i < 0:
                 return
             idx = self['list'].getSelectionIndex()
             text_clear = self.names[idx]
@@ -1310,13 +1317,16 @@ class azvideo(Screen):
         self.load_poster()
 
     def load_infos(self):
-        i = len(self.names)
-        print('load infos azvideo ', i)
-        if i > 0:
-            idx = self['list'].getSelectionIndex()
-            info = self.infos[idx]
-            # info = html_conv.html_unescape(info)
-            self['desc'].setText(info)
+        try:
+            i = len(self.names)
+            print('load infos azvideo ', i)
+            if i > 0:
+                idx = self['list'].getSelectionIndex()
+                info = self.infos[idx]
+                if info != '' or info != 'None':
+                    self['desc'] = StaticText(info)
+        except Exception as e:
+            print('error info - v3', str(e))
 
     def selectionChanged(self):
         if self['list'].getCurrent():
@@ -1356,8 +1366,8 @@ class azvideo(Screen):
                 self.names.append(name)
                 self.urls.append(url1)
                 self.pics.append(pic)
-                self.infos.append(self.next)
-            logdata("azvideo nextmodule: ", self.next)
+                self.infos.append(self.desc)
+            logdata("azvideo nextmodule: ", self.desc)
             showlist(self.names, self['list'])
         except Exception as ex:
             print(str(ex))
@@ -1366,7 +1376,7 @@ class azvideo(Screen):
     def okRun(self):
         i = len(self.names)
         print('okrun azvideo ', i)
-        if i < 1:
+        if i < 0:
             return
         try:
             idx = self['list'].getSelectionIndex()
@@ -1375,7 +1385,7 @@ class azvideo(Screen):
             url = self.urls[idx]
             pic = self.pics[idx]
             desc = self.infos[idx]
-            # self.next = desc
+            # self.desc = desc
             logdata("azvideo name: ", name)
             self.session.open(Video5list, name, url, pic, desc)
         except Exception as ex:
@@ -1409,7 +1419,7 @@ class azvideo(Screen):
         try:
             i = len(self.pics)
             print('azvideo loadposter ', i)
-            if i < 1:
+            if i < 0:
                 return
             idx = self['list'].getSelectionIndex()
             print('idx: ', idx)
@@ -1423,14 +1433,6 @@ class azvideo(Screen):
                 return
             if pixmaps != "" or pixmaps != "n/A" or pixmaps is not None or pixmaps != "null":
                 try:
-                    # if PY3:
-                        # pixmaps = six.ensure_binary(self.pics[idx])
-                    # print("debug pixmaps p:", pixmaps)
-                    # print("debug pixmaps p:", type(pixmaps))
-                    # if pixmaps.startswith(b"https") and sslverify:
-                        # parsed_uri = urlparse(pixmaps)
-                        # domain = parsed_uri.hostname
-                        # sniFactory = SNIFactory(domain)
                     if PY3:
                         pixmaps = pixmaps.encode()
                     callInThread(threadGetPage, url=pixmaps, file=pictmp, success=self.downloadPic, fail=self.downloadError)
@@ -1458,23 +1460,6 @@ class azvideo(Screen):
 
     def downloadError(self, output):
         pass
-
-    # def downloadPic(self, data, pictmp):
-        # if os.path.exists(pictmp):
-            # try:
-                # self.poster_resize(pictmp)
-            # except Exception as ex:
-                # print("* error ** %s" % ex)
-                # pass
-
-    # def downloadError(self, png):
-        # try:
-            # if fileExists(png):
-                # self.poster_resize(png)
-        # except Exception as ex:
-            # self.poster_resize(no_cover)
-            # print(str(ex))
-            # print('exe downloadError')
 
     def poster_resize(self, png):
         self["poster"].hide()
@@ -1529,7 +1514,6 @@ class pagevideo3(Screen):
         self['statusred'] = Pixmap()
         self['statusred'].hide()
         self['status'] = Label('SERVER STATUS')
-        # self["poster"].hide()
         self.picload = ePicLoad()
         self.scale = AVSwitch().getFramebufferScale()
         self['key_red'] = Button(_('Back'))
@@ -1542,7 +1526,7 @@ class pagevideo3(Screen):
         self.name = name
         self.url = url
         self.pic = pic
-        self.next = nextmodule
+        self.desc = nextmodule
         self.downloading = False
         self.currentList = 'list'
         self['title'] = Label(title_plug)
@@ -1576,7 +1560,7 @@ class pagevideo3(Screen):
         try:
             i = len(self.names)
             print('iiiiii= ', i)
-            if i < 1:
+            if i < 0:
                 return
             idx = self['list'].getSelectionIndex()
             text_clear = self.names[idx]
@@ -1609,18 +1593,21 @@ class pagevideo3(Screen):
                 info = self.infos[idx]
                 infoadd = self.infosadd[idx]
                 size2 = self.sizes[idx]
-                if info:
+                if info != '' or info != 'None':
                     info = html_conv.html_unescape(info)
                     print('info = ', info)
                     self['desc'].setText(info)
-                if infoadd:
-                    intot = str(infoadd) #+ '\n' + str(size2)
+                if infoadd != '':
+                    intot = str(infoadd)  # + '\n' + str(size2)
                     print('intot = ', intot)
-                    if size2:
-                        intot = str(infoadd) + '\n' + str(size2)
+                    # if size2:
+                    intot = str(infoadd) + '\n' + str(size2)
+                    print('intot2 = ', intot)
                     self['descadd'].setText(intot)
             return
         except Exception as ex:
+            self['desc'].setText(' ')
+            self['descadd'].setText(' ')
             print(str(ex))
             print("Error: can't find pagevideo3 in load_infos")
 
@@ -1721,7 +1708,7 @@ class pagevideo3(Screen):
                 self.infosadd.append(infoadd)
                 self.sizes.append(size2)
                 self.infos.append(info)
-            logdata("pagevideo3 nextmodule: ", self.next)
+            logdata("pagevideo3 nextmodule: ", self.desc)
             showlist(self.names, self['list'])
         except Exception as ex:
             print(str(ex))
@@ -1769,7 +1756,7 @@ class pagevideo3(Screen):
         try:
             i = len(self.pics)
             print('pagevideo3 loadposter ', i)
-            if i < 1:
+            if i < 0:
                 return
             idx = self['list'].getSelectionIndex()
             print('load_poster idx: ', idx)
@@ -1783,14 +1770,6 @@ class pagevideo3(Screen):
                 return
             if pixmaps != "" or pixmaps != "n/A" or pixmaps is not None or pixmaps != "null":
                 try:
-                    # if PY3:
-                        # pixmaps = six.ensure_binary(self.pics[idx])
-                    # print("debug pixmaps p:", pixmaps)
-                    # print("debug pixmaps p:", type(pixmaps))
-                    # if pixmaps.startswith(b"https") and sslverify:
-                        # parsed_uri = urlparse(pixmaps)
-                        # domain = parsed_uri.hostname
-                        # sniFactory = SNIFactory(domain)
                     if PY3:
                         pixmaps = pixmaps.encode()
                     callInThread(threadGetPage, url=pixmaps, file=pictmp, success=self.downloadPic, fail=self.downloadError)
@@ -1818,23 +1797,6 @@ class pagevideo3(Screen):
 
     def downloadError(self, output):
         pass
-
-    # def downloadPic(self, data, pictmp):
-        # if os.path.exists(pictmp):
-            # try:
-                # self.poster_resize(pictmp)
-            # except Exception as ex:
-                # print("* error ** %s" % ex)
-                # pass
-
-    # def downloadError(self, png):
-        # try:
-            # if fileExists(png):
-                # self.poster_resize(png)
-        # except Exception as ex:
-            # self.poster_resize(no_cover)
-            # print(str(ex))
-            # print('exe downloadError')
 
     def poster_resize(self, png):
         self["poster"].hide()
@@ -1885,7 +1847,6 @@ class Video5list(Screen):
         self['statusred'] = Pixmap()
         self['statusred'].hide()
         self['status'] = Label('SERVER STATUS')
-        # self["poster"].hide()
         self.picload = ePicLoad()
         self.scale = AVSwitch().getFramebufferScale()
         self['key_red'] = Button(_('Back'))
@@ -1896,7 +1857,7 @@ class Video5list(Screen):
         self.name = name
         self.url = url
         self.pic = pic
-        self.next = info
+        self.desc = html_conv.html_unescape(info)
         self.downloading = False
         self.currentList = 'list'
         self['title'] = Label(title_plug)
@@ -1930,7 +1891,7 @@ class Video5list(Screen):
         try:
             i = len(self.names)
             print('iiiiii= ', i)
-            if i < 1:
+            if i < 0:
                 return
             idx = self['list'].getSelectionIndex()
             text_clear = self.names[idx]
@@ -1955,16 +1916,23 @@ class Video5list(Screen):
         self.load_infos()
 
     def load_infos(self):
-        i = len(self.names)
-        print('iiiiii=Video5list ', i)
-        if i > 0:
-            idx = self['list'].getSelectionIndex()
-            info = self.infos[idx]
-            self['desc'].setText(info)
-            self['descadd'].setText('Stream Link n°' + str(i))
-        else:
-            self['desc'].setText('')
-            self['descadd'].setText('No Stream Link available')
+        try:
+            i = len(self.names)
+            print('iiiiii=Video5list ', i)
+            if i > 0:
+                idx = self['list'].getSelectionIndex()
+                info = self.desc  # self.infos[idx]
+                if info != '' or info != 'None':
+                    self['desc'].setText(info)
+                    self['descadd'].setText('Stream Link n°' + str(i))
+                else:
+                    self['desc'].setText(' ')
+                    self['descadd'].setText('No Stream Link available')
+            else:
+                self['desc'].setText(' ')
+                self['descadd'].setText('No Stream Link available')
+        except Exception as e:
+            print('error info - v5', str(e))
 
     def selectionChanged(self):
         if self['list'].getCurrent():
@@ -2007,11 +1975,11 @@ class Video5list(Screen):
                     name = vname + "-" + name1 + "-" + name2
                     name = html_conv.html_unescape(name)
                     pic = picx
-                    info = html_conv.html_unescape(self.next)
+                    info = self.desc
                     print('name Video5list', name)
                     print('url Video5list', url)
                     print('picx Video5list', pic)
-                    print('info Video5list', info)
+                    # print('info Video5list', info)
                     if "racaty" not in name.lower():
                         continue
                     self.names.append(name)
@@ -2019,7 +1987,7 @@ class Video5list(Screen):
                     self.pics.append(pic)
                     self.infos.append(info)
                     print('sono qui -------')
-            logdata("Video5list nextmodule: ", self.next)
+            logdata("Video5list nextmodule: ", self.desc)
             showlist(self.names, self['list'])
         except Exception as ex:
             print(str(ex))
@@ -2028,19 +1996,19 @@ class Video5list(Screen):
 
     def okRun(self):
         i = len(self.names)
-        print('Video5list iiiiii= ', i)
-        if i < 1:
+        print('Video5list aaaaaaaa= ', i)
+        if i < 0:
             return
         try:
             idx = self['list'].getSelectionIndex()
             print('idx: ', idx)
             name = self.names[idx]
             url = self.urls[idx]
-            info = self.infos[idx]
             pic = self.pics[idx]
             print('Video5list okrun')
             logdata("Video5list name: ", name)
             logdata("Video5list url: ", url)
+            info = self.desc
             self.session.open(Playchoice, name, url, pic, info)
         except Exception as ex:
             print(str(ex))
@@ -2073,7 +2041,7 @@ class Video5list(Screen):
         try:
             i = len(self.pics)
             print('Video5list loadposter ', i)
-            if i < 1:
+            if i < 0:
                 return
             idx = self['list'].getSelectionIndex()
             print('idx: ', idx)
@@ -2123,30 +2091,6 @@ class Video5list(Screen):
     def downloadError(self, output):
         pass
 
-    # def showPoster(self, poster):
-        # if fileExists(poster):
-            # self["poster"].instance.setScale(1)
-            # self["poster"].instance.setPixmapFromFile(poster)
-            # self['poster'].show()
-        # return
-
-    # def downloadPic(self, data, pictmp):
-        # if os.path.exists(pictmp):
-            # try:
-                # self.poster_resize(pictmp)
-            # except Exception as ex:
-                # print("* error ** %s" % ex)
-                # pass
-
-    # def downloadError(self, png):
-        # try:
-            # if fileExists(png):
-                # self.poster_resize(png)
-        # except Exception as ex:
-            # self.poster_resize(no_cover)
-            # print(str(ex))
-            # print('exe downloadError')
-
     def poster_resize(self, png):
         self["poster"].hide()
         self.picload = ePicLoad()
@@ -2195,7 +2139,9 @@ class Playchoice(Screen):
         self['list'] = rvList([])
         self['info'] = Label()
         self['info'].setText(name)
-        self['desc'] = StaticText(desc)
+        self['desc'] = StaticText()
+        # if desc != '' or desc != 'None':
+            # self['desc'].setText(desc)
         self['title'] = Label(title_plug)
         self['poster'] = Pixmap()
         self['key_red'] = Button(_('Back'))
@@ -2230,11 +2176,18 @@ class Playchoice(Screen):
         # return
 
     def load_infos(self):
-        i = len(self.names)
-        print('iiiiii=Video5list ', i)
-        if i > 0:
-            info = self.desc
-            self['desc'].setText(info)
+        try:
+            i = len(self.names)
+            print('iiiiii=Video5list ', i)
+            if i > 0:
+                if self.desc != '' or self.desc != 'None':
+                    self['desc'].setText(self.desc)
+                else:
+                    self['desc'].setText('No Epg')
+            else:
+                self['desc'].setText('No Epg')
+        except Exception as e:
+            print('error info - v4', str(e))
 
     def cleantitle(self, title):
         cleanName = re.sub(r'[\<\>\:\"\/\\\|\?\*\(\)\[\]]', " ", str(title))
@@ -2376,7 +2329,6 @@ class Playchoice(Screen):
             elif "racaty" in name.lower():
                 from .resolver.racaty import RacatyResolver
                 res = RacatyResolver()
-                urlxy = res.get_media_url(urlx)
                 return res.get_media_url(urlx)
             elif "sbfast" in name.lower():
                 from .resolver.streamsb import StreamSBResolver
@@ -2386,7 +2338,7 @@ class Playchoice(Screen):
     def okClicked(self):
         i = len(self.names)
         print('Video5list iiiiii= ', i)
-        if i < 1:
+        if i < 0:
             return
         try:
             idx = self['list'].getSelectionIndex()
@@ -2401,6 +2353,8 @@ class Playchoice(Screen):
                 # except:
                     # self.racat.callback.append(self.racatyx(name, url))
                 url = self.racatyx(name, url)
+                # if url:
+                url = url.replace(' ', '%20')
                 # self.racat.start(2500, True)
                 # url = self.urlxy
                 print('In playVideo url D=', url)
@@ -2460,20 +2414,24 @@ class Playchoice(Screen):
         self.close()
 
     def play(self, name, url):
-        desc = self.desc
-        # self.url = url
-        # name = self.name1
-        logdata("Playstream2 name: ", name)
-        logdata("Playstream2 url: ", url)
-        if 'None' not in str(url):
-            self.session.open(Playstream2, name, url, desc)
-        else:
-            self.session.open(MessageBox, _('No link available'), MessageBox.TYPE_INFO, timeout=5)
-        self.close()
+        try:
+            # desc = self.desc
+            # self.url = url
+            # name = self.name1
+            logdata("Playstream2 name: ", name)
+            logdata("Playstream2 url: ", url)
+            if 'None' not in str(url) or url != '':
+                self.session.open(Playstream2, name, url)
+            else:
+                self.session.open(MessageBox, _('No link available'), MessageBox.TYPE_INFO, timeout=5)
+            # self.close()
+        except Exception as e:
+            print('error play ', str(e))
+            
 
     def play2(self, name, url):
         if Utils.isStreamlinkAvailable():
-            desc = self.desc
+            # desc = self.desc
             name = self.name
             # if os.path.exists("/usr/sbin/streamlinksrv"):
             # url = self.url
@@ -2484,7 +2442,7 @@ class Playchoice(Screen):
                 sref = eServiceReference(ref)
                 print('SREF: ', sref)
                 sref.setName(name)
-                self.session.open(Playstream2, name, sref, desc)
+                self.session.open(Playstream2, name, sref)
             else:
                 self.session.open(MessageBox, _('No link available'), MessageBox.TYPE_INFO, timeout=5)
         else:
@@ -2499,7 +2457,7 @@ class Playchoice(Screen):
         try:
             i = len(self.names)
             print('iiiiii= ', i)
-            if i < 1:
+            if i < 0:
                 return
             idx = self['list'].getSelectionIndex()
             print('idx: ', idx)
@@ -2548,22 +2506,6 @@ class Playchoice(Screen):
     def downloadError(self, output):
         pass
 
-    # def downloadPic(self, data, pictmp):
-        # if os.path.exists(pictmp):
-            # try:
-                # self.poster_resize(pictmp)
-            # except Exception as ex:
-                # print("* error ** %s" % ex)
-                # pass
-
-    # def downloadError(self, png):
-        # try:
-            # if fileExists(png):
-                # self.poster_resize(png)
-        # except Exception as ex:
-            # self.poster_resize(no_cover)
-            # print(str(ex))
-            # print('exe downloadError')
     def poster_resize(self, png):
         self["poster"].hide()
         self.picload = ePicLoad()
@@ -2692,7 +2634,7 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
     ALLOW_SUSPEND = True
     # screen_timeout = 4000
 
-    def __init__(self, session, name, url, desc):
+    def __init__(self, session, name, url):
         global streaml
         global _session
         Screen.__init__(self, session)
@@ -2718,7 +2660,7 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         self.icount = 0
         url = url.replace(':', '%3a')
         self.url = url
-        self.desc = desc
+        # self.desc = desc
         self.state = self.STATE_PLAYING
         self['actions'] = ActionMap(['MoviePlayerActions',
                                      'MovieSelectionActions',
@@ -2742,6 +2684,7 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
             self.onFirstExecBegin.append(self.slinkPlay)
         else:
             self.onFirstExecBegin.append(self.cicleStreamType)
+        # self.onFirstExecBegin.append(self.openPlay(url))
         self.onClose.append(self.cancel)
 
     def getAspect(self):
@@ -2796,9 +2739,50 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         self.session.nav.stopService()
         self.session.nav.playService(sref)
 
+    # def play(self, url):
+        # # url = item
+        # name = "video"
+        # url = str(url)
+        # print("xmbc url =", url)
+        # # if listitem is not None:
+            # # dataA = listitem.data
+            # # name = dataA['label']
+        # if (name == 'None') or (name is None) or (name == ""):
+            # name = "video"
+        # try:
+            # print("xmbc url 2=", url)
+            # url = url.replace("&", "AxNxD")
+            # print("xmbc url 3=", url)
+            # url = url.replace("=", "ExQ")
+            # print("xmbc url 4=", url)
+            # data = "&url=" + url + "&name=" + name + "\n"
+            # print("xmbc url 5=", url)
+            # # if os.path.exists("/etc/debugxb"):
+            # print("xmbc data B=", data)
+            # print("xmbc url 6=", url)
+        # except:
+            # url = url.items[0].getfilename()
+            # url = url.replace("&", "AxNxD")
+            # url = url.replace("=", "ExQ")
+            # data = "&url=" + url + "&name=" + name + "\n"
+            # # if os.path.exists("/etc/debugxb"):
+            # print("getfilename data B=", data)
+            # # file = open("//tmp/data.txt", "a")
+            # # if "plugin:/" not in data:
+            # # file.write(data)
+            # # file.close()
+
     def openPlay(self, servicetype, url):
         name = self.name
-        ref = "{0}:0:0:0:0:0:0:0:0:0:{1}:{2}".format(servicetype, url.replace(":", "%3a"), name.replace(":", "%3a"))
+        url = url
+        # servicetype = config.plugins.filmxy.services.getValue()
+        print("xmbc url 2=", url)
+        url = url.replace("&", "AxNxD").replace("=", "ExQ")
+        print("xmbc url 4=", url)
+        data = "&url=" + url + "&name=" + name + "\n"
+        print("xmbc data B=", data)
+        print("xmbc url 6=", url)
+        ref = "{0}:0:1:0:0:0:0:0:0:0:{1}:{2}".format(servicetype, url.replace(":", "%3a"), name.replace(":", "%3a"))
         print('reference:   ', ref)
         if streaml is True:
             url = 'http://127.0.0.1:8088/' + str(url)
@@ -2810,10 +2794,19 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         self.session.nav.stopService()
         self.session.nav.playService(sref)
 
+        # from .resolver import bmc
+        # # from .resolver import xbmcplugin
+        # from .resolver import bmcgui
+        # pic = ''
+        # li = bmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=pic)
+        # player = Player()
+        # self.play(url)
+
     def cicleStreamType(self):
+        # pass
         global streml
         streaml = False
-        # from itertools import cycle, islice
+        from itertools import cycle, islice
         # self.servicetype = '4097'
         self.servicetype = str(config.plugins.filmxy.services.value)
         print('servicetype1: ', self.servicetype)
@@ -2821,27 +2814,32 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         if str(os.path.splitext(self.url)[-1]) == ".m3u8":
             if self.servicetype == "1":
                 self.servicetype = "4097"
-        # currentindex = 0
-        # streamtypelist = ["4097"]
-        # # if "youtube" in str(url):
-            # # self.mbox = self.session.open(MessageBox, _('For Stream Youtube coming soon!'), MessageBox.TYPE_INFO, timeout=5)
-            # # return
-        # if Utils.isStreamlinkAvailable():
-            # streamtypelist.append("5002") #ref = '5002:0:1:0:0:0:0:0:0:0:http%3a//127.0.0.1%3a8088/' + url
-            # streaml = True
-        # if os.path.exists("/usr/bin/gstplayer"):
-            # streamtypelist.append("5001")
-        # if os.path.exists("/usr/bin/exteplayer3"):
-            # streamtypelist.append("5002")
-        # if os.path.exists("/usr/bin/apt-get"):
-            # streamtypelist.append("8193")
-        # for index, item in enumerate(streamtypelist, start=0):
-            # if str(item) == str(self.servicetype):
-                # currentindex = index
-                # break
-        # nextStreamType = islice(cycle(streamtypelist), currentindex + 1, None)
-        # self.servicetype = str(next(nextStreamType))
-        print('servicetype2: ', self.servicetype)
+        currentindex = 0
+        streamtypelist = ["4097"]
+        # if "youtube" in str(url):
+            # self.mbox = self.session.open(MessageBox, _('For Stream Youtube coming soon!'), MessageBox.TYPE_INFO, timeout=5)
+            # return
+        if Utils.isStreamlinkAvailable():
+            streamtypelist.append("5002")  # ref = '5002:0:1:0:0:0:0:0:0:0:http%3a//127.0.0.1%3a8088/' + url
+            streaml = True
+        if os.path.exists("/usr/bin/gstplayer"):
+            streamtypelist.append("5001")
+        if os.path.exists("/usr/bin/exteplayer3"):
+            streamtypelist.append("5002")
+        if os.path.exists("/usr/bin/apt-get"):
+            streamtypelist.append("8193")
+        for index, item in enumerate(streamtypelist, start=0):
+            if str(item) == str(self.servicetype):
+                currentindex = index
+                break
+        nextStreamType = islice(cycle(streamtypelist), currentindex + 1, None)
+        self.servicetype = str(next(nextStreamType))
+        print('servicetype2: ', self.servicetype) 
+        
+        if config.plugins.filmxy.servicesforce.getValue() is True:
+            self.servicetype = str(config.plugins.filmxy.services.getValue())
+        print('servicetype force: ', self.servicetype)
+
         self.openPlay(self.servicetype, url)
 
     def up(self):
@@ -2956,6 +2954,7 @@ class myconfig(Screen, ConfigListScreen):
         self.list.append(getConfigListEntry(_("Set the path Movie folder"), config.plugins.filmxy.movie, _("Folder Movie Path (eg.: /media/hdd/movie), Press OK - Enigma restart required")))
         self.list.append(getConfigListEntry(_("Set the path to the Cache folder"), config.plugins.filmxy.cachefold, _("Press Ok to select the folder containing the picons files")))
         self.list.append(getConfigListEntry(_('Services Player Reference type'), config.plugins.filmxy.services, _("Configure Service Player Reference")))
+        self.list.append(getConfigListEntry(_('Force Services Player Reference type'), config.plugins.filmxy.servicesforce, _("Force Service Player Reference")))        
         self["config"].list = self.list
         self["config"].l.setList(self.list)
         # self.setInfo()
@@ -3168,7 +3167,7 @@ class StreamTasks(Screen):
         current = self["movielist"].getCurrent()
         path = Path_Movies
         desc = 'local'
-        pic = ''
+        # pic = ''
         if current:
             if current[0] == "movie":
                 if file1 is True:
@@ -3178,7 +3177,7 @@ class StreamTasks(Screen):
                 file1 = False
                 isFile = os.path.isfile(url)
                 if isFile:
-                    self.session.open(Playstream2, name, url, desc)
+                    self.session.open(Playstream2, name, url)
                 else:
                     self.session.open(MessageBox, _("Is Directory or file not exist"), MessageBox.TYPE_INFO, timeout=5)
             else:
@@ -3197,7 +3196,7 @@ class StreamTasks(Screen):
     def message1(self):
         current = self["movielist"].getCurrent()
         sel = Path_Movies + current[1]
-        sel2 = self.pth + current[1]
+        # sel2 = self.pth + current[1]
         dom = sel
         # dom2 = sel2
         self.session.openWithCallback(self.callMyMsg1, MessageBox, _("Do you want to remove %s ?") % dom, MessageBox.TYPE_YESNO, timeout=15, default=False)
