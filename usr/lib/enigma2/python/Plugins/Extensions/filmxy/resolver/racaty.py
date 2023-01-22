@@ -484,6 +484,8 @@ class RacatyResolver():
     name = 'Racaty'
     domains = ['racaty.io', 'racaty.net']
     pattern = r'(?://|\.)(racaty\.(?:net|io))/(?:embed-)?([0-9a-zA-Z]+)'
+    # domains = ['racaty.net']
+    # pattern = r'(?://|\.)(racaty\.net)/([0-9a-zA-Z]+)'
 
     def __init__(self):
         # self.net = common.Net(ssl_verify=False)
@@ -532,8 +534,11 @@ class RacatyResolver():
             return None
 
 
+    # def get_url(self, host, media_id):
+        # return self._default_get_url(host, media_id, template='https://racaty.io/{media_id}')
+
     def get_url(self, host, media_id):
-        return self._default_get_url(host, media_id, template='https://racaty.io/{media_id}')
+        return self._default_get_url(host, media_id, template='https://{host}/{media_id}')
 
     def get_host_and_id(self, url):
         """
