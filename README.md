@@ -1,5 +1,7 @@
 FilmXY by Lululla
+
 ![](https://komarev.com/ghpvc/?username=Belfagor2005)
+
 <img src="https://github.com/Belfagor2005/filmxy/blob/main/usr/lib/enigma2/python/Plugins/Extensions/filmxy/logo.png">
 
 
