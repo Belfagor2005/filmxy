@@ -3,9 +3,9 @@
 	<widget name="title" position="300,29" size="408,33" font="Regular;22" halign="left" valign="center" foregroundColor="#ffff00" backgroundColor="black" transparent="1" zPosition="5" />
 	<widget name="info" position="146,86" size="690,50" font="Regular;20" halign="center" valign="center" foregroundColor="yellow" backgroundColor="#202020" transparent="0" zPosition="5" />
 	<widget name="pth" position="422,667" size="413,33" font="Regular;20" halign="right" foregroundColor="#808080" backgroundColor="#000000" transparent="1" zPosition="5" />
-	<widget name="statusgreen" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/status-on.png" alphatest="blend" position="870,90" size="40,40" zPosition="5" />
-	<widget name="statusred" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/status-off.png" alphatest="blend" position="870,90" size="40,40" zPosition="5" />	
-	<widget name="status" position="924,90" size="300,40" font="Regular;22" foregroundColor="#ffb75b" backgroundColor="#101010" halign="left" transparent="1" zPosition="2" />
+	<widget name="statusgreen" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/status-on.png" alphatest="blend" position="931,90" size="40,40" zPosition="5" />
+	<widget name="statusred" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/status-off.png" alphatest="blend" position="930,90" size="40,40" zPosition="5" />	
+	<widget name="status" position="1016,90" size="208,40" font="Regular;22" foregroundColor="#ffb75b" backgroundColor="#101010" halign="left" transparent="1" zPosition="2" />
 	<widget source="desc" render="xyRunningText" position="145,499" size="690,155" font="Regular;20" foregroundColor="#ffb75b" backgroundColor="#20000000" halign="center" transparent="0" zPosition="5" options="movetype=running,startpoint=0,direction=top,steptime=80,repeat=0,always=0,oneshot=0,startdelay=6000,wrap" />
 	<eLabel position="145,499" size="649,155" backgroundColor="#30000000" zPosition="1" />
 	<widget name="descadd" position="860,499" size="352,155" font="Regular; 20" foregroundColor="#ffb75b" backgroundColor="#101010" halign="center" transparent="1" zPosition="2" />

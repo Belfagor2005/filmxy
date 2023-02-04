@@ -31,7 +31,7 @@ from Components.Task import Task, Condition, Job, job_manager
 from Components.config import ConfigDirectory, ConfigSubsection
 from Components.config import ConfigYesNo, ConfigSelection
 from Components.config import config, ConfigEnableDisable
-from Components.config import ConfigOnOff, NoSave
+from Components.config import ConfigOnOff
 from Components.config import getConfigListEntry
 from Plugins.Plugin import PluginDescriptor
 from Screens.InfoBar import MoviePlayer
@@ -119,7 +119,8 @@ except:
     from urllib.request import Request
 
 
-plugin_path = os.path.dirname(sys.modules[__name__].__file__)
+# PLUGIN_PATH = os.path.dirname(sys.modules[__name__].__file__)
+PLUGIN_PATH = resolveFilename(SCOPE_PLUGINS, "Extensions/{}".format('filmxy'))
 global skin_path, nextmodule, Path_Movies
 
 _session = None
@@ -165,7 +166,7 @@ def cleantitle(title):
 
 def getversioninfo():
     currversion = '1.7'
-    version_file = plugin_path + '/version'
+    version_file = os.path.join(PLUGIN_PATH, 'version')
     if os.path.exists(version_file):
         try:
             fp = open(version_file, 'r').readlines()
@@ -174,7 +175,7 @@ def getversioninfo():
                     currversion = line.split('=')[1].strip()
         except:
             pass
-    logdata("Plugin ", plugin_path)
+    logdata("Plugin ", PLUGIN_PATH)
     logdata("Version ", currversion)
     return (currversion)
 
@@ -221,7 +222,7 @@ if os.path.exists("/usr/bin/apt-get"):
     modechoices.append(("8193", _("eServiceUri(8193)")))
 
 config.plugins.filmxy = ConfigSubsection()
-config.plugins.filmxy.cachefold = ConfigDirectory(default='/media/hdd/filmxy/')
+config.plugins.filmxy.cachefold = ConfigDirectory(default='/media/hdd/filmxy')
 config.plugins.filmxy.movie = ConfigDirectory("/media/hdd/movie")
 try:
     from Components.UsageConfig import defaultMoviePath
@@ -237,16 +238,16 @@ cfg = config.plugins.filmxy
 
 
 Path_Movies = str(config.plugins.filmxy.movie.value)
-if Path_Movies.endswith("\/\/"):
-    Path_Movies = Path_Movies[:-1]
+# if Path_Movies.endswith("\/\/"):
+    # Path_Movies = Path_Movies[:-1]
 logdata('patch movies: ', Path_Movies)
 
 currversion = getversioninfo()
 title_plug = 'Filmxy V. %s' % currversion
 desc_plug = 'Filmxy'
-ico_path = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/logo.png".format('filmxy'))
-res_plugin_path = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/".format('filmxy'))
-piccons = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/img/".format('filmxy'))
+ico_path = os.path.join(PLUGIN_PATH, 'logo.png')
+res_plugin_path = os.path.join(PLUGIN_PATH, 'res/')
+piccons = os.path.join(PLUGIN_PATH, 'res/img/')
 no_cover = piccons + 'no_cover.png'
 piconmovie = piccons + 'cinema.png'
 piconseries = piccons + 'series.png'
@@ -258,8 +259,8 @@ nextpng = 'next.png'
 prevpng = 'prev.png'
 Path_Tmp = "/tmp"
 cachefold = config.plugins.filmxy.cachefold.value.strip()
-if cachefold.endswith('//'):
-    cachefold = cachefold[:-1]
+# if cachefold.endswith('//'):
+    # cachefold = cachefold[:-1]
 if not os.path.exists(cachefold):
     try:
         os.makedirs(cachefold)
@@ -271,9 +272,9 @@ pmovies = False
 
 
 if Utils.isFHD():
-    skin_path = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/skins/fhd/".format('filmxy'))
+    skin_path = os.path.join(PLUGIN_PATH, 'res/skins/fhd/')
 else:
-    skin_path = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/skins/hd/".format('filmxy'))
+    skin_path = os.path.join(PLUGIN_PATH, 'res/skins/hd/')
 
 if Utils.DreamOS():
     skin_path = skin_path + 'dreamOs/'
@@ -323,126 +324,209 @@ def status_site():
     return
 
 
+# def piconlocal(name):
+    # picolocal = 'backg2.png'
+    # if 'tv' in name.lower():
+        # picolocal = 'movie.png'
+    # elif 'adult' in name.lower():
+        # picolocal = 'adult.png'
+    # elif 'animation' in name.lower():
+        # picolocal = 'animation.png'
+    # elif 'biography' in name.lower():
+        # picolocal = 'biography.png'
+    # elif 'show' in name.lower():
+        # picolocal = 'game-show.png'
+    # elif 'history' in name.lower():
+        # picolocal = 'history.png'
+    # elif 'music' in name.lower():
+        # picolocal = 'music.png'
+    # elif 'sci-fi' in name.lower():
+        # picolocal = 'sci-fi.png'
+    # elif 'family' in name.lower():
+        # picolocal = 'family.png'
+    # elif 'short' in name.lower():
+        # picolocal = 'short.png'
+    # elif 'uncategorized' in name.lower():
+        # picolocal = 'uncategorized.png'
+    # elif 'war' in name.lower():
+        # picolocal = 'war.png'
+    # elif 'commedia' in name.lower():
+        # picolocal = 'commedia.png'
+    # elif 'comedy' in name.lower():
+        # picolocal = 'commedia.png'
+    # elif 'thriller' in name.lower():
+        # picolocal = 'thriller.png'
+    # elif 'azione' in name.lower():
+        # picolocal = 'azione.png'
+    # elif 'dramma' in name.lower():
+        # picolocal = 'dramma.png'
+    # elif 'drama' in name.lower():
+        # picolocal = 'dramma.png'
+    # elif 'western' in name.lower():
+        # picolocal = 'western.png'
+    # elif 'biografico' in name.lower():
+        # picolocal = 'biografico.png'
+    # elif 'romantico' in name.lower():
+        # picolocal = 'romantico.png'
+    # elif 'romance' in name.lower():
+        # picolocal = 'romantico.png'
+    # elif 'horror' in name.lower():
+        # picolocal = 'horror.png'
+    # elif 'musica' in name.lower():
+        # picolocal = 'musical.png'
+    # elif 'guerra' in name.lower():
+        # picolocal = 'guerra.png'
+    # elif 'bambini' in name.lower():
+        # picolocal = 'bambini.png'
+    # elif 'bianco' in name.lower():
+        # picolocal = 'bianconero.png'
+    # elif 'tutto' in name.lower():
+        # picolocal = 'toto.png'
+    # elif 'cartoni' in name.lower():
+        # picolocal = 'cartoni.png'
+    # elif 'bud' in name.lower():
+        # picolocal = 'budterence.png'
+    # elif 'documentary' in name.lower():
+        # picolocal = 'documentary.png'
+    # elif 'crime' in name.lower():
+        # picolocal = 'crime.png'
+    # elif 'mystery' in name.lower():
+        # picolocal = 'mistery.png'
+    # elif 'fiction' in name.lower():
+        # picolocal = 'fiction.png'
+    # elif 'adventure' in name.lower():
+        # picolocal = 'mistery.png'
+    # elif 'action' in name.lower():
+        # picolocal = 'azione.png'
+    # elif '007' in name.lower():
+        # picolocal = '007.png'
+    # elif 'sport' in name.lower():
+        # picolocal = 'sport.png'
+    # elif 'teatr' in name.lower():
+        # picolocal = 'teatro.png'
+    # elif 'extra' in name.lower():
+        # picolocal = 'extra.png'
+    # elif 'search' in name.lower():
+        # picolocal = 'search.png'
+    # elif 'mediaset' in name.lower():
+        # picolocal = 'mediaset.png'
+    # elif 'nazionali' in name.lower():
+        # picolocal = 'nazionali.png'
+    # elif 'news' in name.lower():
+        # picolocal = 'news.png'
+    # elif 'rai' in name.lower():
+        # picolocal = 'rai.png'
+    # elif 'webcam' in name.lower():
+        # picolocal = 'relaxweb.png'
+    # elif 'relax' in name.lower():
+        # picolocal = 'relaxweb.png'
+    # elif 'vecchi' in name.lower():
+        # picolocal = 'vecchi.png'
+    # elif 'italia' in name.lower():
+        # picolocal = 'movie.png'
+    # elif 'fantascienza' in name.lower():
+        # picolocal = 'fantascienza.png'
+    # elif 'fantasy' in name.lower():
+        # picolocal = 'fantasy.png'
+    # elif 'fantasia' in name.lower():
+        # picolocal = 'fantasia.png'
+    # elif 'film' in name.lower():
+        # picolocal = 'movie.png'
+    # elif 'plutotv' in name.lower():
+        # picolocal = 'plutotv.png'
+    # elif 'samsung' in name.lower():
+        # picolocal = 'samsung.png'
+    # elif 'prev' in name.lower():
+        # picolocal = prevpng
+    # elif 'next' in name.lower():
+        # picolocal = nextpng
+    # # logdata('>>>>>>>> ' + str(piccons) + str(picolocal))
+    # name = str(piccons) + str(picolocal)
+    # return name
 def piconlocal(name):
-    picolocal = 'backg2.png'
-    if 'tv' in name.lower():
-        picolocal = 'movie.png'
-    elif 'adult' in name.lower():
-        picolocal = 'adult.png'
-    elif 'animation' in name.lower():
-        picolocal = 'animation.png'
-    elif 'biography' in name.lower():
-        picolocal = 'biography.png'
-    elif 'show' in name.lower():
-        picolocal = 'game-show.png'
-    elif 'history' in name.lower():
-        picolocal = 'history.png'
-    elif 'music' in name.lower():
-        picolocal = 'music.png'
-    elif 'sci-fi' in name.lower():
-        picolocal = 'sci-fi.png'
-    elif 'family' in name.lower():
-        picolocal = 'family.png'
-    elif 'short' in name.lower():
-        picolocal = 'short.png'
-    elif 'uncategorized' in name.lower():
-        picolocal = 'uncategorized.png'
-    elif 'war' in name.lower():
-        picolocal = 'war.png'
-    elif 'commedia' in name.lower():
-        picolocal = 'commedia.png'
-    elif 'comedy' in name.lower():
-        picolocal = 'commedia.png'
-    elif 'thriller' in name.lower():
-        picolocal = 'thriller.png'
-    elif 'azione' in name.lower():
-        picolocal = 'azione.png'
-    elif 'dramma' in name.lower():
-        picolocal = 'dramma.png'
-    elif 'drama' in name.lower():
-        picolocal = 'dramma.png'
-    elif 'western' in name.lower():
-        picolocal = 'western.png'
-    elif 'biografico' in name.lower():
-        picolocal = 'biografico.png'
-    elif 'romantico' in name.lower():
-        picolocal = 'romantico.png'
-    elif 'romance' in name.lower():
-        picolocal = 'romantico.png'
-    elif 'horror' in name.lower():
-        picolocal = 'horror.png'
-    elif 'musica' in name.lower():
-        picolocal = 'musical.png'
-    elif 'guerra' in name.lower():
-        picolocal = 'guerra.png'
-    elif 'bambini' in name.lower():
-        picolocal = 'bambini.png'
-    elif 'bianco' in name.lower():
-        picolocal = 'bianconero.png'
-    elif 'tutto' in name.lower():
-        picolocal = 'toto.png'
-    elif 'cartoni' in name.lower():
-        picolocal = 'cartoni.png'
-    elif 'bud' in name.lower():
-        picolocal = 'budterence.png'
-    elif 'documentary' in name.lower():
-        picolocal = 'documentary.png'
-    elif 'crime' in name.lower():
-        picolocal = 'crime.png'
-    elif 'mystery' in name.lower():
-        picolocal = 'mistery.png'
-    elif 'fiction' in name.lower():
-        picolocal = 'fiction.png'
-    elif 'adventure' in name.lower():
-        picolocal = 'mistery.png'
-    elif 'action' in name.lower():
-        picolocal = 'azione.png'
-    elif '007' in name.lower():
-        picolocal = '007.png'
-    elif 'sport' in name.lower():
-        picolocal = 'sport.png'
-    elif 'teatr' in name.lower():
-        picolocal = 'teatro.png'
-    elif 'extra' in name.lower():
-        picolocal = 'extra.png'
-    elif 'search' in name.lower():
-        picolocal = 'search.png'
-    elif 'mediaset' in name.lower():
-        picolocal = 'mediaset.png'
-    elif 'nazionali' in name.lower():
-        picolocal = 'nazionali.png'
-    elif 'news' in name.lower():
-        picolocal = 'news.png'
-    elif 'rai' in name.lower():
-        picolocal = 'rai.png'
-    elif 'webcam' in name.lower():
-        picolocal = 'relaxweb.png'
-    elif 'relax' in name.lower():
-        picolocal = 'relaxweb.png'
-    elif 'vecchi' in name.lower():
-        picolocal = 'vecchi.png'
-    elif 'italia' in name.lower():
-        picolocal = 'movie.png'
-    elif 'fantascienza' in name.lower():
-        picolocal = 'fantascienza.png'
-    elif 'fantasy' in name.lower():
-        picolocal = 'fantasy.png'
-    elif 'fantasia' in name.lower():
-        picolocal = 'fantasia.png'
-    elif 'film' in name.lower():
-        picolocal = 'movie.png'
-    elif 'plutotv' in name.lower():
-        picolocal = 'plutotv.png'
-    elif 'samsung' in name.lower():
-        picolocal = 'samsung.png'
-    elif 'prev' in name.lower():
-        picolocal = prevpng
-    elif 'next' in name.lower():
-        picolocal = nextpng
-    # logdata('>>>>>>>> ' + str(piccons) + str(picolocal))
-    name = str(piccons) + str(picolocal)
-    return name
 
+    pngs = [
+        ["tv", "movie"],
+        ["commedia", "commedia"],
+        ["comedy", "commedia"],
+        ["thriller", "thriller"],
+        ["family", "family"],
+        ["azione", "azione"],
+        ["dramma", "dramma"],
+        ["drama", "dramma"],
+        ["western", "western"],
+        ["biografico", "biografico"],
+        ["romantico", "romantico"],
+        ["romance", "romantico"],
+        ["horror", "horror"],
+        ["musica", "musical"],
+        ["guerra", "guerra"],
+        ["bambini", "bambini"],
+        ["bianco", "bianconero"],
+        ["tutto", "toto"],
+        ["cartoni", "cartoni"],
+        ["bud", "budterence"],
+        ["documentary", "documentary"],
+        ["crime", "crime"],
+        ["mystery", "mistery"],
+        ["fiction", "fiction"],
+        ["adventure", "mistery"],
+        ["action", "azione"],
+        ["007", "007"],
+        ["sport", "sport"],
+        ["teatr", "teatro"],
+        ["extra", "extra"],
+        ["search", "search"],
+
+        ["abruzzo", "regioni/abruzzo"],
+        ["basilicata", "regioni/basilicata"],
+        ["calabria", "regioni/calabria"],
+        ["campania", "regioni/campania"],
+        ["emilia", "regioni/emiliaromagna"],
+        ["friuli", "regioni/friuliveneziagiulia"],
+        ["lazio", "regioni/lazio"],
+        ["liguria", "regioni/liguria"],
+        ["lombardia", "regioni/lombardia"],
+        ["marche", "regioni/marche"],
+        ["molise", "regioni/molise"],
+        ["piemonte", "regioni/piemonte"],
+        ["puglia", "regioni/puglia"],
+        ["sardegna", "regioni/sardegna"],
+        ["sicilia", "regioni/sicilia"],
+        ["toscana", "regioni/toscana"],
+        ["trentino", "regioni/trentino"],
+        ["umbria", "regioni/umbria"],
+        ["veneto", "regioni/veneto"],
+        ["aosta", "regioni/valledaosta"],
+        ["mediaset", "mediaset"],
+        ["nazionali", "nazionali"],
+        ["news", "news"],
+        ["rai", "rai"],
+        ["webcam", "relaxweb"],
+        ["relax", "relaxweb"],
+        ["vecchi", "vecchi"],
+        ["'italiani", "movie"],
+        ["fantascienza", "fantascienza"],
+        ["fantasy", "fantasy"],
+        ["fantasia", "fantasia"],
+        ["film", "movie"],
+        ["samsung", "samsung"],
+        ["plutotv", "plutotv"]
+    ]
+
+    for png in pngs:
+        piconlocal = 'backg.png'
+        if png[0] in str(name).lower():
+            piconlocal = str(png[1]) + ".png"
+            break
+
+    if 'prev' in name.lower():
+        piconlocal = prevpng
+    elif 'next' in name.lower():
+        piconlocal = nextpng
+    print('>>>>>>>> ' + str(piccons) + str(piconlocal))
+    path = os.path.join(piccons, piconlocal)
+    return str(path)
 
 # filter list assign png
 EXTRAD = "radio", "radyo", "mix", "fm", "kbit", "rap", "metal", "alternative"
@@ -467,38 +551,28 @@ class rvList(MenuList):
             textfont = int(30)
             self.l.setFont(0, gFont('Regular', textfont))
         else:
-            self.l.setItemHeight(30)
+            self.l.setItemHeight(50)
             textfont = int(24)
             self.l.setFont(0, gFont('Regular', textfont))
 
 
 def rvListEntry(name, idx):
     res = [name]
-    pngs = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/tv.png".format('filmxy'))
+    pngs = os.path.join(PLUGIN_PATH, 'res/pics/tv.png')
     if any(s in name.lower() for s in EXTRAD):
-        pngs = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/radio.png".format('filmxy'))
+        pngs = os.path.join(PLUGIN_PATH, 'res/pics/radio.png')
     elif any(s in name.lower() for s in EXTCAM):
-        pngs = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/webcam.png".format('filmxy'))
+        pngs = os.path.join(PLUGIN_PATH, 'res/pics/webcam.png')
     elif any(s in name.lower() for s in EXTMUS):
-        pngs = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/music.png".format('filmxy'))
+        pngs = os.path.join(PLUGIN_PATH, 'res/pics/music.png')
     elif any(s in name.lower() for s in EXTSPOR):
-        pngs = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/sport.png".format('filmxy'))
+        pngs = os.path.join(PLUGIN_PATH, 'res/pics/sport.png')
 
-    # if 'radio' in name.lower():
-        # pngs = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/radio.png".format('filmxy'))
-    # elif 'webcam' in name.lower():
-        # pngs = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/webcam.png".format('filmxy'))
-    # elif 'music' in name.lower():
-        # pngs = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/music.png".format('filmxy'))
-    # elif 'sport' in name.lower():
-        # pngs = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/sport.png".format('filmxy'))
-    # else:
-        # pngs = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/tv.png".format('filmxy'))
     if Utils.isFHD():
         res.append(MultiContentEntryPixmapAlphaTest(pos=(5, 5), size=(40, 40), png=loadPNG(pngs)))
         res.append(MultiContentEntryText(pos=(70, 0), size=(1000, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     else:
-        res.append(MultiContentEntryPixmapAlphaTest(pos=(3, 3), size=(30, 30), png=loadPNG(pngs)))
+        res.append(MultiContentEntryPixmapAlphaTest(pos=(3, 3), size=(40, 40), png=loadPNG(pngs)))
         res.append(MultiContentEntryText(pos=(50, 0), size=(500, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     return res
 
@@ -527,7 +601,7 @@ class Filmxymain(Screen):
         global _session, nextmodule
         _session = session
         nextmodule = 'Filmxymain'
-        skin = skin_path + 'Filmxymain.xml'
+        skin = os.path.join(skin_path, 'Filmxymain.xml')
         with open(skin, 'r') as f:
             self.skin = f.read()
         self.setup_title = ('HOME FILMXY')
@@ -738,7 +812,7 @@ class live_to_stream(Screen):
         self.session = session
         global _session
         _session = session
-        skin = skin_path + 'Filmxymain.xml'
+        skin = os.path.join(skin_path, 'Filmxymain.xml')
         with open(skin, 'r') as f:
             self.skin = f.read()
         self.setup_title = ('HOME FILMXY')
@@ -801,7 +875,6 @@ class live_to_stream(Screen):
             self.leftt.callback.append(self.left)
         self.leftt.start(500, True)
         self.onLayoutFinish.append(self.__layoutFinished)
-        # self.currentList.moveToIndex(0)
 
     def showIMDB(self):
         try:
@@ -830,16 +903,11 @@ class live_to_stream(Screen):
                 regexvideo = 'name:"(.*?)",link:"(.*?)"'
                 match = re.compile(regexvideo, re.DOTALL).findall(content2)
                 for name, url in match:
-                    # if 'adult' in name.lower():
-                        # continue
                     pixmaps = piconlocal(name)
                     if os.path.exists(pixmaps):
-                        # self.downloadPic(None, pixmaps)
                         pic = pixmaps
                     else:
                         pic = no_cover
-                    # print('name categories', name)
-                    # print('url categories', url)
                     self.names.append(name)
                     self.urls.append(url)
                     self.pics.append(pic)
@@ -852,11 +920,8 @@ class live_to_stream(Screen):
                 regexvideo = 'name:"(.*?)",link:"(.*?)"'
                 match = re.compile(regexvideo, re.DOTALL).findall(content2)
                 for name, url in match:
-                    # print('name country', name)
-                    # print('url country', url)
                     pixmaps = piconlocal(name)
                     if os.path.exists(pixmaps):
-                        # self.downloadPic(None, pixmaps)
                         pic = pixmaps
                     else:
                         pic = no_cover
@@ -874,12 +939,9 @@ class live_to_stream(Screen):
                 for name, url in match:
                     pixmaps = piconlocal(name)
                     if os.path.exists(pixmaps):
-                        # self.downloadPic(None, pixmaps)
                         pic = pixmaps
                     else:
                         pic = no_cover
-                    # print('name years', name)
-                    # print('url years', url)
                     self.names.append(name)
                     self.urls.append(url)
                     self.pics.append(pic)
@@ -895,19 +957,15 @@ class live_to_stream(Screen):
                     url1 = "https://www.filmxy.pw/movie-list/" + url + "/"
                     pixmaps = piconlocal(name)
                     if os.path.exists(pixmaps):
-                        # self.downloadPic(None, pixmaps)
                         pic = pixmaps
                     else:
                         pic = no_cover
-                    # print('name az', name)
-                    # print('url az', url)
                     self.names.append(name)
                     self.urls.append(url1)
                     self.pics.append(pic)
                     self.infos.append(self.desc)
             logdata("live_to_stream self.desc: ", self.desc)
             showlist(self.names, self['list'])
-            # self['list'].moveToIndex(0)
         except Exception as ex:
             logdata("Error: can't find file or read data in live_to_stream")
             logdata(str(ex))
@@ -1003,23 +1061,11 @@ class live_to_stream(Screen):
                 return
             idx = self['list'].getSelectionIndex()
             pixmaps = self.pics[idx]
-            # if PY3:
-                # pixmaps = six.ensure_binary(self.pics[idx])
-            # print("debug pixmaps p:", pixmaps)
-            # print("debug pixmaps p:", type(pixmaps))
             if str(res_plugin_path) in pixmaps:
                 self.downloadPic(None, pixmaps)
                 return
             if pixmaps != "" or pixmaps != "n/A" or pixmaps is not None or pixmaps != "null":
                 try:
-                    # if PY3:
-                        # pixmaps = six.ensure_binary(self.pics[idx])
-                    # print("debug pixmaps p:", pixmaps)
-                    # print("debug pixmaps p:", type(pixmaps))
-                    # if pixmaps.startswith(b"https") and sslverify:
-                        # parsed_uri = urlparse(pixmaps)
-                        # domain = parsed_uri.hostname
-                        # sniFactory = SNIFactory(domain)
                     if PY3:
                         pixmaps = pixmaps.encode()
                     callInThread(threadGetPage, url=pixmaps, file=pictmp, success=self.downloadPic, fail=self.downloadError)
@@ -1053,24 +1099,6 @@ class live_to_stream(Screen):
         self["poster"].hide()
         if not fileExists(png):
             png = no_cover
-        # self.picload = ePicLoad()
-        # size = self['poster'].instance.size()
-        # self.scale = AVSwitch().getFramebufferScale()
-        # self.picload.setPara((size.width(),
-                              # size.height(),
-                              # self.scale[0],
-                              # self.scale[1],
-                              # False,
-                              # 1,
-                              # '#FF000000'))
-        # if Utils.DreamOS():
-            # self.picload.startDecode(png, False)
-        # else:
-            # self.picload.startDecode(png, 0, 0, False)
-        # ptr = self.picload.getData()
-        # if ptr is not None:
-            # self['poster'].instance.setPixmap(ptr)
-            # self['poster'].show()
         # del self.picload
         if fileExists(png):
             self["poster"].instance.setPixmapFromFile(png)
@@ -1083,7 +1111,7 @@ class pagesX(Screen):
         self.session = session
         global _session
         _session = session
-        skin = skin_path + 'Filmxymain.xml'
+        skin = os.path.join(skin_path, 'Filmxymain.xml')
         with open(skin, 'r') as f:
             self.skin = f.read()
         self.setup_title = ('HOME FILMXY')
@@ -1219,7 +1247,7 @@ class azvideo(Screen):
         self.session = session
         global _session
         _session = session
-        skin = skin_path + 'Filmxymain.xml'
+        skin = os.path.join(skin_path, 'Filmxymain.xml')
         with open(skin, 'r') as f:
             self.skin = f.read()
         self.setup_title = ('HOME FILMXY')
@@ -1402,10 +1430,7 @@ class azvideo(Screen):
                 return
             idx = self['list'].getSelectionIndex()
             pixmaps = self.pics[idx]
-            # if PY3:
-                # pixmaps = six.ensure_binary(self.pics[idx])
-            # if PY3:
-                # pixmaps = pixmaps.encode()
+
             if str(res_plugin_path) in pixmaps:
                 self.downloadPic(None, pixmaps)
                 return
@@ -1454,7 +1479,7 @@ class pagevideo3(Screen):
         self.session = session
         global _session
         _session = session
-        skin = skin_path + 'Filmxymain.xml'
+        skin = os.path.join(skin_path, 'Filmxymain.xml')
         with open(skin, 'r') as f:
             self.skin = f.read()
         self.setup_title = ('HOME FILMXY')
@@ -1582,62 +1607,64 @@ class pagevideo3(Screen):
         if PY3:
             content = six.ensure_str(content)
         try:
-            # <div
-            # class="col-md-2 col-sm-3 col-xs-6 custom-col"><div
-            # class=single-post><div
-            # class=post-thumbnail>
-            # <a
-            # href=https://www.filmxy.pw/the-quiet-2005/ >
-            # <img
-            # width=250 height=350 data-src=https://www.cdnzone.org/uploads/2022/11/04/The-Quiet-2005-Cover.jpg src=https://www.cdnzone.org/asset/images/1px.png alt="The Quiet Cover">
-            # </a><div
-            # class="m-type post">Movie</div><div
-            # class="m-quality green">HD/Web-DL</div></div><div
-            # class=post-description><div
-            # class=post-title><h2>The Quiet (2005)</h2></div><div
-            # class=imdb-details><p><b>IMDb: </b>6.2/10</p></div><div
-            # class=available-quality><p>720p | 1080p</p></div><div
-            # class=genre><p><b>Ganre: </b>Crime, Drama, Thriller</p></div><div
-            # class=mpa><p><b>MPA: </b>R</p></div><div
-            # class=size><p><b>Size: </b>883.62 MB | 1.6 GB</p></div><div
-            # class=story><p>This film receives a 10 for disturbing subject matter. It is at times very difficult to watch. The characters are troubled, each in his/her own way. It feels edgy and often very foreign. With that warning, I must say that on some level I enjoyed the film. Technically it is superb. The character development is [&hellip;]</p></div><div
+            '''
+            <div
+            class="col-md-2 col-sm-3 col-xs-6 custom-col"><div
+            class=single-post><div
+            class=post-thumbnail>
+            <a
+            href=https://www.filmxy.pw/the-quiet-2005/ >
+            <img
+            width=250 height=350 data-src=https://www.cdnzone.org/uploads/2022/11/04/The-Quiet-2005-Cover.jpg src=https://www.cdnzone.org/asset/images/1px.png alt="The Quiet Cover">
+            </a><div
+            class="m-type post">Movie</div><div
+            class="m-quality green">HD/Web-DL</div></div><div
+            class=post-description><div
+            class=post-title><h2>The Quiet (2005)</h2></div><div
+            class=imdb-details><p><b>IMDb: </b>6.2/10</p></div><div
+            class=available-quality><p>720p | 1080p</p></div><div
+            class=genre><p><b>Ganre: </b>Crime, Drama, Thriller</p></div><div
+            class=mpa><p><b>MPA: </b>R</p></div><div
+            class=size><p><b>Size: </b>883.62 MB | 1.6 GB</p></div><div
+            class=story><p>This film receives a 10 for disturbing subject matter. It is at times very difficult to watch. The characters are troubled, each in his/her own way. It feels edgy and often very foreign. With that warning, I must say that on some level I enjoyed the film. Technically it is superb. The character development is [&hellip;]</p></div><div
 
-            # class=story></div><div
+            class=story></div><div
 
-            # class=categories><p><b>Category: </b> <a
-            # href=https://www.filmxy.pw/genre/adult/ rel="category tag">Adult</a>, <a
-            # href=https://www.filmxy.pw/genre/crime/ rel="category tag">Crime</a>, <a
-            # href=https://www.filmxy.pw/genre/drama/ rel="category tag">Drama</a>, <a
-            # href=https://www.filmxy.pw/genre/thriller/ rel="category tag">Thriller</a></p></div></div></div></div><div
+            class=categories><p><b>Category: </b> <a
+            href=https://www.filmxy.pw/genre/adult/ rel="category tag">Adult</a>, <a
+            href=https://www.filmxy.pw/genre/crime/ rel="category tag">Crime</a>, <a
+            href=https://www.filmxy.pw/genre/drama/ rel="category tag">Drama</a>, <a
+            href=https://www.filmxy.pw/genre/thriller/ rel="category tag">Thriller</a></p></div></div></div></div><div
 
-            # regexvideo = 'class=post-thumbnail>.*?href=(.*?)/ >.*?data-src=(.*?) src.*?title><h2>(.*?)<'
+            regexvideo = 'class=post-thumbnail>.*?href=(.*?)/ >.*?data-src=(.*?) src.*?title><h2>(.*?)<'
 
-            # class=single-post><div
-            # class=post-thumbnail>
-            # <a
-            # href=https://www.filmxy.pw/route-10-2022/ >
-            # <img
-            # width=250 height=350 data-src=https://www.cdnzone.org/uploads/2022/10/30/Route-10-2022-Cover.jpg src=https://www.cdnzone.org/asset/images/1px.png alt="Route 10 Cover">
-            # </a><div
-            # class="m-type post">Movie</div><div
-            # class="m-quality green">HD/Web-DL</div></div><div
-            # class=post-description><div
-            # class=post-title><h2>Route 10 (2022)</h2></div><div
-            # class=imdb-details><p><b>IMDb: </b>6.1/10</p></div><div
-            # class=available-quality><p>720p | 1080p</p></div><div
-            # class=genre><p><b>Ganre: </b>Action, Drama, Thriller</p></div><div
-            # class=mpa><p><b>MPA: </b>N/A</p></div><div
-            # class=size><p><b>Size: </b>749.68 MB | 1.5 GB</p></div><div
-            # class=story></div><div
-            # class=categories><p><b>Category: </b> <a
-            # href=https://www.filmxy.pw/genre/action/ rel="category tag">Action</a>, <a
-            # href=https://www.filmxy.pw/genre/drama/ rel="category tag">Drama</a>, <a
-            # href=https://www.filmxy.pw/genre/thriller/ rel="category tag">Thriller</a></p></div></div></div></div><div
+            class=single-post><div
+            class=post-thumbnail>
+            <a
+            href=https://www.filmxy.pw/route-10-2022/ >
+            <img
+            width=250 height=350 data-src=https://www.cdnzone.org/uploads/2022/10/30/Route-10-2022-Cover.jpg src=https://www.cdnzone.org/asset/images/1px.png alt="Route 10 Cover">
+            </a><div
+            class="m-type post">Movie</div><div
+            class="m-quality green">HD/Web-DL</div></div><div
+            class=post-description><div
+            class=post-title><h2>Route 10 (2022)</h2></div><div
+            class=imdb-details><p><b>IMDb: </b>6.1/10</p></div><div
+            class=available-quality><p>720p | 1080p</p></div><div
+            class=genre><p><b>Ganre: </b>Action, Drama, Thriller</p></div><div
+            class=mpa><p><b>MPA: </b>N/A</p></div><div
+            class=size><p><b>Size: </b>749.68 MB | 1.5 GB</p></div><div
+            class=story></div><div
+            class=categories><p><b>Category: </b> <a
+            href=https://www.filmxy.pw/genre/action/ rel="category tag">Action</a>, <a
+            href=https://www.filmxy.pw/genre/drama/ rel="category tag">Drama</a>, <a
+            href=https://www.filmxy.pw/genre/thriller/ rel="category tag">Thriller</a></p></div></div></div></div><div
 
-            # n1 = content.find("cat-description", 0)
-            # n2 = content.find("numeric-pagination>", n1)
-            # content2 = content[n1:n2]
-            # regexvideo = 'post-thumbnail>.*?href=(.*?)>.*?data-src=(.*?)src.*?title><h2>(.*?)<.*?Ganre:.*?</b>(.*?)</p>.*?Size:.*?</b>(.*?)</p>.*?story><p>(.*?)</p>'
+            n1 = content.find("cat-description", 0)
+            n2 = content.find("numeric-pagination>", n1)
+            content2 = content[n1:n2]
+            regexvideo = 'post-thumbnail>.*?href=(.*?)>.*?data-src=(.*?)src.*?title><h2>(.*?)<.*?Ganre:.*?</b>(.*?)</p>.*?Size:.*?</b>(.*?)</p>.*?story><p>(.*?)</p>'
+            '''
             regexvideo = 'post-thumbnail>.*?href=(.*?)>.*?data-src=(.*?)src.*?title><h2>(.*?)<.*?Ganre:.*?</b>(.*?)</p>.*?Size:.*?(.*?)</p>.*?story>(.*?)</div>'
             match = re.compile(regexvideo, re.DOTALL).findall(content)
             for url, pic, name, infoadd, size, info in match:
@@ -1705,10 +1732,7 @@ class pagevideo3(Screen):
                 return
             idx = self['list'].getSelectionIndex()
             pixmaps = self.pics[idx]
-            # if PY3:
-                # pixmaps = six.ensure_binary(self.pics[idx])
-            # if PY3:
-                # pixmaps = pixmaps.encode()
+
             if str(res_plugin_path) in pixmaps:
                 self.downloadPic(None, pixmaps)
                 return
@@ -1773,7 +1797,7 @@ class Video5list(Screen):
         self.session = session
         global _session
         _session = session
-        skin = skin_path + 'Filmxymain.xml'
+        skin = os.path.join(skin_path, 'Filmxymain.xml')
         with open(skin, 'r') as f:
             self.skin = f.read()
         self.setup_title = ('HOME FILMXY')
@@ -1887,23 +1911,12 @@ class Video5list(Screen):
         self.pics = []
         self.infos = []
         content = Utils.ReadUrl(self.url)
-        # if PY3:
-            # content = six.ensure_str(content)
-        # print("content A =Video5list", content)
         try:
-            # regexvideo = 'id=tab-download.*?href=(.*?)target'
-            # regexvideo = 'id=tab-download.*?href=(.*?)target.*?class=movie-poster.*?data-src=(.*?)src'
-            # class=movie-poster>
-            # <img
-            # width=250 height=350 data-src=https://www.cdnzone.org/uploads/2017/09/A-2nd-Hand-Lover-2015-cover.jpg src
             regexvideo = 'class=movie-poster.*?data-src=(.*?)src.*?id=main-down.*?href=(.*?)target'
             match = re.compile(regexvideo, re.DOTALL).findall(content)
             for pic, url in match:
-            # for url, pic in match:
                 picx = pic.replace(' ', '').strip()
                 url = url.replace(" ", "").strip()
-                # print('contentglob pic ----', pic)
-                # print('contentglob url ----', url)
                 content2 = Utils.getUrl2(url, self.url)
                 regexvideo2 = '<li class="signle-link"><a href="(.*?)".*?<span>(.*?)</span>.*?<strong>(.*?)</strong>'
                 match2 = re.compile(regexvideo2, re.DOTALL).findall(content2)
@@ -1975,23 +1988,12 @@ class Video5list(Screen):
                 return
             idx = self['list'].getSelectionIndex()
             pixmaps = self.pics[idx]
-            # if PY3:
-                # pixmaps = six.ensure_binary(self.pics[idx])
-            # if PY3:
-                # pixmaps = pixmaps.encode()
+
             if str(res_plugin_path) in pixmaps:
                 self.poster_resize(pixmaps)
                 return
             if pixmaps != "" or pixmaps != "n/A" or pixmaps is not None or pixmaps != "null":
                 try:
-                    # if PY3:
-                        # pixmaps = six.ensure_binary(self.pics[idx])
-                    # print("debug pixmaps p:", pixmaps)
-                    # print("debug pixmaps p:", type(pixmaps))
-                    # if pixmaps.startswith(b"https") and sslverify:
-                        # parsed_uri = urlparse(pixmaps)
-                        # domain = parsed_uri.hostname
-                        # sniFactory = SNIFactory(domain)
                     if PY3:
                         pixmaps = pixmaps.encode()
                     callInThread(threadGetPage, url=pixmaps, file=pictmp, success=self.downloadPic, fail=self.downloadError)
@@ -2049,7 +2051,7 @@ class Playchoice(Screen):
     def __init__(self, session, name, url, pic, desc):
         Screen.__init__(self, session)
         self.session = session
-        skin = skin_path + 'Playchoice.xml'
+        skin = os.path.join(skin_path, 'Playchoice.xml')
         with open(skin, 'r') as f:
             self.skin = f.read()
         f.close()
@@ -2066,8 +2068,6 @@ class Playchoice(Screen):
         self['info'] = Label()
         self['info'].setText(name)
         self['desc'] = StaticText()
-        # if desc != '' or desc != 'None':
-            # self['desc'].setText(desc)
         self['title'] = Label(title_plug)
         self['poster'] = Pixmap()
         self['key_red'] = Button(_('Back'))
@@ -2103,14 +2103,10 @@ class Playchoice(Screen):
 
     def load_infos(self):
         try:
-            # i = len(self.names)
-            # if i > 0:
             if self.desc != '' or self.desc != 'None':
                 self['desc'].setText(self.desc)
             else:
                 self['desc'].setText('No Epg')
-            # else:
-                # self['desc'].setText('No Epg')
         except Exception as e:
             logdata('error info - v4', str(e))
 
@@ -2145,8 +2141,6 @@ class Playchoice(Screen):
             filename = filename.replace(".mp4", "")
             fileTitle = filename.lower() + ext
             self.in_tmp = Path_Movies + fileTitle
-            # if PY3:
-                # self.urlx = self.urlx.encode()
             logdata('path download = ', self.in_tmp)
             try:
                 useragent = "--header='User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36'"
@@ -2160,7 +2154,7 @@ class Playchoice(Screen):
                 self['info'].setText(_('Download in progress... %s' % fileTitle))
                 self.downloading = True
                 pmovies = True
-
+                '''
                 # logdata('self url is : ', self.urlx)
                 # logdata('url type: ', type(self.urlx))
                 # #################
@@ -2193,7 +2187,7 @@ class Playchoice(Screen):
                 # except Exception as e:
                     # print(e)
                     # pass
-
+                '''
             except URLError as e:
                 logdata("Download failed !!\n%s" % e)
                 self.session.openWithCallback(self.ImageDownloadCB, MessageBox, _("Download Failed !!") + "\n%s" % e, type=MessageBox.TYPE_ERROR)
@@ -2364,22 +2358,12 @@ class Playchoice(Screen):
             if i < 0:
                 return
             pixmaps = self.pic
-            # print('pixmap  : ', pixmaps)
-            # if PY3:
-                # pixmaps = six.ensure_binary(self.pic)
-            # if PY3:
-                # pixmaps = pixmaps.encode()
+
             if str(res_plugin_path) in pixmaps:
                 self.downloadPic(None, pixmaps)
                 return
             if pixmaps != "" or pixmaps != "n/A" or pixmaps is not None or pixmaps != "null":
                 try:
-                    # if PY3:
-                        # pixmaps = six.ensure_binary(self.pic)
-                    # if pixmaps.startswith(b"https") and sslverify:
-                        # parsed_uri = urlparse(pixmaps)
-                        # domain = parsed_uri.hostname
-                        # sniFactory = SNIFactory(domain)
                     if PY3:
                         pixmaps = pixmaps.encode()
                     callInThread(threadGetPage, url=pixmaps, file=pictmp, success=self.downloadPic, fail=self.downloadError)
@@ -2556,7 +2540,7 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         self.service = None
         self.name = html_conv.html_unescape(name)
         self.icount = 0
-        self.url = url #.replace(':', '%3a')
+        self.url = url  # .replace(':', '%3a')
         self.state = self.STATE_PLAYING
         self['actions'] = ActionMap(['MoviePlayerActions',
                                      'MovieSelectionActions',
@@ -2587,22 +2571,26 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         return AVSwitch().getAspectRatioSetting()
 
     def getAspectString(self, aspectnum):
-        return {0: _('4:3 Letterbox'),
-                1: _('4:3 PanScan'),
-                2: _('16:9'),
-                3: _('16:9 always'),
-                4: _('16:10 Letterbox'),
-                5: _('16:10 PanScan'),
-                6: _('16:9 Letterbox')}[aspectnum]
+        return {
+            0: '4:3 Letterbox',
+            1: '4:3 PanScan',
+            2: '16:9',
+            3: '16:9 always',
+            4: '16:10 Letterbox',
+            5: '16:10 PanScan',
+            6: '16:9 Letterbox'
+        }[aspectnum]
 
     def setAspect(self, aspect):
-        map = {0: '4_3_letterbox',
-               1: '4_3_panscan',
-               2: '16_9',
-               3: '16_9_always',
-               4: '16_10_letterbox',
-               5: '16_10_panscan',
-               6: '16_9_letterbox'}
+        map = {
+            0: '4_3_letterbox',
+            1: '4_3_panscan',
+            2: '16_9',
+            3: '16_9_always',
+            4: '16_10_letterbox',
+            5: '16_10_panscan',
+            6: '16_9_letterbox'
+        }
         config.av.aspectratio.setValue(map[aspect])
         try:
             AVSwitch().setAspectRatio(aspect)
@@ -2634,39 +2622,6 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         sref.setName(name)
         self.session.nav.stopService()
         self.session.nav.playService(sref)
-
-    # def play(self, url):
-        # # url = item
-        # name = "video"
-        # url = str(url)
-        # print("xmbc url =", url)
-        # # if listitem is not None:
-            # # dataA = listitem.data
-            # # name = dataA['label']
-        # if (name == 'None') or (name is None) or (name == ""):
-            # name = "video"
-        # try:
-            # print("xmbc url 2=", url)
-            # url = url.replace("&", "AxNxD")
-            # print("xmbc url 3=", url)
-            # url = url.replace("=", "ExQ")
-            # print("xmbc url 4=", url)
-            # data = "&url=" + url + "&name=" + name + "\n"
-            # print("xmbc url 5=", url)
-            # # if os.path.exists("/etc/debugxb"):
-            # print("xmbc data B=", data)
-            # print("xmbc url 6=", url)
-        # except:
-            # url = url.items[0].getfilename()
-            # url = url.replace("&", "AxNxD")
-            # url = url.replace("=", "ExQ")
-            # data = "&url=" + url + "&name=" + name + "\n"
-            # # if os.path.exists("/etc/debugxb"):
-            # print("getfilename data B=", data)
-            # # file = open("//tmp/data.txt", "a")
-            # # if "plugin:/" not in data:
-            # # file.write(data)
-            # # file.close()
 
     def openPlay(self, servicetype, url):
         name = self.name
@@ -2703,9 +2658,7 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
                 self.servicetype = "4097"
         currentindex = 0
         streamtypelist = ["4097"]
-        # if "youtube" in str(url):
-            # self.mbox = self.session.open(MessageBox, _('For Stream Youtube coming soon!'), MessageBox.TYPE_INFO, timeout=5)
-            # return
+
         if Utils.isStreamlinkAvailable():
             streamtypelist.append("5002")  # ref = '5002:0:1:0:0:0:0:0:0:0:http%3a//127.0.0.1%3a8088/' + url
             streaml = True
@@ -2770,7 +2723,7 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
 class myconfig(Screen, ConfigListScreen):
     def __init__(self, session):
         Screen.__init__(self, session)
-        skin = skin_path + 'myconfig.xml'
+        skin = os.path.join(skin_path, 'myconfig.xml')
         f = open(skin, 'r')
         self.skin = f.read()
         f.close()
@@ -2954,7 +2907,7 @@ class StreamTasks(Screen):
     def __init__(self, session):
         Screen.__init__(self, session)
         self.session = session
-        skin = skin_path + "/StreamTasks.xml"
+        skin = os.path.join(skin_path, 'StreamTasks.xml')
         with open(skin, 'r') as f:
             self.skin = f.read()
         self.setup_title = ('Filmxy Movies')
