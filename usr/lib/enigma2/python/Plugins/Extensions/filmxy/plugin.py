@@ -324,125 +324,6 @@ def status_site():
     return
 
 
-# def piconlocal(name):
-    # picolocal = 'backg2.png'
-    # if 'tv' in name.lower():
-        # picolocal = 'movie.png'
-    # elif 'adult' in name.lower():
-        # picolocal = 'adult.png'
-    # elif 'animation' in name.lower():
-        # picolocal = 'animation.png'
-    # elif 'biography' in name.lower():
-        # picolocal = 'biography.png'
-    # elif 'show' in name.lower():
-        # picolocal = 'game-show.png'
-    # elif 'history' in name.lower():
-        # picolocal = 'history.png'
-    # elif 'music' in name.lower():
-        # picolocal = 'music.png'
-    # elif 'sci-fi' in name.lower():
-        # picolocal = 'sci-fi.png'
-    # elif 'family' in name.lower():
-        # picolocal = 'family.png'
-    # elif 'short' in name.lower():
-        # picolocal = 'short.png'
-    # elif 'uncategorized' in name.lower():
-        # picolocal = 'uncategorized.png'
-    # elif 'war' in name.lower():
-        # picolocal = 'war.png'
-    # elif 'commedia' in name.lower():
-        # picolocal = 'commedia.png'
-    # elif 'comedy' in name.lower():
-        # picolocal = 'commedia.png'
-    # elif 'thriller' in name.lower():
-        # picolocal = 'thriller.png'
-    # elif 'azione' in name.lower():
-        # picolocal = 'azione.png'
-    # elif 'dramma' in name.lower():
-        # picolocal = 'dramma.png'
-    # elif 'drama' in name.lower():
-        # picolocal = 'dramma.png'
-    # elif 'western' in name.lower():
-        # picolocal = 'western.png'
-    # elif 'biografico' in name.lower():
-        # picolocal = 'biografico.png'
-    # elif 'romantico' in name.lower():
-        # picolocal = 'romantico.png'
-    # elif 'romance' in name.lower():
-        # picolocal = 'romantico.png'
-    # elif 'horror' in name.lower():
-        # picolocal = 'horror.png'
-    # elif 'musica' in name.lower():
-        # picolocal = 'musical.png'
-    # elif 'guerra' in name.lower():
-        # picolocal = 'guerra.png'
-    # elif 'bambini' in name.lower():
-        # picolocal = 'bambini.png'
-    # elif 'bianco' in name.lower():
-        # picolocal = 'bianconero.png'
-    # elif 'tutto' in name.lower():
-        # picolocal = 'toto.png'
-    # elif 'cartoni' in name.lower():
-        # picolocal = 'cartoni.png'
-    # elif 'bud' in name.lower():
-        # picolocal = 'budterence.png'
-    # elif 'documentary' in name.lower():
-        # picolocal = 'documentary.png'
-    # elif 'crime' in name.lower():
-        # picolocal = 'crime.png'
-    # elif 'mystery' in name.lower():
-        # picolocal = 'mistery.png'
-    # elif 'fiction' in name.lower():
-        # picolocal = 'fiction.png'
-    # elif 'adventure' in name.lower():
-        # picolocal = 'mistery.png'
-    # elif 'action' in name.lower():
-        # picolocal = 'azione.png'
-    # elif '007' in name.lower():
-        # picolocal = '007.png'
-    # elif 'sport' in name.lower():
-        # picolocal = 'sport.png'
-    # elif 'teatr' in name.lower():
-        # picolocal = 'teatro.png'
-    # elif 'extra' in name.lower():
-        # picolocal = 'extra.png'
-    # elif 'search' in name.lower():
-        # picolocal = 'search.png'
-    # elif 'mediaset' in name.lower():
-        # picolocal = 'mediaset.png'
-    # elif 'nazionali' in name.lower():
-        # picolocal = 'nazionali.png'
-    # elif 'news' in name.lower():
-        # picolocal = 'news.png'
-    # elif 'rai' in name.lower():
-        # picolocal = 'rai.png'
-    # elif 'webcam' in name.lower():
-        # picolocal = 'relaxweb.png'
-    # elif 'relax' in name.lower():
-        # picolocal = 'relaxweb.png'
-    # elif 'vecchi' in name.lower():
-        # picolocal = 'vecchi.png'
-    # elif 'italia' in name.lower():
-        # picolocal = 'movie.png'
-    # elif 'fantascienza' in name.lower():
-        # picolocal = 'fantascienza.png'
-    # elif 'fantasy' in name.lower():
-        # picolocal = 'fantasy.png'
-    # elif 'fantasia' in name.lower():
-        # picolocal = 'fantasia.png'
-    # elif 'film' in name.lower():
-        # picolocal = 'movie.png'
-    # elif 'plutotv' in name.lower():
-        # picolocal = 'plutotv.png'
-    # elif 'samsung' in name.lower():
-        # picolocal = 'samsung.png'
-    # elif 'prev' in name.lower():
-        # picolocal = prevpng
-    # elif 'next' in name.lower():
-        # picolocal = nextpng
-    # # logdata('>>>>>>>> ' + str(piccons) + str(picolocal))
-    # name = str(piccons) + str(picolocal)
-    # return name
 def piconlocal(name):
 
     pngs = [
@@ -895,7 +776,7 @@ class live_to_stream(Screen):
         self.pics = []
         self.infos = []
         try:
-            if 'categories' in self.desc:
+            if 'categories' in self.desc.lower():
                 content = Utils.ReadUrl(Host)
                 n1 = content.find("var genre=", 0)
                 n2 = content.find("var years=", n1)
@@ -912,7 +793,7 @@ class live_to_stream(Screen):
                     self.urls.append(url)
                     self.pics.append(pic)
                     self.infos.append(self.desc)
-            elif 'countries' in self.desc:
+            elif 'countries' in self.desc.lower():
                 content = Utils.ReadUrl(Host)
                 n1 = content.find("var country=", 0)
                 n2 = content.find("</script>", n1)
@@ -929,7 +810,7 @@ class live_to_stream(Screen):
                     self.urls.append(url)
                     self.pics.append(pic)
                     self.infos.append(self.desc)
-            elif 'years' in self.desc:
+            elif 'years' in self.desc.lower():
                 content = Utils.ReadUrl(Host)
                 n1 = content.find("var years=", 0)
                 n2 = content.find("var country", n1)
@@ -946,7 +827,7 @@ class live_to_stream(Screen):
                     self.urls.append(url)
                     self.pics.append(pic)
                     self.infos.append(self.desc)
-            elif 'a-z' in self.desc:
+            elif 'a-z' in self.desc.lower():
                 content = Utils.ReadUrl(Host)
                 n1 = content.find('class="numeric-pagination post-list"><ul>', 0)
                 n2 = content.find("/div><div", n1)
@@ -992,7 +873,7 @@ class live_to_stream(Screen):
                 self.session.open(pagesX, name, url, pic, nextmodule)
                 return
             # az
-            elif nextmodule == 'az':
+            elif nextmodule == 'a-z':
                 self.session.open(azvideo, name, url, pic, nextmodule)
                 return
             logdata('pages next: ', nextmodule)
