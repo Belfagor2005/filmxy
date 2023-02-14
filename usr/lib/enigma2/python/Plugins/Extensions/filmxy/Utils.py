@@ -64,7 +64,7 @@ if sys.version_info >= (2, 7, 9):
 def checkGZIP(url):
     from io import StringIO
     import gzip
-    hdr = {"User-Agent": "Enigma2 - XCForever Plugin"}
+    hdr = {"User-Agent": "Enigma2 - Plugin"}
     response = None
     request = Request(url, headers=hdr)
 
@@ -128,6 +128,7 @@ def getEnigmaVersionString():
         return getEnigmaVersionString()
     except:
         return "N/A"
+
 
 def getImageVersionString():
     try:
@@ -246,6 +247,7 @@ def getMointedDevice(pathname):
         pass
     return md
 
+
 def getFreeSpace(path):
     try:
         moin_point = getMountPoint(path)
@@ -294,7 +296,7 @@ def downloadFile(url, target):
         from urllib2 import HTTPError, URLError
     try:
         response = urlopen(url, None, 5)
-        with open(target, 'w') as output:
+        with open(target, 'wb') as output:
             # print('response: ', response)
             output.write(response.read())
         response.close()
@@ -316,7 +318,7 @@ def downloadFilest(url, target):
         req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
         # context=ssl._create_unverified_context()
         response = ssl_urlopen(req)
-        with open(target, 'w') as output:
+        with open(target, 'wb') as output:
             if PY3:
                 output.write(response.read().decode('utf-8'))
             else:
@@ -1469,6 +1471,22 @@ def clean_html(html):
         html = html.encode('utf-8')
     return html.strip()
 #######################################
+
+
+def cachedel(folder):
+    fold = str(folder)
+    cmd = "rm " + fold + "/*"
+    os.system(cmd)
+
+
+def cleanName(name):
+    non_allowed_characters = "/.\\:*?<>|\""
+    name = name.replace('\xc2\x86', '').replace('\xc2\x87', '')
+    name = name.replace(' ', '-').replace("'", '').replace('&', 'e')
+    name = name.replace('(', '').replace(')', '')
+    name = name.strip()
+    name = ''.join(['_' if c in non_allowed_characters or ord(c) < 32 else c for c in name])
+    return name
 
 
 def cleantitle(title):
