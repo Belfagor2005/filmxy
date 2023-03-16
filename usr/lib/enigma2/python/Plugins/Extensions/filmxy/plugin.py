@@ -5,7 +5,7 @@
 ****************************************
 *        coded by Lululla              *
 *        Many thank's Pcd              *
-*             14/01/2023               *
+*             14/03/2023               *
 *       skin by MMark                  *
 ****************************************
 Info http://t.me/tivustream
@@ -2507,7 +2507,8 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
 
     def openPlay(self, servicetype, url):
         name = self.name
-        url = url.replace(' ', '%20').replace(':', '%3a')
+        url = url.replace(' ', '%20')
+        url = url.replace(':', '%3a')
 
         # servicetype = config.plugins.filmxy.services.getValue()
         logdata("xmbc url 2=", url)
@@ -2518,7 +2519,7 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         logdata("xmbc url 6=", url)
 
         # url = url[:url.rfind("|")]
-        # print('new url: ', url)
+        print('new url: ', url)
         ref = "{0}:0:1:0:0:0:0:0:0:0:{1}:{2}".format(servicetype, url, name)
         if streaml is True:
             url = 'http://127.0.0.1:8088/' + str(url)
@@ -2642,16 +2643,6 @@ class myconfig(Screen, ConfigListScreen):
         if self.setInfo not in self['config'].onSelectionChanged:
             self['config'].onSelectionChanged.append(self.setInfo)
 
-    def setInfo(self):
-        entry = str(self.getCurrentEntry())
-        if entry == _('Set the path to the Cache folder'):
-            self['description'].setText(_("Press Ok to select the folder containing the picons files"))
-        if entry == _('Set the path Movie folder'):
-            self['description'].setText(_("Folder Movie Path (eg.: /media/hdd/movie), Press OK - Enigma restart required"))
-        if entry == _('Services Player Reference type'):
-            self['description'].setText(_("Configure Service Player Reference"))
-        return
-
     def layoutFinished(self):
         payp = paypal()
         self["paypal"].setText(payp)
@@ -2671,6 +2662,18 @@ class myconfig(Screen, ConfigListScreen):
         self.list.append(getConfigListEntry(_('Force Services Player Reference type'), config.plugins.filmxy.servicesforce, _("Force Service Player Reference")))
         self["config"].list = self.list
         self["config"].l.setList(self.list)
+
+    def setInfo(self):
+        try:
+            sel = self['config'].getCurrent()[2]
+            if sel:
+                # print('sel =: ', sel)
+                self['description'].setText(str(sel))
+            else:
+                self['description'].setText(_('SELECT YOUR CHOICE'))
+            return
+        except Exception as e:
+            print("Error ", e)
 
     def cachedel(self):
         fold = config.plugins.filmxy.cachefold.value  # + "/pic"
