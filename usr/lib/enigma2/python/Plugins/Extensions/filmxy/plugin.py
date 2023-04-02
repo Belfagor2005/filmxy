@@ -86,6 +86,15 @@ def logdata(name='', data=None):
         pass
 
 
+def clear_caches():
+    try:
+        os.system("echo 1 > /proc/sys/vm/drop_caches")
+        os.system("echo 2 > /proc/sys/vm/drop_caches")
+        os.system("echo 3 > /proc/sys/vm/drop_caches")
+    except:
+        pass
+
+
 PY3 = False
 PY3 = sys.version_info.major >= 3
 logdata('Py3: ', PY3)
@@ -133,7 +142,17 @@ streamlink = False
 if Utils.isStreamlinkAvailable:
     streamlink = True
 
+try:
+    from Plugins.Extensions.SubsSupport import SubsSupport, SubsSupportStatus
+except ImportError:
+    class SubsSupport(object):
+        def __init__(self, *args, **kwargs):
+            pass
 
+
+class SubsSupportStatus(object):
+    def __init__(self, *args, **kwargs):
+        pass
 from requests import get, exceptions
 from requests.exceptions import HTTPError
 from twisted.internet.reactor import callInThread
@@ -165,7 +184,7 @@ def cleantitle(title):
 
 
 def getversioninfo():
-    currversion = '1.7'
+    currversion = '1.2'
     version_file = os.path.join(PLUGIN_PATH, 'version')
     if os.path.exists(version_file):
         try:
@@ -410,7 +429,7 @@ def piconlocal(name):
     path = os.path.join(piccons, piconlocal)
     return str(path)
 
-# filter list assign png
+
 EXTRAD = "radio", "radyo", "mix", "fm", "kbit", "rap", "metal", "alternative"
 EXTXXX = "adult", "xxx"
 EXTCAM = "webcam", "webcams"
@@ -423,6 +442,20 @@ EXTFAM = "family"
 EXTREL = "religious"
 EXTSHP = "shop"
 EXTTRV = "travel"
+
+EXTDOWN = {
+        ".avi": "movie",
+        ".divx": "movie",
+        ".mpg": "movie",
+        ".mpeg": "movie",
+        ".mkv": "movie",
+        ".mov": "movie",
+        ".m4v": "movie",
+        ".flv": "movie",
+        ".m3u8": "movie",
+        ".relinker": "movie",
+        ".mp4": "movie",
+    }
 
 
 class rvList(MenuList):
@@ -1804,8 +1837,7 @@ class Video5list(Screen):
                 match2 = re.compile(regexvideo2, re.DOTALL).findall(content2)
                 for url, name1, name2 in match2:
                     name1 = name1.replace("-", "").replace(" ", "")
-                    vname = unquote(self.name)
-                    name = vname + "-" + name1 + "-" + name2
+                    name = unquote(self.name) + "-" + name1 + "-" + name2
                     name = html_conv.html_unescape(name)
                     pic = picx
                     info = self.desc
@@ -1996,16 +2028,16 @@ class Playchoice(Screen):
         self.session.open(StreamTasks)
 
     def runRec(self, url):
-        if 'None' not in str(url):
-            self.namem3u = self.name1
-            self.urlx = url
-            if self.downloading is True:
-                self.session.open(MessageBox, _('You are already downloading!!!'), MessageBox.TYPE_INFO, timeout=5)
-                return
-            else:
-                self.session.openWithCallback(self.download_m3u, MessageBox, _("DOWNLOAD VIDEO?\n%s" % self.namem3u), type=MessageBox.TYPE_YESNO, timeout=5, default=True)
+        # if 'None' not in str(url):
+            # self.namem3u = self.name1
+        self.urlx = url
+        if self.downloading is True:
+            self.session.open(MessageBox, _('You are already downloading!!!'), MessageBox.TYPE_INFO, timeout=5)
+            return
         else:
-            self.session.open(MessageBox, _('No link available'), MessageBox.TYPE_INFO, timeout=5)
+            self.session.openWithCallback(self.download_m3u, MessageBox, _("DOWNLOAD VIDEO?\n%s" % self.namem3u), type=MessageBox.TYPE_YESNO, timeout=5, default=True)
+        # else:
+            # self.session.open(MessageBox, _('No link available'), MessageBox.TYPE_INFO, timeout=5)
 
     def download_m3u(self, result):
         if result:
@@ -2017,20 +2049,30 @@ class Playchoice(Screen):
 
             path = urlparse(self.urlx).path
             ext = splitext(path)[1]
-            if ext != '.mp4' or ext != '.mkv' or ext != '.avi' or ext != '.flv':  # or ext != 'm3u8':
+            # if ext != '.mp4' or ext != '.mkv' or ext != '.avi' or ext != '.flv':  # or ext != 'm3u8':
+                # ext = '.mp4'
+
+            filename = Utils.cleantitle(self.title)
+            if ext not in EXTDOWN:
                 ext = '.mp4'
-            filename = cleantitle(self.namem3u)
-            filename = filename.replace(".mp4", "")
+
+            # filename = cleantitle(self.namem3u)
+            # filename = filename.replace(".mp4", "")
             fileTitle = filename.lower() + ext
             self.in_tmp = Path_Movies + fileTitle
             logdata('path download = ', self.in_tmp)
             try:
-                useragent = "--header='User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36'"
+                # useragent = "--header='User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36'"
 
                 import subprocess
-                cmd = "wget %s -c '%s' -O '%s'" % (useragent, self.urlx, self.in_tmp)
+                # cmd = "wget %s -c '%s' -O '%s'" % (useragent, self.urlx, self.in_tmp)
+                # if "https" in str(self.urlx):
+                    # cmd = "wget --no-check-certificate -U %s -c '%s' -O '%s'" % (useragent, self.urlx, self.in_tmp)
+
+                cmd = "wget -U '%s' -c '%s' -O '%s';%s" % ('Enigma2 - Filmxy Plugin', str(self.urlx), self.in_tmp)
                 if "https" in str(self.urlx):
-                    cmd = "wget --no-check-certificate -U %s -c '%s' -O '%s'" % (useragent, self.urlx, self.in_tmp)
+                    cmd = "wget --no-check-certificate -U '%s' -c '%s' -O '%s';%s" % ('Enigma2 - tvAddon Plugin', str(self.urlx), self.in_tmp)
+
                 myCmd = "%s" % str(cmd)
                 subprocess.Popen(myCmd, shell=True, executable='/bin/bash')
                 self['info'].setText(_('Download in progress... %s' % fileTitle))
@@ -2061,6 +2103,21 @@ class Playchoice(Screen):
                 # cmd = "wget %s -c '%s' -O '%s'" % (useragent, self.urlx, self.in_tmp)
                 # if "https" in str(self.urlx):
                     # cmd = "wget --no-check-certificate -U %s -c '%s' -O '%s'" % ('Enigma2 - Filmxy Plugin', self.urlx, self.in_tmp)
+                '''
+                # cmd = "wget -U '%s' -c '%s' -O '%s%s'" % ('Enigma2 - Filxy Plugin', self.urlx, self.in_tmp, fileTitle)
+                # if "https" in str(self.urlx):
+                    # cmd = "wget --no-check-certificate -U '%s' -c '%s' -O '%s%s'" % ('Enigma2 - Filxy Plugin', self.urlx, self.in_tmp, fileTitle)
+                # print('cmd comand wget: ', cmd)
+                # try:
+                    # ui = True
+                    # job_manager.AddJob(downloadJob(self, cmd, self.in_tmp, fileTitle))
+                    # self.downloading = True
+                    # pmovies = True
+                    
+                # except Exception as e:
+                    # print(e)
+                    # pass
+                                
                 # try:
                     # # job_manager.AddJob(downloadJob(self, cmd, self.in_tmp, fileTitle))
                     # job_manager.AddJob(downloadJob(self, self.urlx, self.in_tmp, fileTitle))
@@ -2069,7 +2126,7 @@ class Playchoice(Screen):
                 # except Exception as e:
                     # print(e)
                     # pass
-                '''
+
             except URLError as e:
                 logdata("Download failed !!\n%s" % e)
                 self.session.openWithCallback(self.ImageDownloadCB, MessageBox, _("Download Failed !!") + "\n%s" % e, type=MessageBox.TYPE_ERROR)
@@ -2214,7 +2271,7 @@ class Playchoice(Screen):
             logdata('error play ', str(e))
 
     def play2(self, name, url):
-        if Utils.isStreamlinkAvailable():
+        if streamlink:
             name = self.name
             url = url
             logdata('In filmxy url =', url)
@@ -2391,7 +2448,7 @@ class TvInfoBarShowHide():
         logdata(text + " %s\n" % obj)
 
 
-class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifications, InfoBarAudioSelection, TvInfoBarShowHide, InfoBarSubtitleSupport):
+class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifications, InfoBarAudioSelection, TvInfoBarShowHide, InfoBarSubtitleSupport, SubsSupportStatus, SubsSupport):
     STATE_IDLE = 0
     STATE_PLAYING = 1
     STATE_PAUSED = 2
@@ -2417,6 +2474,11 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
             self.init_aspect = int(self.getAspect())
         except:
             self.init_aspect = 0
+        try:
+            SubsSupport.__init__(self, searchSupport=True, embeddedSupport=True)
+            SubsSupportStatus.__init__(self)
+        except:
+            pass
         self.new_aspect = self.init_aspect
         self.srefInit = self.session.nav.getCurrentlyPlayingServiceReference()
         self.service = None
@@ -2517,7 +2579,17 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         data = "&url=" + url + "&name=" + name + "\n"
         logdata("xmbc data B=", data)
         logdata("xmbc url 6=", url)
+        self.timerCache = eTimer()
+        try:
+            self.timerCache.stop()
+        except:
+            pass
 
+        try:
+            self.timerCache.callback.append(clear_caches)
+        except:
+            self.timerCache_conn = self.timerCache.timeout.connect(clear_caches)
+        self.timerCache.start(600000, False)
         # url = url[:url.rfind("|")]
         print('new url: ', url)
         ref = "{0}:0:1:0:0:0:0:0:0:0:{1}:{2}".format(servicetype, url, name)
@@ -2542,7 +2614,7 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         currentindex = 0
         streamtypelist = ["4097"]
 
-        if Utils.isStreamlinkAvailable():
+        if streamlink:
             streamtypelist.append("5002")  # ref = '5002:0:1:0:0:0:0:0:0:0:http%3a//127.0.0.1%3a8088/' + url
             streaml = True
         if os.path.exists("/usr/bin/gstplayer"):
@@ -2591,6 +2663,12 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
             os.remove('/tmp/hls.avi')
         self.session.nav.stopService()
         self.session.nav.playService(self.srefInit)
+        
+        try:
+            self.timerCache.stop()
+        except:
+            pass
+
         if not self.new_aspect == self.init_aspect:
             try:
                 self.setAspect(self.init_aspect)
@@ -2931,37 +3009,22 @@ class StreamTasks(Screen):
 
 class downloadJob(Job):
     def __init__(self, toolbox, cmdline, filename, filmtitle):
-        print("**** downloadJob init ***")
-        # Job.__init__(self, 'Download:' + ' %s' % filmtitle)
         Job.__init__(self, filmtitle)
+        self.cmdline = cmdline
         self.filename = filename
         self.toolbox = toolbox
         self.retrycount = 0
-        # downloadTask(self, cmdline, filename)
         downloadTask(self, cmdline, filename, filmtitle)
 
     def retry(self):
-        self.retrycount += 1
+        assert self.status == self.FAILED
         self.restart()
 
     def cancel(self):
         self.abort()
-        os.system("rm -f %s" % self.filename)
-
-    def createMetaFile(self, filename, filmtitle):
-        try:
-            serviceref = eServiceReference(4097, 0, filename)
-            with open("%s.meta" % (filename), "w") as f:
-                f.write("%s\n%s\n%s\n%i\n" % (serviceref.toString(), filmtitle, "", time.time()))
-        except Exception as e:
-            print(e)
-        return
-
-    def download_finished(self, filename, filmtitle):
-        self.createMetaFile(filename, filmtitle)
 
 
-class DownloaderPostcondition(Condition):
+class downloadTaskPostcondition(Condition):
     RECOVERABLE = True
 
     def check(self, task):
@@ -2973,82 +3036,75 @@ class DownloaderPostcondition(Condition):
 
     def getErrorMessage(self, task):
         return {
-            task.ERROR_CORRUPT_FILE: _("MOVIE DOWNLOAD FAILED!") + '\n\n' + _("DOWNLOADED FILE CORRUPTED:") + '\n%s' % task.error_message,
-            task.ERROR_RTMP_ReadPacket: _("MOVIE DOWNLOAD FAILED!") + '\n\n' + _("COULD NOT READ RTMP PACKET:") + '\n%s' % task.error_message,
-            task.ERROR_SEGFAULT: _("MOVIE DOWNLOAD FAILED!") + '\n\n' + _("SEGMENTATION FAULT:") + '\n%s' % task.error_message,
-            task.ERROR_SERVER: _("MOVIE DOWNLOAD FAILED!") + '\n\n' + _("SERVER RETURNED ERROR:") + '\n%s' % task.error_message,
-            task.ERROR_UNKNOWN: _("MOVIE DOWNLOAD FAILED!") + '\n\n' + _("UNKNOWN ERROR:") + '\n%s' % task.error_message
+            task.ERROR_CORRUPT_FILE: _("MOVIE DOWNLOAD FAILED!") + '\n\n' + _("DOWNLOADED FILE CORRUPTED:") + '\n%s' % task.lasterrormsg,
+            task.ERROR_RTMP_ReadPacket: _("MOVIE DOWNLOAD FAILED!") + '\n\n' + _("COULD NOT READ RTMP PACKET:") + '\n%s' % task.lasterrormsg,
+            task.ERROR_SEGFAULT: _("MOVIE DOWNLOAD FAILED!") + '\n\n' + _("SEGMENTATION FAULT:") + '\n%s' % task.lasterrormsg,
+            task.ERROR_SERVER: _("MOVIE DOWNLOAD FAILED!") + '\n\n' + _("SERVER RETURNED ERROR:") + '\n%s' % task.lasterrormsg,
+            task.ERROR_UNKNOWN: _("MOVIE DOWNLOAD FAILED!") + '\n\n' + _("UNKNOWN ERROR:") + '\n%s' % task.lasterrormsg
         }[task.error]
 
 
 class downloadTask(Task):
-    # def __init__(self, job, cmdline, filename):
+    if PY3:
+        ERROR_CORRUPT_FILE, ERROR_RTMP_ReadPacket, ERROR_SEGFAULT, ERROR_SERVER, ERROR_UNKNOWN = list(range(5))
+    else:
+        ERROR_CORRUPT_FILE, ERROR_RTMP_ReadPacket, ERROR_SEGFAULT, ERROR_SERVER, ERROR_UNKNOWN = range(5)
+
     def __init__(self, job, cmdline, filename, filmtitle):
-        Task.__init__(self, job, filmtitle)
-        self.postconditions.append(DownloaderPostcondition())
-        self.job = job
+        Task.__init__(self, job, "Downloading ..." + filmtitle)
         self.toolbox = job.toolbox
-        self.url = cmdline
+        self.setCmdline(cmdline)
         self.filename = filename
         self.filmtitle = filmtitle
-        self.error_message = ""
-        self.last_recvbytes = 0
-        self.error_message = None
-        self.download = None
-        self.aborted = False
+        self.error = None
+        self.lasterrormsg = None
+        self.progress = 0
+        self.lastprogress = 0
+        self.firstrun = True
+        self.starttime = time.time()
 
-    def run(self, callback):
-        from .Downloader import DownloadWithProgress
-        self.callback = callback
-        self.download = DownloadWithProgress(self.url, self.filename)
-        self.download.addProgress(self.download_progress)
-        # self.download.start().addEnd(self.download_finished).addError(self.download_failed)
-        self.download.start().addCallback(self.afterRun).addErrback(self.download_failed)
-        print("[downloadTask] downloading", self.url, "to", self.filename)
+    def processOutput(self, data):
+        global ui
+        if PY3:
+            data = str(data)
+        try:
+            if data.find("%") != -1:
+                tmpvalue = re.findall(r'(\d+?%)', data)[-1].rstrip("%")
+                self.progress = int(float(tmpvalue))
 
-    def abort(self):
-        self.downloading = False
-        print("[downloadTask] aborting", self.url)
-        if self.download:
-            self.download.stop()
-        self.aborted = True
+                if self.firstrun:
+                    self.firstrun = False
+                    if ui:
+                        self.toolbox.updatescreen()
 
-    def download_progress(self, recvbytes, totalbytes):
-        if (recvbytes - self.last_recvbytes) > 10000:  # anti-flicker
-            self.progress = int(100 * (float(recvbytes) // float(totalbytes)))
-            self.name = _("Downloading") + ' ' + _("%d of %d kBytes") % (recvbytes // 1024, totalbytes // 1024)
-            # self.blockSize = max(min(self.totalSize // 100, 1024), 131071) if self.totalSize else 65536
-            self.last_recvbytes = recvbytes
+                elif self.progress == 100:
+                    self.lastprogress = int(self.progress)
+                    if ui:
+                        self.toolbox.updatescreen()
 
-    def download_failed(self, failure_instance=None, error_message=""):
-        self.downloading = False
-        self.error_message = error_message
-        if error_message == "" and failure_instance is not None:
-            self.error_message = failure_instance.getErrorMessage()
-        Task.processFinished(self, 1)
+                elif int(self.progress) != int(self.lastprogress):
+                    self.lastprogress = int(self.progress)
 
-    def download_finished(self, string=""):
-        self.downloading = False
-        if self.aborted:
-            self.finish(aborted=True)
-        else:
-            Task.processFinished(self, 0)
+                    elapsed_time = time.time() - self.starttime
+                    if ui and elapsed_time > 2:
+                        self.starttime = time.time()
+                        self.toolbox.updatescreen()
+                else:
+                    Task.processOutput(self, data)
+
+        except Exception as errormsg:
+            print("Error processOutput: " + str(errormsg))
+            Task.processOutput(self, data)
+
+    def processOutputLine(self, line):
+        pass
 
     def afterRun(self):
-        if self.getProgress() == 0:
+        if self.getProgress() == 100 or self.progress == 100:
             try:
-                self.toolbox.download_failed()
-            except:
-                pass
-        elif self.getProgress() == 100:
-            try:
-                self.toolbox.download_finished()
-                self.downloading = False
-                message = "Movie successfully transfered to your HDD!" + "\n" + self.filename
-                Utils.web_info(message)
-            except:
-                pass
-        pass
+                self.toolbox.download_finished(self.filename, self.filmtitle)
+            except Exception as e:
+                print(e)
 
 
 class AutoStartTimerFxy:
