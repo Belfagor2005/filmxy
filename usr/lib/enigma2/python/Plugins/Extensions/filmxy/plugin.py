@@ -5,7 +5,7 @@
 ****************************************
 *        coded by Lululla              *
 *        Many thank's Pcd              *
-*             14/03/2023               *
+*             30/03/2023               *
 *       skin by MMark                  *
 ****************************************
 Info http://t.me/tivustream
@@ -288,7 +288,7 @@ if not os.path.exists(cachefold):
 logdata("path cachefold: ", str(cachefold))
 pictmp = cachefold + "poster.jpg"
 pmovies = False
-
+ui = False
 
 if Utils.isFHD():
     skin_path = os.path.join(PLUGIN_PATH, 'res/skins/fhd/')
@@ -357,10 +357,13 @@ def piconlocal(name):
         ["drama", "dramma"],
         ["western", "western"],
         ["biografico", "biografico"],
+        ["storia", "biografico"],
+        ["documentario", "biografico"],
         ["romantico", "romantico"],
         ["romance", "romantico"],
         ["horror", "horror"],
         ["musica", "musical"],
+        ["show", "musical"],
         ["guerra", "guerra"],
         ["bambini", "bambini"],
         ["bianco", "bianconero"],
@@ -370,13 +373,20 @@ def piconlocal(name):
         ["documentary", "documentary"],
         ["crime", "crime"],
         ["mystery", "mistery"],
+        ["mistero", "mistery"],
+        ["giallo", "mistery"],
         ["fiction", "fiction"],
         ["adventure", "mistery"],
         ["action", "azione"],
         ["007", "007"],
         ["sport", "sport"],
         ["teatr", "teatro"],
+        ["variet", "teatro"],
+        ["giallo", "teatro"],
         ["extra", "extra"],
+        ["sexy", "fantasy"],
+        ["erotic", "fantasy"],
+        ["animazione", "bambini"],
         ["search", "search"],
 
         ["abruzzo", "regioni/abruzzo"],
@@ -406,6 +416,7 @@ def piconlocal(name):
         ["webcam", "relaxweb"],
         ["relax", "relaxweb"],
         ["vecchi", "vecchi"],
+        ["muto", "vecchi"],
         ["'italiani", "movie"],
         ["fantascienza", "fantascienza"],
         ["fantasy", "fantasy"],
@@ -2035,7 +2046,7 @@ class Playchoice(Screen):
             self.session.open(MessageBox, _('You are already downloading!!!'), MessageBox.TYPE_INFO, timeout=5)
             return
         else:
-            self.session.openWithCallback(self.download_m3u, MessageBox, _("DOWNLOAD VIDEO?\n%s" % self.namem3u), type=MessageBox.TYPE_YESNO, timeout=5, default=True)
+            self.session.openWithCallback(self.download_m3u, MessageBox, _("DOWNLOAD VIDEO?\n%s" % self.name1), type=MessageBox.TYPE_YESNO, timeout=5, default=True)
         # else:
             # self.session.open(MessageBox, _('No link available'), MessageBox.TYPE_INFO, timeout=5)
 
@@ -2045,87 +2056,47 @@ class Playchoice(Screen):
             print('-------------- download init -----------------')
             self.urlx = self.urlx.replace(' ', '%20')
             self.urlx = self.urlx[:self.urlx.rfind("|")]
-            print('new url: ', self.urlx)
-
+            # print('new url: ', self.urlx)
             path = urlparse(self.urlx).path
             ext = splitext(path)[1]
-            # if ext != '.mp4' or ext != '.mkv' or ext != '.avi' or ext != '.flv':  # or ext != 'm3u8':
-                # ext = '.mp4'
-
-            filename = Utils.cleantitle(self.title)
+            filename = self.name1
             if ext not in EXTDOWN:
                 ext = '.mp4'
 
-            # filename = cleantitle(self.namem3u)
-            # filename = filename.replace(".mp4", "")
             fileTitle = filename.lower() + ext
             self.in_tmp = Path_Movies + fileTitle
             logdata('path download = ', self.in_tmp)
             try:
                 # useragent = "--header='User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36'"
 
-                import subprocess
-                # cmd = "wget %s -c '%s' -O '%s'" % (useragent, self.urlx, self.in_tmp)
-                # if "https" in str(self.urlx):
-                    # cmd = "wget --no-check-certificate -U %s -c '%s' -O '%s'" % (useragent, self.urlx, self.in_tmp)
+                # import subprocess
+                # # cmd = "wget %s -c '%s' -O '%s'" % (useragent, self.urlx, self.in_tmp)
+                # # if "https" in str(self.urlx):
+                    # # cmd = "wget --no-check-certificate -U %s -c '%s' -O '%s'" % (useragent, self.urlx, self.in_tmp)
 
-                cmd = "wget -U '%s' -c '%s' -O '%s';%s" % ('Enigma2 - Filmxy Plugin', str(self.urlx), self.in_tmp)
+                # cmd = "wget -U '%s' -c '%s' -O '%s'" % ('Enigma2 - Filmxy Plugin', str(self.urlx), self.in_tmp)
+                # if "https" in str(self.urlx):
+                    # cmd = "wget --no-check-certificate -U '%s' -c '%s' -O '%s'" % ('Enigma2 - tvAddon Plugin', str(self.urlx), self.in_tmp)
+
+                # myCmd = "%s" % str(cmd)
+                # subprocess.Popen(myCmd, shell=True, executable='/bin/bash')
+                # self['info'].setText(_('Download in progress... %s' % fileTitle))
+                # self.downloading = True
+                # pmovies = True
+
+                cmd = "wget -U '%s' -c '%s' -O '%s'" % ('Enigma2 - Filxy Plugin', self.urlx, self.in_tmp)
                 if "https" in str(self.urlx):
-                    cmd = "wget --no-check-certificate -U '%s' -c '%s' -O '%s';%s" % ('Enigma2 - tvAddon Plugin', str(self.urlx), self.in_tmp)
+                    cmd = "wget --no-check-certificate -U '%s' -c '%s' -O '%s'" % ('Enigma2 - Filxy Plugin', self.urlx, self.in_tmp)
+                print('cmd comand wget: ', cmd)
+                try:
+                    ui = True
+                    job_manager.AddJob(downloadJob(self, cmd, self.in_tmp, fileTitle))
+                    self.downloading = True
+                    pmovies = True
 
-                myCmd = "%s" % str(cmd)
-                subprocess.Popen(myCmd, shell=True, executable='/bin/bash')
-                self['info'].setText(_('Download in progress... %s' % fileTitle))
-                self.downloading = True
-                pmovies = True
-                '''
-                # logdata('self url is : ', self.urlx)
-                # logdata('url type: ', type(self.urlx))
-                # #################
-                # # self.LastJobView()
-                # # # test another ufff   --->>   urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1129)
-                # # url = urlopen(self.urlx.decode('ASCII')) #.read()
-                # # f = open(self.in_tmp, 'wb')
-                # # f.close()
-                # #################
-
-                # request = Request(str(self.urlx), headers=useragent)
-                # if six.PY2:
-                    # url = urlopen(request, timeout=10).read()
-                # else:
-                    # url = urlopen(request, timeout=10).read().decode('utf-8')
-                # job = downloadJob(str(url), str(self.in_tmp), fileTitle)
-                # job.afterEvent = "close"
-                # job_manager.AddJob(job)
-                # job_manager.failed_jobs = []
-                # self.session.openWithCallback(self.ImageDownloadCB, JobView, job, backgroundable=False, afterEventChangeable=False)
-
-                # cmd = "wget %s -c '%s' -O '%s'" % (useragent, self.urlx, self.in_tmp)
-                # if "https" in str(self.urlx):
-                    # cmd = "wget --no-check-certificate -U %s -c '%s' -O '%s'" % ('Enigma2 - Filmxy Plugin', self.urlx, self.in_tmp)
-                '''
-                # cmd = "wget -U '%s' -c '%s' -O '%s%s'" % ('Enigma2 - Filxy Plugin', self.urlx, self.in_tmp, fileTitle)
-                # if "https" in str(self.urlx):
-                    # cmd = "wget --no-check-certificate -U '%s' -c '%s' -O '%s%s'" % ('Enigma2 - Filxy Plugin', self.urlx, self.in_tmp, fileTitle)
-                # print('cmd comand wget: ', cmd)
-                # try:
-                    # ui = True
-                    # job_manager.AddJob(downloadJob(self, cmd, self.in_tmp, fileTitle))
-                    # self.downloading = True
-                    # pmovies = True
-                    
-                # except Exception as e:
-                    # print(e)
-                    # pass
-                                
-                # try:
-                    # # job_manager.AddJob(downloadJob(self, cmd, self.in_tmp, fileTitle))
-                    # job_manager.AddJob(downloadJob(self, self.urlx, self.in_tmp, fileTitle))
-                    # self.downloading = True
-                    # pmovies = True
-                # except Exception as e:
-                    # print(e)
-                    # pass
+                except Exception as e:
+                    print(e)
+                    pass
 
             except URLError as e:
                 logdata("Download failed !!\n%s" % e)
@@ -2167,7 +2138,7 @@ class Playchoice(Screen):
         self.urls = []
         self.names.append('Play Now')
         self.urls.append(url)
-        self.names.append('Download Now- Test')
+        self.names.append('Download Now')
         self.urls.append(url)
         self.names.append('Play HLS')
         self.urls.append(url)
@@ -2271,25 +2242,25 @@ class Playchoice(Screen):
             logdata('error play ', str(e))
 
     def play2(self, name, url):
-        if streamlink:
+        if Utils.isStreamlinkAvailable():
             name = self.name
             url = url
             logdata('In filmxy url =', url)
-            if 'None' not in str(url):
-                ref = '5002:0:1:0:0:0:0:0:0:0:' + 'http%3a//127.0.0.1%3a8088/' + str(url)
-                sref = eServiceReference(ref)
-                logdata('SREF: ', sref)
-                sref.setName(name)
-                self.session.open(Playstream2, name, sref)
-            else:
-                self.session.open(MessageBox, _('No link available'), MessageBox.TYPE_INFO, timeout=5)
+            ref = '5002:0:1:0:0:0:0:0:0:0:' + 'http%3a//127.0.0.1%3a8088/' + str(url)
+            sref = eServiceReference(ref)
+            logdata('SREF: ', sref)
+            sref.setName(name)
+            self.session.open(Playstream2, name, sref)
         else:
             self.session.open(MessageBox, _('Install Streamlink first'), MessageBox.TYPE_INFO, timeout=5)
 
     def cancel(self):
-        self.session.nav.stopService()
-        self.session.nav.playService(self.srefInit)
-        self.close()
+        try:
+            self.session.nav.stopService()
+            self.session.nav.playService(self.srefInit)
+            self.close()
+        except:
+            pass
 
     def load_poster(self):
         try:
@@ -2462,6 +2433,7 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         streaml = False
         Screen.__init__(self, session)
         self.session = session
+        _session = session
         self.skinName = 'MoviePlayer'
         InfoBarMenu.__init__(self)
         InfoBarNotifications.__init__(self)
@@ -2469,7 +2441,7 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         TvInfoBarShowHide.__init__(self)
         InfoBarSubtitleSupport.__init__(self)
         InfoBarAudioSelection.__init__(self)
-        InfoBarSeek.__init__(self, actionmap='InfobarSeekActions')
+
         try:
             self.init_aspect = int(self.getAspect())
         except:
@@ -2504,12 +2476,14 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
                                                              'red': self.cicleStreamType,
                                                              'cancel': self.cancel,
                                                              'back': self.cancel}, -1)
+        InfoBarSeek.__init__(self, actionmap='InfobarSeekActions')
         if '8088' in str(self.url):
             self.onFirstExecBegin.append(self.slinkPlay)
         else:
             self.onFirstExecBegin.append(self.cicleStreamType)
         # self.onFirstExecBegin.append(self.openPlay(url))
-        self.onClose.append(self.cancel)
+        # self.onClose.append(self.cancel)
+        return
 
     def getAspect(self):
         return AVSwitch().getAspectRatioSetting()
@@ -2543,7 +2517,7 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
 
     def av(self):
         temp = int(self.getAspect())
-        temp = temp + 1
+        temp += 1
         if temp > 6:
             temp = 0
         self.new_aspect = temp
@@ -2608,7 +2582,7 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         from itertools import cycle, islice
         self.servicetype = str(config.plugins.filmxy.services.value)
         url = str(self.url)
-        if str(os.path.splitext(self.url)[-1]) == ".m3u8":
+        if str(os.path.splitext(url)[-1]) == ".m3u8":
             if self.servicetype == "1":
                 self.servicetype = "4097"
         currentindex = 0
@@ -2659,11 +2633,11 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
             self.doShow()
 
     def cancel(self):
-        if os.path.isfile('/tmp/hls.avi'):
+        if os.path.exists('/tmp/hls.avi'):
             os.remove('/tmp/hls.avi')
         self.session.nav.stopService()
         self.session.nav.playService(self.srefInit)
-        
+
         try:
             self.timerCache.stop()
         except:
@@ -2947,7 +2921,7 @@ class StreamTasks(Screen):
             file1 = True
             filelist.sort()
             for filename in filelist:
-                if os.path.isfile(path + filename):
+                if os.path.exists(path + filename):
                     if filename.endswith(".meta"):
                         continue
                     if ".m3u" in filename:
@@ -2967,7 +2941,7 @@ class StreamTasks(Screen):
                 url = path + current[1]
                 name = current[1]
                 file1 = False
-                isFile = os.path.isfile(url)
+                isFile = os.path.exists(url)
                 if isFile:
                     self.session.open(Playstream2, name, url)
                 else:

@@ -7,7 +7,7 @@
 	<widget name="title" position="795,80" size="245,32" font="Regular;28" halign="right" valign="center" foregroundColor="#ffff00" backgroundColor="black" transparent="1" zPosition="5" />
 	<widget name="poster" position="1250,150" size="420,588" alphatest="blend" scale="1" zPosition="3" />
 	<ePixmap position="1250,150" size="420,588" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/img/tvposter.png" zPosition="2" scale="1" />
-	<widget source="desc" render="xyRunningText" position="230,676" size="810,270" font="Regular;30" foregroundColor="#ffb75b" backgroundColor="#101010" halign="center" transparent="0" zPosition="8" options="movetype=running,startpoint=0,direction=top,steptime=80,repeat=0,always=0,oneshot=0,startdelay=6000,wrap=1" />
+	<widget source="desc" render="xyRunningText" position="231,676" size="810,270" font="Regular;30" foregroundColor="#ffb75b" backgroundColor="#000000" halign="center" transparent="0" zPosition="5" options="movetype=running,startpoint=0,direction=top,steptime=80,repeat=0,always=0,oneshot=0,startdelay=6000,wrap=1" />
 	<eLabel position="230,676" size="810,270" backgroundColor="#30000000" zPosition="1" />	
 <!-- Menu List -->
 	<widget name="info" position="230,130" size="810,50" font="Regular;30" halign="center" valign="center" foregroundColor="yellow" backgroundColor="#202020" transparent="0" zPosition="5" />
