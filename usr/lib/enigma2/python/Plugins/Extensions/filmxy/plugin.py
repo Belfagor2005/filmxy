@@ -255,12 +255,6 @@ config.plugins.filmxy.servicesforce = ConfigOnOff(default=False)
 
 cfg = config.plugins.filmxy
 
-
-Path_Movies = str(config.plugins.filmxy.movie.value)
-# if Path_Movies.endswith("\/\/"):
-    # Path_Movies = Path_Movies[:-1]
-logdata('patch movies: ', Path_Movies)
-
 currversion = getversioninfo()
 title_plug = 'Filmxy V. %s' % currversion
 desc_plug = 'Filmxy'
@@ -277,9 +271,10 @@ piconold = piccons + 'vecchi.png'
 nextpng = 'next.png'
 prevpng = 'prev.png'
 Path_Tmp = "/tmp"
+Path_Movies = str(config.plugins.filmxy.movie.value)
+logdata('patch movies: ', Path_Movies)
 cachefold = config.plugins.filmxy.cachefold.value.strip()
-# if cachefold.endswith('//'):
-    # cachefold = cachefold[:-1]
+
 if not os.path.exists(cachefold):
     try:
         os.makedirs(cachefold)
@@ -336,12 +331,10 @@ def status_site():
     if response.status_code == 200:
         status = True
         logdata('Web site exists', url)
-        return True
     else:
         status = False
         logdata('Web site does not exist', url)
-        return False
-    return
+    return status
 
 
 def piconlocal(name):
@@ -602,7 +595,6 @@ class Filmxymain(Screen):
         self.load_poster()
 
     def closerm(self):
-        # Utils.deletetmp()
         self.close()
 
     def updateMenuList(self):
@@ -2588,15 +2580,15 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         currentindex = 0
         streamtypelist = ["4097"]
 
-        if streamlink:
-            streamtypelist.append("5002")  # ref = '5002:0:1:0:0:0:0:0:0:0:http%3a//127.0.0.1%3a8088/' + url
-            streaml = True
-        if os.path.exists("/usr/bin/gstplayer"):
-            streamtypelist.append("5001")
-        if os.path.exists("/usr/bin/exteplayer3"):
-            streamtypelist.append("5002")
-        if os.path.exists("/usr/bin/apt-get"):
-            streamtypelist.append("8193")
+        # if streamlink:
+            # streamtypelist.append("5002")  # ref = '5002:0:1:0:0:0:0:0:0:0:http%3a//127.0.0.1%3a8088/' + url
+            # streaml = True
+        # if os.path.exists("/usr/bin/gstplayer"):
+            # streamtypelist.append("5001")
+        # if os.path.exists("/usr/bin/exteplayer3"):
+            # streamtypelist.append("5002")
+        # if os.path.exists("/usr/bin/apt-get"):
+            # streamtypelist.append("8193")
         for index, item in enumerate(streamtypelist, start=0):
             if str(item) == str(self.servicetype):
                 currentindex = index
