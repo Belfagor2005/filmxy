@@ -153,6 +153,8 @@ except ImportError:
 class SubsSupportStatus(object):
     def __init__(self, *args, **kwargs):
         pass
+
+
 from requests import get, exceptions
 from requests.exceptions import HTTPError
 from twisted.internet.reactor import callInThread
@@ -161,7 +163,7 @@ from twisted.internet.reactor import callInThread
 def threadGetPage(url=None, file=None, key=None, success=None, fail=None, *args, **kwargs):
     print('[FILMXY][threadGetPage] url, file, key, args, kwargs', url, "   ", file, "   ", key, "   ", args, "   ", kwargs)
     try:
-        response = get(url)
+        response = get(url, verify=False)
         response.raise_for_status()
         if file is None:
             success(response.content)
