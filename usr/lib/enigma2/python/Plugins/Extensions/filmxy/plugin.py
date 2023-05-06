@@ -134,7 +134,7 @@ global skin_path, nextmodule, Path_Movies
 
 _session = None
 _firstStart = True
-Host = "https://www.filmxy.pw/"
+Host = "https://www.filmxy.online/"
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36',
            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8', 'Accept-Encoding': 'deflate'}
 
@@ -328,7 +328,7 @@ status = True
 def status_site():
     global status
     import requests
-    url = 'https://www.filmxy.pw/movie-list'
+    url = 'hhttps://www.filmxy.online/movie-list'
     response = requests.get(url)
     if response.status_code == 200:
         status = True
@@ -871,10 +871,11 @@ class live_to_stream(Screen):
                 n1 = content.find('class="numeric-pagination post-list"><ul>', 0)
                 n2 = content.find("/div><div", n1)
                 content2 = content[n1:n2]
-                regexvideo = 'https://www.filmxy.pw/movie-list/(.*?)/.*?>(.*?)<'
+                # href=https://www.filmxy.online/movie-list/a/ >a</a></li><li><a
+                regexvideo = 'https://www.filmxy.(.*?)/movie-list/(.*?)/.*?>(.*?)<'
                 match = re.compile(regexvideo, re.DOTALL).findall(content2)
-                for url, name in match:
-                    url1 = "https://www.filmxy.pw/movie-list/" + url + "/"
+                for ext, url, name in match:
+                    url1 = "https://www.filmxy." + ext + "/movie-list/" + url + "/"
                     pixmaps = piconlocal(name)
                     if os.path.exists(pixmaps):
                         pic = pixmaps
