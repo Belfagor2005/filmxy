@@ -55,6 +55,7 @@ from enigma import gFont, gPixmapPtr
 from enigma import eServiceReference
 from enigma import eTimer
 from enigma import iPlayableService
+from enigma import getDesktop
 from os.path import splitext
 from twisted.web.client import downloadPage
 import os
@@ -187,7 +188,7 @@ def cleantitle(title):
 
 def getversioninfo():
     currversion = '1.2'
-    version_file = os.path.join(PLUGIN_PATH, 'version')
+    version_file = os.path.join(PLUGIN_PATH, '/version')
     if os.path.exists(version_file):
         try:
             fp = open(version_file, 'r').readlines()
@@ -260,9 +261,9 @@ cfg = config.plugins.filmxy
 currversion = getversioninfo()
 title_plug = 'Filmxy V. %s' % currversion
 desc_plug = 'Filmxy'
-ico_path = os.path.join(PLUGIN_PATH, 'logo.png')
-res_plugin_path = os.path.join(PLUGIN_PATH, 'res/')
-piccons = os.path.join(PLUGIN_PATH, 'res/img/')
+ico_path = os.path.join(PLUGIN_PATH, '/logo.png')
+res_plugin_path = os.path.join(PLUGIN_PATH, '/res/')
+piccons = os.path.join(PLUGIN_PATH, '/res/img/')
 no_cover = piccons + 'no_cover.png'
 piconmovie = piccons + 'cinema.png'
 piconseries = piccons + 'series.png'
@@ -287,10 +288,13 @@ pictmp = cachefold + "poster.jpg"
 pmovies = False
 ui = False
 
-if Utils.isFHD():
-    skin_path = os.path.join(PLUGIN_PATH, 'res/skins/fhd/')
+screenwidth = getDesktop(0).size()
+if screenwidth.width() == 2560:
+    skin_path = PLUGIN_PATH + '/res/skins/uhd/'
+elif screenwidth.width() == 1920:
+    skin_path = PLUGIN_PATH + '/res/skins/fhd/'
 else:
-    skin_path = os.path.join(PLUGIN_PATH, 'res/skins/hd/')
+    skin_path = PLUGIN_PATH + '/res/skins/hd/'
 
 if Utils.DreamOS():
     skin_path = skin_path + 'dreamOs/'
@@ -328,8 +332,9 @@ status = True
 def status_site():
     global status
     import requests
-    url = 'hhttps://www.filmxy.online/movie-list'
-    response = requests.get(url)
+    url = 'https://www.filmxy.online/movie-list'
+    # response = requests.get(url)
+    response = requests.get(url, verify=False)
     if response.status_code == 200:
         status = True
         logdata('Web site exists', url)
@@ -467,7 +472,11 @@ EXTDOWN = {
 class rvList(MenuList):
     def __init__(self, list):
         MenuList.__init__(self, list, True, eListboxPythonMultiContent)
-        if Utils.isFHD():
+        if screenwidth.width() == 2560:
+            self.l.setItemHeight(60)
+            textfont = int(42)
+            self.l.setFont(0, gFont('Regular', textfont))        
+        elif screenwidth.width() == 1920:
             self.l.setItemHeight(50)
             textfont = int(30)
             self.l.setFont(0, gFont('Regular', textfont))
@@ -479,17 +488,20 @@ class rvList(MenuList):
 
 def rvListEntry(name, idx):
     res = [name]
-    pngs = os.path.join(PLUGIN_PATH, 'res/pics/tv.png')
+    pngs = os.path.join(PLUGIN_PATH, '/res/pics/tv.png')
     if any(s in name.lower() for s in EXTRAD):
-        pngs = os.path.join(PLUGIN_PATH, 'res/pics/radio.png')
+        pngs = os.path.join(PLUGIN_PATH, '/res/pics/radio.png')
     elif any(s in name.lower() for s in EXTCAM):
-        pngs = os.path.join(PLUGIN_PATH, 'res/pics/webcam.png')
+        pngs = os.path.join(PLUGIN_PATH, '/res/pics/webcam.png')
     elif any(s in name.lower() for s in EXTMUS):
-        pngs = os.path.join(PLUGIN_PATH, 'res/pics/music.png')
+        pngs = os.path.join(PLUGIN_PATH, '/res/pics/music.png')
     elif any(s in name.lower() for s in EXTSPOR):
-        pngs = os.path.join(PLUGIN_PATH, 'res/pics/sport.png')
+        pngs = os.path.join(PLUGIN_PATH, '/res/pics/sport.png')
 
-    if Utils.isFHD():
+    if screenwidth.width() == 2560:
+        res.append(MultiContentEntryPixmapAlphaTest(pos=(5, 5), size=(50, 50), png=loadPNG(pngs)))
+        res.append(MultiContentEntryText(pos=(80, 0), size=(1200, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
+    elif screenwidth.width() == 1920:
         res.append(MultiContentEntryPixmapAlphaTest(pos=(5, 5), size=(40, 40), png=loadPNG(pngs)))
         res.append(MultiContentEntryText(pos=(70, 0), size=(1000, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     else:
