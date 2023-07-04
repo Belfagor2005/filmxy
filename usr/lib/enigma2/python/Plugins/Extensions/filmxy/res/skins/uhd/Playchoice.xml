@@ -1,0 +1,23 @@
+<!-- Skin FullHD1 01/10/2022 -->
+<screen name="Playchoice" position="0,0" size="2560,1440" title=".::filmxy::.." backgroundColor="#FF000000" flags="wfNoBorder">
+	<widget source="Title" render="Label" position="307,10" size="854,147" font="Regular;64" foregroundColor="#007fcfff" backgroundColor="#000000" transparent="1" zPosition="5" />
+	<eLabel position="307,160" size="1080,4" backgroundColor="#303030" zPosition="4" />
+	<ePixmap position="0,0" size="2560,1440" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/main1.png" zPosition="-1" />
+	<eLabel position="307,1280" size="1080,4" backgroundColor="#303030" zPosition="4" />
+	<widget name="title" position="1060,107" size="327,43" font="Regular;38" halign="right" valign="center" foregroundColor="#ffff00" backgroundColor="black" transparent="1" zPosition="5" />
+	<widget name="poster" position="1667,200" size="560,784" alphatest="blend" scale="1" zPosition="3" />
+	<ePixmap position="1667,200" size="560,784" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/img/tvposter.png" zPosition="2" scale="1" />
+	<widget source="desc" render="xyRunningText" position="308,902" size="1080,360" font="Regular;40" foregroundColor="#ffb75b" backgroundColor="#000000" halign="center" transparent="0" zPosition="5" options="movetype=running,startpoint=0,direction=top,steptime=80,repeat=0,always=0,oneshot=0,startdelay=6000,wrap=1" />
+	<eLabel position="307,902" size="1080,360" backgroundColor="#30000000" zPosition="1" />	
+<!-- Menu List -->
+	<widget name="info" position="307,174" size="1080,67" font="Regular;40" halign="center" valign="center" foregroundColor="yellow" backgroundColor="#202020" transparent="0" zPosition="5" />
+	<widget name="list" position="307,254" size="1080,614" scrollbarMode="showOnDemand" transparent="1" zPosition="5" foregroundColor="#ffffff" backgroundColor="#000000" backgroundColorSelected="#001b3c85" />
+	<widget name="progress" position="654,1367" size="400,67" foregroundColor="#2a70a4" backgroundColor="#10000000" transparent="1" zPosition="5" />
+	<widget source="progresstext" render="Label" font="Regular;27" position="654,1367" size="400,67" backgroundColor="#202020" transparent="1" halign="center" zPosition="6" />
+	<ePixmap name="red" position="303,1291" zPosition="2" size="280,80" pixmap="skin_default/buttons/red.png" transparent="1" alphatest="on" />
+	<widget name="key_red" position="410,1282" size="280,80" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;40" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
+	<ePixmap name="green" position="1006,1291" zPosition="2" size="280,80" pixmap="skin_default/buttons/green.png" transparent="1" alphatest="on" />
+	<widget name="key_green" position="1107,1278" size="280,80" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;40" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
+	<ePixmap name="yellow" position="303,1364" zPosition="2" size="280,80" pixmap="skin_default/buttons/yellow.png" transparent="1" alphatest="on" />
+	<widget name="key_yellow" position="410,1354" size="280,80" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;40" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
+</screen>

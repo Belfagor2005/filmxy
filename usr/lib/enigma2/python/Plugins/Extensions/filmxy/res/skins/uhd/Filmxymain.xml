@@ -1,0 +1,29 @@
+<!-- Skin Filmxymain 01/10/2022 -->
+<screen name="Filmxymain" position="0,0" size="2560,1440" title="::filmxy::.." backgroundColor="#20000000" flags="wfNoBorder">
+	<widget name="title" position="690,62" size="696,67" font="Regular;46" halign="left" valign="center" foregroundColor="#ffff00" backgroundColor="black" transparent="1" zPosition="5" />
+	<widget name="info" position="294,174" size="1094,107" font="Regular;40" halign="center" valign="center" foregroundColor="yellow" backgroundColor="#202020" transparent="0" zPosition="5" />
+	<widget name="pth" position="712,1351" size="684,59" font="Regular;40" halign="right" foregroundColor="#808080" backgroundColor="#000000" transparent="1" zPosition="5" />
+	<widget name="poster" position="1667,200" size="560,784" alphatest="blend" scale="1" zPosition="3" />
+	<ePixmap position="1667,200" size="560,784" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/img/tvposter.png" zPosition="2" scale="1" />	
+	<!-- <widget name="statusgreen" alphatest="blend" position="1694,120" size="54,54" zPosition="5" />	 -->
+	<widget name="statusgreen" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/status-on.png" alphatest="blend" position="1894,54" size="54,54" zPosition="5" />
+	<widget name="statusred" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/status-off.png" alphatest="blend" position="1894,54" size="54,54" zPosition="5" />	
+	<widget name="status" position="1666,114" size="560,67" font="Regular; 54" foregroundColor="#ffb75b" backgroundColor="#101010" halign="center" transparent="1" zPosition="2" />
+	<widget source="desc" render="xyRunningText" position="302,1024" size="1095,294" font="Regular;40" foregroundColor="#ffb75b" backgroundColor="#101010" halign="center" transparent="1" zPosition="8" options="movetype=running,startpoint=0,direction=top,steptime=80,repeat=0,always=0,oneshot=0,startdelay=6000,wrap=1" />
+	<eLabel position="302,1019" size="1094,294" backgroundColor="#30000000" zPosition="1" />	
+	<widget name="descadd" position="1624,1022" size="654,294" font="Regular;40" foregroundColor="#ffb75b" backgroundColor="#101010" halign="center" transparent="1" zPosition="8" />
+	<eLabel position="1624,1022" size="654,294" backgroundColor="#30000000" zPosition="1" />
+	<eLabel position="1810,323" size="411,564" backgroundColor="#30000000" zPosition="1" />
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/main1.png" position="0,3" size="2560,1440" zPosition="-1" />
+    
+    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/tvs.png" alphatest="blend" position="294,54" size="376,80" zPosition="5" />
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/sep.png" position="294,147" size="1094,11" alphatest="blend" zPosition="5" />
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/sep.png" position="294,1007" size="1094,11" alphatest="blend" zPosition="5" />
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/sep.png" position="300,1320" size="1094,11" alphatest="blend" zPosition="5" />
+	<ePixmap position="1418,72" size="120,54" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/menu.png" alphatest="blend" zPosition="5" />	
+	<!-- Menu List -->
+	<widget name="list" position="294,299" size="1095,688" scrollbarMode="showOnDemand" transparent="1" zPosition="5" foregroundColor="#00a0a0a0" foregroundColorSelected="#ffffff" backgroundColor="#20000000" backgroundColorSelected="#0b2049" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/sliderb.png" />
+	<!-- Colors 1220 -->
+	<ePixmap name="red" position="303,1344" zPosition="2" size="280,80" pixmap="skin_default/buttons/red.png" transparent="1" alphatest="on" />
+	<widget name="key_red" position="430,1335" size="280,80" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;40" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
+</screen>

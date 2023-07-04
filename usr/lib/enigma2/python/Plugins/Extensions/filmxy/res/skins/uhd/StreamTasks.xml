@@ -1,0 +1,33 @@
+<!-- ***** PLAYLIST FOLDER 1920x1080 ***** 15-05-2018 /-->
+<screen name="StreamTasks" position="0,0" size="2560,1440" title="Video Download List" backgroundColor="#FF000000" flags="wfNoBorder">
+	<eLabel text="MovieList" position="486,20" size="667,134" font="Regular;64" halign="left" valign="center" foregroundColor="#ffffff" backgroundColor="#101010" transparent="1" zPosition="3" />
+	<ePixmap position="0,0" size="2560,1440" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/main2.png" zPosition="1" />
+	<ePixmap position="283,12" size="160,156" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/icon.png" alphatest="blend" zPosition="1" />
+	<eLabel position="280,174" size="2027,7" backgroundColor="#202020" zPosition="2" />
+	<eLabel position="280,1307" size="2027,7" backgroundColor="#202020" zPosition="1" />	
+	
+	<!-- Clock -->
+	<widget source="global.CurrentTime" render="Label" position="1780,40" size="534,107" font="Regular;46" halign="right" valign="center" foregroundColor="#808080" backgroundColor="#101010" transparent="1" zPosition="2">
+		<convert type="ClockToText">Format %A %d %B %H:%M:%S</convert>
+	</widget>
+	<!-- Movie List -->
+	<widget source="movielist" render="Listbox" position="304,198" size="2000,1067" scrollbarMode="showOnDemand" transparent="1" zPosition="2" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/slider.png">
+		<convert type="TemplatedMultiContent">
+			{"template": [
+				MultiContentEntryText(pos = (14, 7),       size = (1227, 67), font=1, flags = RT_HALIGN_LEFT, text = 1),                  # index 1 is the name
+				MultiContentEntryText(pos = (1134, 7),      size = (200, 67), font=1, color=0x3bd13d, flags = RT_HALIGN_RIGHT, text = 2), # index 2 is the state
+				MultiContentEntryProgress(pos = (1400, 14), size = (387, 27), percent = -3),                                              # index 3 should be progress
+				MultiContentEntryText(pos = (1840, 7),     size = (134, 67), font=1, color=0x3faaff, flags = RT_HALIGN_RIGHT, text = 4), # index 4 is the percentage
+				],
+				"fonts": [gFont("Regular", 35),gFont("Regular", 35)],
+				"itemHeight": 60
+			}
+		</convert>
+	</widget>
+	<!-- Buttons Colors -->
+
+	<ePixmap name="red" position="303,1331" zPosition="2" size="280,80" pixmap="skin_default/buttons/red.png" transparent="1" alphatest="on" />
+	<widget name="key_red" position="436,1322" size="280,80" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;40" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
+	<ePixmap name="green" position="1172,1331" zPosition="2" size="280,80" pixmap="skin_default/buttons/green.png" transparent="1" alphatest="on" />
+	<widget name="key_green" position="1307,1324" size="280,80" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;40" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
+</screen>
