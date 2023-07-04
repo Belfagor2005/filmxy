@@ -5,7 +5,7 @@
 ****************************************
 *        coded by Lululla              *
 *        Many thank's Pcd              *
-*             30/03/2023               *
+*             03/07/2023               *
 *       skin by MMark                  *
 ****************************************
 Info http://t.me/tivustream
@@ -475,7 +475,7 @@ class rvList(MenuList):
         if screenwidth.width() == 2560:
             self.l.setItemHeight(60)
             textfont = int(42)
-            self.l.setFont(0, gFont('Regular', textfont))        
+            self.l.setFont(0, gFont('Regular', textfont))
         elif screenwidth.width() == 1920:
             self.l.setItemHeight(50)
             textfont = int(30)
