@@ -1,5 +1,5 @@
 <!-- Skin plgstr 01/10/2022 -->
-<screen name="plgnstrt" flags="wfNoBorder" position="center,center" size="1920,1080" title="..::TiVuStream Project::.." backgroundColor="#30000000">
+<screen name="plgnstrt" position="center,center" size="1920,1080" title="..::TiVuStream Project::.." backgroundColor="#ff000000" flags="wfNoBorder">
 	<ePixmap position="787,55" size="250,117" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/tivustream_xxx.png" alphatest="blend" zPosition="5" />
 	<ePixmap position="96,61" size="322,113" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/tivustream_or.png" alphatest="blend" zPosition="5" />
 	<widget pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/fulltop.jpg" name="poster" position="88,53" size="950,900" alphatest="blend" scale="stretch" zPosition="-1" />

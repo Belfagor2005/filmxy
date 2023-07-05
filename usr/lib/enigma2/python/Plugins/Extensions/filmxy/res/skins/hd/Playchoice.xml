@@ -1,5 +1,5 @@
 <!-- Skin tHD1 10/05/2021 -->
-<screen name="Playchoice" position="0,0" size="1280,720" title="::filmxy::.." backgroundColor="#20000000" flags="wfNoBorder">
+<screen name="Playchoice" position="0,0" size="1280,720" title="::filmxy::.." backgroundColor="#ff000000" flags="wfNoBorder">
 	<widget source="Title" render="Label" position="136,6" size="156,81" font="Mmenu; 48" foregroundColor="#007fcfff" backgroundColor="#000000" transparent="1" zPosition="5" />
 	<eLabel position="140,130" size="675,3" backgroundColor="#303030" zPosition="4" />
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/main22.png" position="0,0" size="1280,720" zPosition="1" />

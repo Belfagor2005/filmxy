@@ -1,5 +1,5 @@
 <!-- ***** PLAYLIST FOLDER 1920x1080 ***** 15-05-2018 /-->
-<screen name="StreamTasks" position="0,0" size="2560,1440" title="Video Download List" backgroundColor="#FF000000" flags="wfNoBorder">
+<screen name="StreamTasks" position="0,0" size="2560,1440" title="Video Download List" backgroundColor="#ff000000" flags="wfNoBorder">
 	<eLabel text="MovieList" position="486,20" size="667,134" font="Regular;64" halign="left" valign="center" foregroundColor="#ffffff" backgroundColor="#101010" transparent="1" zPosition="3" />
 	<ePixmap position="0,0" size="2560,1440" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/main2.png" zPosition="1" />
 	<ePixmap position="283,12" size="160,156" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/icon.png" alphatest="blend" zPosition="1" />

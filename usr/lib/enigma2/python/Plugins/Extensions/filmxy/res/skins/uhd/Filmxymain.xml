@@ -1,5 +1,5 @@
 <!-- Skin Filmxymain 01/10/2022 -->
-<screen name="Filmxymain" position="0,0" size="2560,1440" title="::filmxy::.." backgroundColor="#20000000" flags="wfNoBorder">
+<screen name="Filmxymain" position="0,0" size="2560,1440" title="::filmxy::.." backgroundColor="#ff000000" flags="wfNoBorder">
 	<widget name="title" position="690,62" size="696,67" font="Regular;46" halign="left" valign="center" foregroundColor="#ffff00" backgroundColor="black" transparent="1" zPosition="5" />
 	<widget name="info" position="294,174" size="1094,107" font="Regular;40" halign="center" valign="center" foregroundColor="yellow" backgroundColor="#202020" transparent="0" zPosition="5" />
 	<widget name="pth" position="712,1351" size="684,59" font="Regular;40" halign="right" foregroundColor="#808080" backgroundColor="#000000" transparent="1" zPosition="5" />
