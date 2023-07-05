@@ -72,6 +72,7 @@ print('Py3: ', PY3)
 try:
     from urllib.parse import urlparse, unquote
     from urllib.request import urlretrieve, urlopen
+    from urllib.request import Request
     from urllib.error import URLError
     PY3 = True
     unicode = str
@@ -80,7 +81,7 @@ try:
 except ImportError:
     from urlparse import urlparse
     from urllib import urlretrieve
-    # from urllib2 import Request
+    from urllib2 import Request
     from urllib import unquote
     from urllib2 import urlopen
     from urllib2 import URLError
@@ -255,22 +256,22 @@ def returnIMDB(text_clear):
     return
 
 
-status = True
+status = False
 
 
 def status_site():
     global status
-    url = 'https://www.filmxy.pw/movie-list'
-    response = requests.get(url)
+    url = 'http://www.filmxy.pw/movie-list'
+    response = requests.get(url, verify=False)
     if response.status_code == 200:
         status = True
         print('Web site exists')
-        return True
+        # return True
     else:
         status = False
         print('Web site does not exist')
-        return False
-    return
+        # return False
+    return status
 
 
 def piconlocal(name):
