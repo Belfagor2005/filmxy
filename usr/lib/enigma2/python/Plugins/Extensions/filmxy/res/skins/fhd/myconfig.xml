@@ -15,12 +15,12 @@
 	<!-- Menu List -->
 	<widget name="config" position="220,230" size="970,550" font="Regular;30" itemHeight="50" scrollbarMode="showOnDemand" transparent="1" zPosition="5" foregroundColor="#00a0a0a0" foregroundColorSelected="#ffffff" backgroundColor="#20000000" backgroundColorSelected="#0b2049" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/sliderb.png" />
 	<!-- Colors 1220 -->
-	<ePixmap name="red" position="227,968" zPosition="2" size="210,60" pixmap="skin_default/buttons/red.png" transparent="1" alphatest="on" />
-	<widget name="key_red" position="327,961" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
-	<ePixmap name="green" position="879,968" zPosition="2" size="210,60" pixmap="skin_default/buttons/green.png" transparent="1" alphatest="on" />
-	<widget name="key_green" position="980,958" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
-	<ePixmap name="yellow" position="227,1023" zPosition="2" size="210,60" pixmap="skin_default/buttons/yellow.png" transparent="1" alphatest="on" />
-	<widget name="key_yellow" position="327,1015" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
-	<ePixmap name="blue" position="881,1020" zPosition="2" size="210,60" pixmap="skin_default/buttons/blue.png" transparent="1" alphatest="on" />
-	<widget name="key_blue" position="981,1014" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />		
+	<ePixmap name="red" position="227,938" zPosition="2" size="210,60" pixmap="skin_default/buttons/red.png" transparent="1" alphatest="on" />
+	<widget name="key_red" position="227,936" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
+	<ePixmap name="green" position="979,936" zPosition="2" size="210,60" pixmap="skin_default/buttons/green.png" transparent="1" alphatest="on" />
+	<widget name="key_green" position="980,936" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
+	<ePixmap name="yellow" position="227,1013" zPosition="2" size="210,60" pixmap="skin_default/buttons/yellow.png" transparent="1" alphatest="on" />
+	<widget name="key_yellow" position="227,1010" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
+	<ePixmap name="blue" position="981,1010" zPosition="2" size="210,60" pixmap="skin_default/buttons/blue.png" transparent="1" alphatest="on" />
+	<widget name="key_blue" position="981,1010" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />		
 </screen>

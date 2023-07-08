@@ -1,22 +1,9 @@
 from os import unlink
 import requests
 from twisted.internet import reactor
+from urllib.request import urlopen, Request
+
 from enigma import eTimer
-import sys
-PY3 = False
-PY3 = sys.version_info.major >= 3
-print('Py3: ', PY3)
-
-try:
-    from urllib2 import urlopen
-except:
-    PY3 = True
-    from urllib.request import urlopen
-
-if sys.version_info.major == 3:
-	 import urllib.request as urllib2
-elif sys.version_info.major == 2:
-	 import urllib2
 
 
 class DownloadWithProgress:
@@ -36,8 +23,8 @@ class DownloadWithProgress:
 
 	def start(self):
 		try:
-			req = urllib2.Request(self.url, None, {"User-agent": self.userAgent})
-			feedFile = urlopen(req)
+			request = Request(self.url, None, {"User-agent": self.userAgent})
+			feedFile = urlopen(request)
 			metaData = feedFile.headers
 			self.totalSize = int(metaData.get("Content-Length", 0))
 			# Set the transfer block size to a minimum of 1K and a maximum of 1% of the file size (or 128KB if the size is unknown) else use 64K.

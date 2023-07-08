@@ -5,7 +5,7 @@
 ****************************************
 *        coded by Lululla              *
 *        Many thank's Pcd              *
-*             03/07/2023               *
+*             06/07/2023               *
 *       skin by MMark                  *
 ****************************************
 Info http://t.me/tivustream
@@ -45,8 +45,8 @@ from Screens.Standby import TryQuitMainloop
 from Screens.TaskView import JobView
 from Tools.Directories import SCOPE_PLUGINS
 from Tools.Directories import resolveFilename, fileExists
-# from Tools.Downloader import downloadWithProgress
-# from .Downloader import DownloadWithProgress
+from Tools.Downloader import downloadWithProgress
+from .Downloader import DownloadWithProgress
 from enigma import RT_VALIGN_CENTER
 from enigma import RT_HALIGN_LEFT
 from enigma import eListboxPythonMultiContent
@@ -66,12 +66,12 @@ import six
 import ssl
 import sys
 import time
+from requests import get, exceptions
+from requests.exceptions import HTTPError
+from twisted.internet.reactor import callInThread
 PY3 = False
 PY3 = sys.version_info.major >= 3
-logdata('Py3: ', PY3)
-
-if PY3:
-    logdata('PY3: True ')
+print('Py3: ', PY3)
 
 
 def trace_error():
@@ -103,41 +103,39 @@ def clear_caches():
         pass
 
 
-try:
-    from urllib import unquote
-except:
-    from urllib.parse import unquote
+if PY3:
+    logdata('PY3: True ')
+
 
 try:
-    from urllib2 import URLError
-except:
-    from urllib.request import URLError
-
-try:
-    from urlparse import urlparse
-except:
-    from urllib.parse import urlparse
-
-try:
-    from urllib2 import urlopen
-except:
-    from urllib.request import urlopen
-
-try:
-    from urllib2 import Request
-except:
+    from urllib.parse import urlparse, unquote
+    from urllib.request import urlretrieve, urlopen
     from urllib.request import Request
+    from urllib.error import URLError
+    PY3 = True
+    unicode = str
+    unichr = chr
+    long = int
+except ImportError:
+    from urlparse import urlparse
+    from urllib import urlretrieve
+    from urllib2 import Request
+    from urllib import unquote
+    from urllib2 import urlopen
+    from urllib2 import URLError
 
+if PY3:
+    print('six.PY3: True ')
 
-# plugin_path = os.path.dirname(sys.modules[__name__].__file__)
 plugin_path = resolveFilename(SCOPE_PLUGINS, "Extensions/{}".format('filmxy'))
 global skin_path, nextmodule, Path_Movies
 
 _session = None
 _firstStart = True
 # Host = "http://www.filmxy.pw/"
-referer = "http://www.filmxy.online"
 Host = "https://www.filmxy.online/"
+referer = "http://www.filmxy.online"
+
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36',
            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8', 'Accept-Encoding': 'deflate'}
 
@@ -145,10 +143,12 @@ streamlink = False
 if Utils.isStreamlinkAvailable:
     streamlink = True
 
+
 try:
     from Plugins.Extensions.SubsSupport import SubsSupport, SubsSupportStatus
 except ImportError:
     class SubsSupport(object):
+
         def __init__(self, *args, **kwargs):
             pass
 
@@ -156,29 +156,6 @@ except ImportError:
 class SubsSupportStatus(object):
     def __init__(self, *args, **kwargs):
         pass
-
-
-from requests import get, exceptions
-from requests.exceptions import HTTPError
-from twisted.internet.reactor import callInThread
-
-
-def threadGetPage(url=None, file=None, key=None, success=None, fail=None, *args, **kwargs):
-    print('[FILMXY][threadGetPage] url, file, key, args, kwargs', url, "   ", file, "   ", key, "   ", args, "   ", kwargs)
-    try:
-        response = get(url, verify=False)
-        response.raise_for_status()
-        if file is None:
-            success(response.content)
-        elif key is not None:
-            success(response.content, file, key)
-        else:
-            success(response.content, file)
-    except HTTPError as httperror:
-        print('[FILMXY][threadGetPage] Http error: ', httperror)
-        fail(error)  # E0602 undefined name 'error'
-    except exceptions.RequestException as error:
-        print(error)
 
 
 def cleantitle(title):
@@ -189,7 +166,7 @@ def cleantitle(title):
 
 
 def getversioninfo():
-    currversion = '1.2'
+    currversion = '1.3'
     version_file = os.path.join(plugin_path, '/version')
     if os.path.exists(version_file):
         try:
@@ -212,15 +189,14 @@ def paypal():
 
 
 try:
-    # from OpenSSL import SSL
     from twisted.internet import ssl
     from twisted.internet._sslverify import ClientTLSOptions
     sslverify = True
 except:
     sslverify = False
+
 if sslverify:
     class SNIFactory(ssl.ClientContextFactory):
-
         def __init__(self, hostname=None):
             self.hostname = hostname
 
@@ -257,8 +233,13 @@ except:
         config.plugins.filmxy.movie = ConfigDirectory(default='/media/hdd/movie/')
 config.plugins.filmxy.services = ConfigSelection(default='4097', choices=modechoices)
 config.plugins.filmxy.servicesforce = ConfigOnOff(default=False)
-
 cfg = config.plugins.filmxy
+
+
+# Path_Movies = str(config.plugins.filmxy.movie.value)
+# if Path_Movies.endswith("\/\/"):
+    # Path_Movies = Path_Movies[:-1]
+# print('patch movies: ', Path_Movies)
 
 currversion = getversioninfo()
 title_plug = 'Filmxy V. %s' % currversion
@@ -279,14 +260,18 @@ Path_Tmp = "/tmp"
 Path_Movies = str(config.plugins.filmxy.movie.value)
 cachefold = config.plugins.filmxy.cachefold.value.strip()
 pictmp = cachefold + "poster.jpg"
+print('patch movies: ', Path_Movies)
 pmovies = False
 ui = False
+
+# if cachefold.endswith('\/\/'):
+    # cachefold = cachefold[:-1]
 if not os.path.exists(cachefold):
     try:
         os.makedirs(cachefold)
     except OSError as e:
         logdata(('Error creating directory %s:\n%s') % (cachefold, e))
-logdata("path cachefold: ", str(cachefold))
+# logdata("path cachefold: ", str(cachefold))
 
 
 screenwidth = getDesktop(0).size()
@@ -435,10 +420,10 @@ def piconlocal(name):
         piconlocal = prevpng
     elif 'next' in name.lower():
         piconlocal = nextpng
-
     path = plugin_path + '/res/img/' + piconlocal
     print('>>>>>>>> ' + path)
     return str(path)
+
 
 EXTRAD = "radio", "radyo", "mix", "fm", "kbit", "rap", "metal", "alternative"
 EXTXXX = "adult", "xxx"
@@ -486,10 +471,8 @@ class rvList(MenuList):
 
 
 def rvListEntry(name, idx):
-    # name = Utils.checkStr(name)
+    name = Utils.checkStr(name)
     res = [name]
-
-    # pngs = piconlocal(name)
     if 'radio' in name.lower():
         pngs = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/radio.png".format('filmxy'))
     elif 'webcam' in name.lower():
@@ -500,6 +483,7 @@ def rvListEntry(name, idx):
         pngs = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/sport.png".format('filmxy'))
     else:
         pngs = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/tv.png".format('filmxy'))
+
     if screenwidth.width() == 2560:
         res.append(MultiContentEntryPixmapAlphaTest(pos=(5, 2), size=(55, 55), png=loadPNG(pngs)))
         res.append(MultiContentEntryText(pos=(80, 0), size=(1200, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
@@ -592,9 +576,9 @@ class Filmxymain(Screen):
             idx = self['list'].getSelectionIndex()
             text_clear = self.names[idx]
             if returnIMDB(text_clear):
-                logdata("show imdb/tmdb ", text_clear)
+                print('show imdb/tmdb')
         except Exception as e:
-            logdata('error showIMDB ', e)
+            print('error showIMDB ', e)
 
     def __layoutFinished(self):
         status = status_site()
@@ -674,7 +658,7 @@ class Filmxymain(Screen):
             try:
                 self.mbox = self.session.open(MessageBox, _('freearhey Plugin Not Installed!!\nUse my Plugin Freearhey'), MessageBox.TYPE_INFO, timeout=4)
             except Exception as e:
-                logdata('error infobox ', e)
+                print('error infobox ', e)
 
     def goConfig(self):
         self.session.open(myconfig)
@@ -735,8 +719,8 @@ class Filmxymain(Screen):
                     self['poster'].instance.setPixmap(ptr)
                     self['poster'].show()
         except Exception as e:
-            logdata("Error: can't find file or read data in Filmxymain")
-            logdata(e)
+            print(e)
+            print("Error: can't find file or read data in Playchoice")
         return
 
 
@@ -809,6 +793,7 @@ class live_to_stream(Screen):
             self.leftt.callback.append(self.left)
         self.leftt.start(500, True)
         self.onLayoutFinish.append(self.__layoutFinished)
+        # self.currentList.moveToIndex(0)
 
     def showIMDB(self):
         try:
@@ -820,8 +805,8 @@ class live_to_stream(Screen):
             if returnIMDB(text_clear):
                 logdata("show imdb/tmdb ", text_clear)
         except Exception as e:
-            logdata("Error: can't find showIMDB in live_to_stream")
-            logdata(e)
+            print(e)
+            print("Error: can't find showIMDB in live_to_stream")
 
     def readJsonFile(self):
         self.names = []
@@ -837,8 +822,11 @@ class live_to_stream(Screen):
                 regexvideo = 'name:"(.*?)",link:"(.*?)"'
                 match = re.compile(regexvideo, re.DOTALL).findall(content2)
                 for name, url in match:
+                    # if 'adult' in name.lower():
+                        # continue
                     pixmaps = piconlocal(name)
                     if os.path.exists(pixmaps):
+                        # self.downloadPic(None, pixmaps)
                         pic = pixmaps
                     else:
                         pic = no_cover
@@ -856,6 +844,7 @@ class live_to_stream(Screen):
                 for name, url in match:
                     pixmaps = piconlocal(name)
                     if os.path.exists(pixmaps):
+                        # self.downloadPic(None, pixmaps)
                         pic = pixmaps
                     else:
                         pic = no_cover
@@ -873,6 +862,7 @@ class live_to_stream(Screen):
                 for name, url in match:
                     pixmaps = piconlocal(name)
                     if os.path.exists(pixmaps):
+                        # self.downloadPic(None, pixmaps)
                         pic = pixmaps
                     else:
                         pic = no_cover
@@ -892,6 +882,7 @@ class live_to_stream(Screen):
                     url1 = "https://www.filmxy." + ext + "/movie-list/" + url + "/"
                     pixmaps = piconlocal(name)
                     if os.path.exists(pixmaps):
+                        # self.downloadPic(None, pixmaps)
                         pic = pixmaps
                     else:
                         pic = no_cover
@@ -901,14 +892,15 @@ class live_to_stream(Screen):
                     self.infos.append(self.desc)
             logdata("live_to_stream self.desc: ", self.desc)
             showlist(self.names, self['list'])
+            # self['list'].moveToIndex(0)
         except Exception as e:
-            logdata("Error: can't find file or read data in live_to_stream")
-            logdata(e)
+            print(e)
+            print("Error: can't find file or read data in live_to_stream")
+
         return
 
     def okRun(self):
         i = len(self.names)
-        logdata('okRun= ', i)
         if i < 0:
             return
         try:
@@ -926,14 +918,13 @@ class live_to_stream(Screen):
             elif nextmodule == 'years':
                 self.session.open(pagesX, name, url, pic, nextmodule)
                 return
-            # az
+            # a-z
             elif nextmodule == 'a-z':
                 self.session.open(azvideo, name, url, pic, nextmodule)
                 return
-            logdata('pages next: ', nextmodule)
         except Exception as e:
-            logdata("Error: can't find file or read data in live_to_stream")
-            logdata(e)
+            print(e)
+            print("Error: can't find file or read data in live_to_stream")
         return
 
     def __layoutFinished(self):
@@ -964,7 +955,7 @@ class live_to_stream(Screen):
     def selectionChanged(self):
         if self['list'].getCurrent():
             currentindex = self['list'].getIndex()
-            logdata(currentindex)
+            print(currentindex)
 
     def cancel(self):
         self.close()
@@ -1002,42 +993,80 @@ class live_to_stream(Screen):
             if pixmaps != "" or pixmaps != "n/A" or pixmaps is not None or pixmaps != "null":
                 try:
                     if PY3:
-                        pixmaps = pixmaps.encode()
-                    callInThread(threadGetPage, url=pixmaps, file=pictmp, success=self.downloadPic, fail=self.downloadError)
+                        pixmaps = six.ensure_binary(self.pics[idx])
+                    if pixmaps.startswith(b"https") and sslverify:
+                        parsed_uri = urlparse(pixmaps)
+                        domain = parsed_uri.hostname
+                        sniFactory = SNIFactory(domain)
+                        # if six.PY3:
+                            # pixmaps = pixmaps.encode()
+                        downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
+                    else:
+                        downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
                 except Exception as e:
-                    logdata("Error: can't find file or read data live_to_stream")
-                    logdata(e)
+                    print(e)
+                    print("Error: can't find file or read data live_to_stream")
+            else:
+                self.poster_resize(no_cover)
         except Exception as e:
-            logdata("Error: can't find file or read data in Playchoice")
-            logdata(e)
+            print(e)
+            print("Error: can't find file or read data in Playchoice")
         return
 
-    def downloadPic(self, output, poster):
+    def downloadPic(self, data, pictmp):
+        if os.path.exists(pictmp):
+            try:
+                self.poster_resize(pictmp)
+            except Exception as e:
+                print("* error ** %s" % e)
+                pass
+
+    # def downloadPic(self, output, poster):
+        # try:
+            # if output is not None:
+                # f = open(poster, 'wb')
+                # f.write(output)
+                # f.close()
+            # # self.poster_resize(poster)
+            # self["poster"].instance.setScale(1)
+            # self["poster"].instance.setPixmapFromFile(poster)
+            # self['poster'].show()
+        # except Exception as e:
+            # logdata('error ', e)
+        # return
+
+    def downloadError(self, png):
         try:
-            if output is not None:
-                f = open(poster, 'wb')
-                f.write(output)
-                f.close()
-            # self.poster_resize(poster)
-            self["poster"].instance.setScale(1)
-            self["poster"].instance.setPixmapFromFile(poster)
-            self['poster'].show()
+            if fileExists(png):
+                self.poster_resize(png)
         except Exception as e:
-            logdata('error ', e)
-        return
-
-    def downloadError(self, output):
-        logdata('output error ', output)
-        pass
+            self.poster_resize(no_cover)
+            print(e)
+            print('exe downloadError')
 
     def poster_resize(self, png):
         self["poster"].hide()
         if not fileExists(png):
             png = no_cover
-        # del self.picload
-        if fileExists(png):
-            self["poster"].instance.setPixmapFromFile(png)
+        size = self['poster'].instance.size()
+        self.picload = ePicLoad()
+        self.scale = AVSwitch().getFramebufferScale()
+        self.picload.setPara((size.width(),
+                              size.height(),
+                              self.scale[0],
+                              self.scale[1],
+                              False,
+                              1,
+                              '#FF000000'))
+        if Utils.DreamOS():
+            self.picload.startDecode(png, False)
+        else:
+            self.picload.startDecode(png, 0, 0, False)
+        ptr = self.picload.getData()
+        if ptr is not None:
+            self['poster'].instance.setPixmap(ptr)
             self['poster'].show()
+        return
 
 
 class pagesX(Screen):
@@ -1065,6 +1094,7 @@ class pagesX(Screen):
         self['statusred'] = Pixmap()
         self['statusred'].hide()
         self['status'] = Label('SERVER STATUS')
+        # self["poster"].hide()
         self.picload = ePicLoad()
         self.scale = AVSwitch().getFramebufferScale()
         self['key_red'] = Button(_('Back'))
@@ -1112,7 +1142,7 @@ class pagesX(Screen):
     def selectionChanged(self):
         if self['list'].getCurrent():
             currentindex = self['list'].getIndex()
-            logdata(currentindex)
+            print(currentindex)
 
     def readJsonFile(self):
         self.names = []
@@ -1134,8 +1164,8 @@ class pagesX(Screen):
             logdata("pages nextmodule: ", self.desc)
             showlist(self.names, self['list'])
         except Exception as e:
-            logdata(e)
-            logdata("Error: can't find file or read data in pagesX")
+            print(e)
+            print("Error: can't find file or read data in pagesX")
         return
 
     def okRun(self):
@@ -1149,8 +1179,8 @@ class pagesX(Screen):
             pic = self.pics[idx]
             self.session.open(pagevideo3, name, url, pic, self.desc)
         except Exception as e:
-            logdata(e)
-            logdata("Error: can't find file or read data in pagesX")
+            print(e)
+            print("Error: can't find file or read data in pagesX")
 
     def cancel(self):
         self.close(None)
@@ -1169,11 +1199,28 @@ class pagesX(Screen):
 
     def poster_resize(self, png):
         self["poster"].hide()
-        if not fileExists(png):
-            png = no_cover
-        if fileExists(png):
-            self["poster"].instance.setPixmapFromFile(png)
+        size = self['poster'].instance.size()
+        self.picload = ePicLoad()
+        self.scale = AVSwitch().getFramebufferScale()
+        self.picload.setPara((size.width(),
+                              size.height(),
+                              self.scale[0],
+                              self.scale[1],
+                              False,
+                              1,
+                              '#FF000000'))
+        if Utils.DreamOS():
+            self.picload.startDecode(png, False)
+        else:
+            self.picload.startDecode(png, 0, 0, False)
+        ptr = self.picload.getData()
+        if ptr is not None:
+            self['poster'].instance.setPixmap(ptr)
             self['poster'].show()
+        else:
+            self.poster_resize(no_cover)
+            print('no cover.. error')
+        return
 
 
 class azvideo(Screen):
@@ -1201,6 +1248,7 @@ class azvideo(Screen):
         self['statusred'] = Pixmap()
         self['statusred'].hide()
         self['status'] = Label('SERVER STATUS')
+        # self["poster"].hide()
         self.picload = ePicLoad()
         self.scale = AVSwitch().getFramebufferScale()
         self['key_red'] = Button(_('Back'))
@@ -1249,10 +1297,10 @@ class azvideo(Screen):
             idx = self['list'].getSelectionIndex()
             text_clear = self.names[idx]
             if returnIMDB(text_clear):
-                logdata("show imdb/tmdb ", text_clear)
+                print('show imdb/tmdb')
         except Exception as e:
-            logdata(e)
-            logdata("Error: can't find azvideo in live_to_stream")
+            print(e)
+            print("Error: can't find azvideo in live_to_stream")
 
     def __layoutFinished(self):
         status = status_site()
@@ -1282,7 +1330,7 @@ class azvideo(Screen):
     def selectionChanged(self):
         if self['list'].getCurrent():
             currentindex = self['list'].getIndex()
-            logdata(currentindex)
+            print(currentindex)
 
     def readJsonFile(self):
         self.names = []
@@ -1313,11 +1361,11 @@ class azvideo(Screen):
                 self.urls.append(url1)
                 self.pics.append(pic)
                 self.infos.append(self.desc)
-            logdata("azvideo nextmodule: ", self.desc)
+            # logdata("azvideo nextmodule: ", self.desc)
             showlist(self.names, self['list'])
         except Exception as e:
-            logdata(e)
-            logdata("Error: can't find file or read data in azvideo")
+            print(e)
+            print("Error: can't find file or read data in azvideo")
 
     def okRun(self):
         i = len(self.names)
@@ -1332,8 +1380,8 @@ class azvideo(Screen):
             logdata("azvideo name: ", name)
             self.session.open(Video5list, name, url, pic, desc)
         except Exception as e:
-            logdata(e)
-            logdata("Error: can't find file or read data in azvideo okRun")
+            print(e)
+            print("Error: can't find file or read data in azvideo okRun")
 
     def cancel(self):
         self.close(None)
@@ -1365,47 +1413,88 @@ class azvideo(Screen):
                 return
             idx = self['list'].getSelectionIndex()
             pixmaps = self.pics[idx]
-
             if str(res_plugin_path) in pixmaps:
                 self.downloadPic(None, pixmaps)
                 return
             if pixmaps != "" or pixmaps != "n/A" or pixmaps is not None or pixmaps != "null":
                 try:
                     if PY3:
-                        pixmaps = pixmaps.encode()
-                    callInThread(threadGetPage, url=pixmaps, file=pictmp, success=self.downloadPic, fail=self.downloadError)
+                        pixmaps = six.ensure_binary(self.pics[idx])
+                    print("debug pixmaps p:", pixmaps)
+                    print("debug pixmaps p:", type(pixmaps))
+                    if pixmaps.startswith(b"https") and sslverify:
+                        parsed_uri = urlparse(pixmaps)
+                        domain = parsed_uri.hostname
+                        sniFactory = SNIFactory(domain)
+                        # if six.PY3:
+                            # pixmaps = pixmaps.encode()
+                        downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
+                    else:
+                        downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
                 except Exception as e:
-                    logdata(e)
-                    logdata("Error: can't find file in azvideo")
+                    print(e)
+                    print("Error: can't find file in azvideo")
+            else:
+                self.poster_resize(no_cover)
         except Exception as e:
-            logdata(e)
-            logdata("Error: load_poster in azvideo")
+            print(e)
+            print("Error: can't find file or read data in Playchoice")
         return
 
-    def downloadPic(self, output, poster):
+    def downloadPic(self, data, pictmp):
+        if os.path.exists(pictmp):
+            try:
+                self.poster_resize(pictmp)
+            except Exception as e:
+                print("* error ** %s" % e)
+                pass
+
+    # def downloadPic(self, output, poster):
+        # try:
+            # if output is not None:
+                # f = open(poster, 'wb')
+                # f.write(output)
+                # f.close()
+            # # self.poster_resize(poster)
+            # self["poster"].instance.setScale(1)
+            # self["poster"].instance.setPixmapFromFile(poster)
+            # self['poster'].show()
+        # except Exception as e:
+            # logdata('error ', e)
+        # return
+
+    def downloadError(self, png):
         try:
-            if output is not None:
-                f = open(poster, 'wb')
-                f.write(output)
-                f.close()
-            # self.poster_resize(poster)
-            self["poster"].instance.setScale(1)
-            self["poster"].instance.setPixmapFromFile(poster)
-            self['poster'].show()
+            if fileExists(png):
+                self.poster_resize(png)
         except Exception as e:
-            logdata('error ', e)
-        return
-
-    def downloadError(self, output):
-        pass
+            self.poster_resize(no_cover)
+            print(e)
+            print('exe downloadError')
 
     def poster_resize(self, png):
         self["poster"].hide()
-        if not fileExists(png):
-            png = no_cover
-        if fileExists(png):
-            self["poster"].instance.setPixmapFromFile(png)
+        size = self['poster'].instance.size()
+        self.picload = ePicLoad()
+        self.scale = AVSwitch().getFramebufferScale()
+        self.picload.setPara((size.width(),
+                              size.height(),
+                              self.scale[0],
+                              self.scale[1],
+                              False,
+                              1,
+                              '#FF000000'))
+        if Utils.DreamOS():
+            self.picload.startDecode(png, False)
+        else:
+            self.picload.startDecode(png, 0, 0, False)
+        ptr = self.picload.getData()
+        if ptr is not None:
+            self['poster'].instance.setPixmap(ptr)
             self['poster'].show()
+        else:
+            print('no cover.. error')
+        return
 
 
 class pagevideo3(Screen):
@@ -1433,6 +1522,7 @@ class pagevideo3(Screen):
         self['statusred'] = Pixmap()
         self['statusred'].hide()
         self['status'] = Label('SERVER STATUS')
+        # self["poster"].hide()
         self.picload = ePicLoad()
         self.scale = AVSwitch().getFramebufferScale()
         self['key_red'] = Button(_('Back'))
@@ -1467,12 +1557,12 @@ class pagevideo3(Screen):
         except:
             self.readJsonTimer.callback.append(self.readJsonFile)
         self.readJsonTimer.start(500, True)
-        # self.leftt = eTimer()
-        # try:
-            # self.leftt_conn = self.leftt.timeout.connect(self.left)
-        # except:
-            # self.leftt.callback.append(self.left)
-        # self.leftt.start(500, True)
+        self.leftt = eTimer()
+        try:
+            self.leftt_conn = self.leftt.timeout.connect(self.left)
+        except:
+            self.leftt.callback.append(self.left)
+        self.leftt.start(500, True)
         self.onLayoutFinish.append(self.__layoutFinished)
 
     def showIMDB(self):
@@ -1485,8 +1575,8 @@ class pagevideo3(Screen):
             if returnIMDB(text_clear):
                 logdata("show imdb/tmdb ", text_clear)
         except Exception as e:
-            logdata(e)
-            logdata("Error: can't find pagevideo3 in live_to_stream")
+            print(e)
+            print("Error: can't find pagevideo3 in live_to_stream")
 
     def __layoutFinished(self):
         status = status_site()
@@ -1517,8 +1607,8 @@ class pagevideo3(Screen):
                     # if size2:
                     intot = str(infoadd) + '\n' + str(size2)
                     self['descadd'].setText(intot)
-            logdata('info = ', info)
-            logdata('intot2 = ', intot)
+            # logdata('info = ', info)
+            # logdata('intot2 = ', intot)
             return
         except Exception as e:
             self['desc'].setText(' ')
@@ -1529,7 +1619,7 @@ class pagevideo3(Screen):
     def selectionChanged(self):
         if self['list'].getCurrent():
             currentindex = self['list'].getIndex()
-            logdata(currentindex)
+            print(currentindex)
 
     def readJsonFile(self):
         self.names = []
@@ -1605,7 +1695,7 @@ class pagevideo3(Screen):
             for url, pic, name, infoadd, size, info in match:
                 url1 = url.replace(' ', '')
                 url1 = url1.strip()  # + "/"
-                pic = pic.strip()
+                pic = pic.strip()  # .replace('https', 'http')
                 name = name.strip()
                 name = html_conv.html_unescape(name)
                 size = size.replace('</b>', '').replace(' ', '')
@@ -1620,8 +1710,8 @@ class pagevideo3(Screen):
             logdata("pagevideo3 nextmodule: ", self.desc)
             showlist(self.names, self['list'])
         except Exception as e:
-            logdata(e)
-            logdata("Error: can't find file or read data in pagevideo3")
+            print(e)
+            print("Error: can't find file or read data in pagevideo3")
         return
 
     def okRun(self):
@@ -1634,8 +1724,8 @@ class pagevideo3(Screen):
             logdata("pagevideo3 name: ", name)
             self.session.open(Video5list, name, url, pic, info)
         except Exception as e:
-            logdata(e)
-            logdata("Error: can't find file or read data in pagevideo3")
+            print(e)
+            print("Error: can't find file or read data in pagevideo3")
 
     def cancel(self):
         self.close(None)
@@ -1668,44 +1758,68 @@ class pagevideo3(Screen):
             idx = self['list'].getSelectionIndex()
             pixmaps = self.pics[idx]
 
-            if str(res_plugin_path) in pixmaps:
-                self.downloadPic(None, pixmaps)
-                return
+            # if str(res_plugin_path) in pixmaps:
+                # self.downloadPic(None, pixmaps)
+                # return
             if pixmaps != "" or pixmaps != "n/A" or pixmaps is not None or pixmaps != "null":
                 try:
                     if PY3:
-                        pixmaps = pixmaps.encode()
-                    callInThread(threadGetPage, url=pixmaps, file=pictmp, success=self.downloadPic, fail=self.downloadError)
+                        pixmaps = six.ensure_binary(self.pics[idx])
+                    if pixmaps.startswith(b"https") and sslverify:
+                        parsed_uri = urlparse(pixmaps)
+                        domain = parsed_uri.hostname
+                        sniFactory = SNIFactory(domain)
+                        # if six.PY3:
+                            # pixmaps = pixmaps.encode()
+                        downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
+                    else:
+                        downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
                 except Exception as e:
-                    logdata(e)
-                    logdata("Error: can't find file in pagevideo3")
+                    print(e)
+                    print("Error: can't find file in pagevideo3")
+            else:
+                self.poster_resize(no_cover)
         except Exception as e:
-            logdata(e)
-            logdata("Error: load_poster in pagevideo3")
+            print(e)
+            print("Error: pagevideo3")
         return
 
-    def downloadPic(self, output, poster):
+    # def downloadPic(self, output, poster):
+        # try:
+            # if output is not None:
+                # f = open(poster, 'wb')
+                # f.write(output)
+                # f.close()
+            # # self.poster_resize(poster)
+            # self["poster"].instance.setScale(1)
+            # self["poster"].instance.setPixmapFromFile(poster)
+            # self['poster'].show()
+        # except Exception as e:
+            # logdata('error ', e)
+        # return
+
+    def downloadPic(self, data, pictmp):
+        if os.path.exists(pictmp):
+            try:
+                self.poster_resize(pictmp)
+            except Exception as e:
+                print("* error ** %s" % e)
+                pass
+
+    def downloadError(self, png):
         try:
-            if output is not None:
-                f = open(poster, 'wb')
-                f.write(output)
-                f.close()
-            # self.poster_resize(poster)
-            self["poster"].instance.setScale(1)
-            self["poster"].instance.setPixmapFromFile(poster)
-            self['poster'].show()
+            if fileExists(png):
+                self.poster_resize(png)
         except Exception as e:
-            logdata('error ', e)
-        return
-
-    def downloadError(self, output):
-        pass
+            self.poster_resize(no_cover)
+            print(e)
+            print('exe downloadError')
 
     def poster_resize(self, png):
-        self["poster"].hide()
-        self.picload = ePicLoad()
         if not fileExists(png):
             png = no_cover
+        self.picload = ePicLoad()
+        self["poster"].hide()
         size = self['poster'].instance.size()
         self.scale = AVSwitch().getFramebufferScale()
         self.picload.setPara((size.width(),
@@ -1723,7 +1837,7 @@ class pagevideo3(Screen):
         if ptr is not None:
             self['poster'].instance.setPixmap(ptr)
             self['poster'].show()
-        del self.picload
+        return
 
 
 class Video5list(Screen):
@@ -1751,6 +1865,7 @@ class Video5list(Screen):
         self['statusred'] = Pixmap()
         self['statusred'].hide()
         self['status'] = Label('SERVER STATUS')
+        # self["poster"].hide()
         self.picload = ePicLoad()
         self.scale = AVSwitch().getFramebufferScale()
         self['key_red'] = Button(_('Back'))
@@ -1801,11 +1916,10 @@ class Video5list(Screen):
             if returnIMDB(text_clear):
                 logdata('show imdb/tmdb')
         except Exception as e:
-            logdata(e)
-            logdata("Error: can't find Video5list in Video5list")
+            print(e)
+            print("Error: can't find Video5list in Video5list")
 
     def __layoutFinished(self):
-        self.setTitle(self.setup_title)
         status = status_site()
         if status is True:
             self['statusgreen'].show()
@@ -1815,8 +1929,9 @@ class Video5list(Screen):
             self['statusgreen'].hide()
             self['statusred'].show()
             self['status'].setText('SERVER OFF')
-        self.load_poster()
+        self.setTitle(self.setup_title)
         self.load_infos()
+        self.load_poster()
 
     def load_infos(self):
         try:
@@ -1838,7 +1953,7 @@ class Video5list(Screen):
     def selectionChanged(self):
         if self['list'].getCurrent():
             currentindex = self['list'].getIndex()
-            logdata(currentindex)
+            print(currentindex)
 
     def readJsonFile(self):
         self.names = []
@@ -1846,22 +1961,27 @@ class Video5list(Screen):
         self.pics = []
         self.infos = []
         content = Utils.ReadUrl2(self.url, referer)
-        if PY3:
-            content = six.ensure_str(content)
+        # if PY3:
+            # content = six.ensure_str(content)
         try:
-            regexvideo = 'class=movie-poster.*?data-src=(.*?)src.*?id=main-down.*?href=(.*?)target'
+            # regexvideo = 'id=tab-download.*?href=(.*?)target'
+            # regexvideo = 'id=tab-download.*?href=(.*?)target.*?class=movie-poster.*?data-src=(.*?)src'
+            # class=movie-poster>
+            # <img
+            # width=250 height=350 data-src=https://www.cdnzone.org/uploads/2017/09/A-2nd-Hand-Lover-2015-cover.jpg src
+            regexvideo = 'class=movie-poster.*?data-src=(.*?) src.*?id=main-down.*?href=(.*?) target'
             match = re.compile(regexvideo, re.DOTALL).findall(content)
             for pic, url in match:
-                picx = pic.replace('https', 'http').replace(' ', '').strip()
+                picx = pic.strip  # .replace('https', 'http').replace(' ', '').strip()
                 url = url.replace(" ", "").strip()
-                content2 = Utils.getUrl2(url, referer)
+                content2 = Utils.ReadUrl2(url, referer)
                 regexvideo2 = '<li class="signle-link"><a href="(.*?)".*?<span>(.*?)</span>.*?<strong>(.*?)</strong>'
                 match2 = re.compile(regexvideo2, re.DOTALL).findall(content2)
                 for url, name1, name2 in match2:
                     name1 = name1.replace("-", "").replace(" ", "")
                     name = unquote(self.name) + "-" + name1 + "-" + name2
                     name = html_conv.html_unescape(name)
-                    pic = picx
+                    pic = str(picx)
                     info = self.desc
                     if "racaty" not in name.lower():
                         continue
@@ -1869,11 +1989,11 @@ class Video5list(Screen):
                     self.urls.append(url)
                     self.pics.append(pic)
                     self.infos.append(info)
-            logdata("Video5list nextmodule: ", self.desc)
+            # logdata("Video5list nextmodule: ", self.desc)
             showlist(self.names, self['list'])
         except Exception as e:
-            logdata(e)
-            logdata("Error: can't find file or read data in Video5list")
+            print(e)
+            print("Error: can't find file or read data in Video5list")
         return
 
     def okRun(self):
@@ -1884,15 +2004,14 @@ class Video5list(Screen):
             idx = self['list'].getSelectionIndex()
             name = self.names[idx]
             url = self.urls[idx]
+            info = self.infos[idx]
             pic = self.pics[idx]
-            logdata('Video5list okrun')
             logdata("Video5list name: ", name)
             logdata("Video5list url: ", url)
-            # info = self.desc
-            self.session.open(Playchoice, name, url, pic, self.desc)
+            self.session.open(Playchoice, name, url, pic, info)
         except Exception as e:
-            logdata(e)
-            logdata("Error: can't find file or read data in Video5list")
+            print(e)
+            print("Error: can't find file or read data in Video5list 2 ")
 
     def cancel(self):
         self.close(None)
@@ -1925,44 +2044,68 @@ class Video5list(Screen):
             idx = self['list'].getSelectionIndex()
             pixmaps = self.pics[idx]
             if str(res_plugin_path) in pixmaps:
-                # self.poster_resize(pixmaps)
-                self.downloadPic(None, pixmaps)
+                self.poster_resize(pixmaps)
+                # self.downloadPic(None, pixmaps)
                 return
             if pixmaps != "" or pixmaps != "n/A" or pixmaps is not None or pixmaps != "null":
                 try:
                     if PY3:
-                        pixmaps = pixmaps.encode()
-                    callInThread(threadGetPage, url=pixmaps, file=pictmp, success=self.downloadPic, fail=self.downloadError)
+                        pixmaps = six.ensure_binary(self.pics[idx])
+                    if pixmaps.startswith(b"https") and sslverify:
+                        parsed_uri = urlparse(pixmaps)
+                        domain = parsed_uri.hostname
+                        sniFactory = SNIFactory(domain)
+                        # if six.PY3:
+                            # pixmaps = pixmaps.encode()
+                        downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
+                    else:
+                        downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
                 except Exception as e:
-                    logdata(e)
-                    logdata("Error: can't find file in Video5list")
+                    print(e)
+                    print("Error: can't find file in Video5list")
+            else:
+                self.poster_resize(no_cover)
         except Exception as e:
-            logdata(e)
-            logdata("Error: load_poster in Video5list")
+            print(e)
+            print("Error: can't find file or read data in Playchoice")
         return
 
-    def downloadPic(self, output, poster):
+    # def downloadPic(self, output, poster):
+        # try:
+            # if output is not None:
+                # f = open(poster, 'wb')
+                # f.write(output)
+                # f.close()
+            # # self.poster_resize(poster)
+            # self["poster"].instance.setScale(1)
+            # self["poster"].instance.setPixmapFromFile(poster)
+            # self['poster'].show()
+        # except Exception as e:
+            # logdata('error ', e)
+        # return
+
+    def downloadPic(self, data, pictmp):
+        if os.path.exists(pictmp):
+            try:
+                self.poster_resize(pictmp)
+            except Exception as e:
+                print("* error ** %s" % e)
+                pass
+
+    def downloadError(self, png):
         try:
-            if output is not None:
-                f = open(poster, 'wb')
-                f.write(output)
-                f.close()
-            # self.poster_resize(poster)
-            self["poster"].instance.setScale(1)
-            self["poster"].instance.setPixmapFromFile(poster)
-            self['poster'].show()
+            if fileExists(png):
+                self.poster_resize(png)
         except Exception as e:
-            logdata('error ', e)
-        return
-
-    def downloadError(self, output):
-        pass
+            self.poster_resize(no_cover)
+            print(e)
+            print('exe downloadError')
 
     def poster_resize(self, png):
-        self["poster"].hide()
-        self.picload = ePicLoad()
         if not fileExists(png):
             png = no_cover
+        self.picload = ePicLoad()
+        self["poster"].hide()
         size = self['poster'].instance.size()
         self.scale = AVSwitch().getFramebufferScale()
         self.picload.setPara((size.width(),
@@ -1980,7 +2123,7 @@ class Video5list(Screen):
         if ptr is not None:
             self['poster'].instance.setPixmap(ptr)
             self['poster'].show()
-        del self.picload
+        return
 
 
 class Playchoice(Screen):
@@ -2032,7 +2175,7 @@ class Playchoice(Screen):
             self.leftt_conn = self.leftt.timeout.connect(self.load_poster)
         except:
             self.leftt.callback.append(self.load_poster)
-        self.leftt.start(1000, True)
+        self.leftt.start(500, True)
         self.onLayoutFinish.append(self.load_infos)
         self.onLayoutFinish.append(self.openTest)
         # return
@@ -2073,7 +2216,6 @@ class Playchoice(Screen):
             filename = self.name1
             if ext not in EXTDOWN:
                 ext = '.mp4'
-
             fileTitle = filename.lower() + ext
             self.in_tmp = Path_Movies + fileTitle
             logdata('path download = ', self.in_tmp)
@@ -2104,11 +2246,9 @@ class Playchoice(Screen):
                     job_manager.AddJob(downloadJob(self, cmd, self.in_tmp, fileTitle))
                     self.downloading = True
                     pmovies = True
-
                 except Exception as e:
                     print(e)
                     pass
-
             except URLError as e:
                 logdata("Download failed !!\n%s" % e)
                 self.session.openWithCallback(self.ImageDownloadCB, MessageBox, _("Download Failed !!") + "\n%s" % e, type=MessageBox.TYPE_ERROR)
@@ -2149,7 +2289,7 @@ class Playchoice(Screen):
         self.urls = []
         self.names.append('Play Now')
         self.urls.append(url)
-        self.names.append('Download Now')
+        self.names.append('Download Now- Test')
         self.urls.append(url)
         self.names.append('Play HLS')
         self.urls.append(url)
@@ -2227,12 +2367,10 @@ class Playchoice(Screen):
                     self.name = self.name1
                     url = self.url.replace(':', '%3a')
                     self.play2(self.name, url)
-            logdata('hls cmd = ', cmd)
-            logdata('In playVideo url D=', url)
             return
         except Exception as e:
-            logdata(e)
-            logdata("Error: can't find file or read data in Playchoice")
+            print(e)
+            print("Error: can't find file or read data in Playchoice")
 
     def playfile(self, serverint):
         if 'None' not in str(self.url):
@@ -2243,8 +2381,8 @@ class Playchoice(Screen):
 
     def play(self, name, url):
         try:
-            print("Playstream2 name: ", name)
-            print("Playstream2 url: ", url)
+            # print("Playstream2 name: ", name)
+            # print("Playstream2 url: ", url)
             if 'None' not in str(url) or url != '':
                 self.session.open(Playstream2, name, url)
             else:
@@ -2279,21 +2417,31 @@ class Playchoice(Screen):
             if i < 0:
                 return
             pixmaps = self.pic
-
-            if str(res_plugin_path) in pixmaps:
-                self.downloadPic(None, pixmaps)
-                return
-            if pixmaps != "" or pixmaps != "n/A" or pixmaps is not None or pixmaps != "null":
-                try:
-                    if PY3:
-                        pixmaps = pixmaps.encode()
-                    callInThread(threadGetPage, url=pixmaps, file=pictmp, success=self.downloadPic, fail=self.downloadError)
-                except Exception as e:
-                    logdata(e)
-                    logdata("Error: can't find file in Playchoice")
+            # if str(res_plugin_path) in pixmaps:
+            self.downloadPic(None, pixmaps)
+                # return
+            # pixmaps = six.ensure_binary(self.pics[idx])
+            # if pixmaps != "" or pixmaps != "n/A" or pixmaps is not None or pixmaps != "null":
+                # try:
+                    # if PY3:
+                        # pixmaps = six.ensure_binary(self.pic)
+                    # if pixmaps.startswith(b"https") and sslverify:
+                        # parsed_uri = urlparse(pixmaps)
+                        # domain = parsed_uri.hostname
+                        # sniFactory = SNIFactory(domain)
+                        # # if six.PY3:
+                            # # pixmaps = pixmaps.encode()
+                        # downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
+                    # else:
+                        # downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
+                # except Exception as e:
+                    # print(e)
+                    # print("Error: can't find file or read data live_to_stream")
+            # else:
+                # self.poster_resize(no_cover)
         except Exception as e:
-            logdata(e)
-            logdata("Error: load_poster in Playchoice")
+            print(e)
+            print("Error: can't find file or read data in Playchoice")
         return
 
     def downloadPic(self, output, poster):
@@ -2310,14 +2458,19 @@ class Playchoice(Screen):
             logdata('error ', e)
         return
 
-    def downloadError(self, output):
-        pass
+    def downloadError(self, png):
+        try:
+            if fileExists(png):
+                self.poster_resize(png)
+        except Exception as e:
+            self.poster_resize(no_cover)
+            print('exe downloadError', e)
 
     def poster_resize(self, png):
-        self["poster"].hide()
-        self.picload = ePicLoad()
         if not fileExists(png):
             png = no_cover
+        self.picload = ePicLoad()
+        self["poster"].hide()
         size = self['poster'].instance.size()
         self.scale = AVSwitch().getFramebufferScale()
         self.picload.setPara((size.width(),
@@ -2335,7 +2488,7 @@ class Playchoice(Screen):
         if ptr is not None:
             self['poster'].instance.setPixmap(ptr)
             self['poster'].show()
-        del self.picload
+        return
 
 
 class TvInfoBarShowHide():
@@ -2427,7 +2580,7 @@ class TvInfoBarShowHide():
             self.startHideTimer()
 
     def debug(obj, text=""):
-        logdata(text + " %s\n" % obj)
+        print(text + " %s\n" % obj)
 
 
 class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifications, InfoBarAudioSelection, TvInfoBarShowHide, InfoBarSubtitleSupport, SubsSupportStatus, SubsSupport):
@@ -2451,7 +2604,6 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         TvInfoBarShowHide.__init__(self)
         InfoBarSubtitleSupport.__init__(self)
         InfoBarAudioSelection.__init__(self)
-
         try:
             self.init_aspect = int(self.getAspect())
         except:
@@ -2466,7 +2618,6 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         self.service = None
         self.name = html_conv.html_unescape(name)
         self.icount = 0
-        # url = url.replace(':', '%3a')
         self.url = url
         self.state = self.STATE_PLAYING
         self['actions'] = ActionMap(['MoviePlayerActions',
@@ -2540,13 +2691,13 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
             if returnIMDB(text_clear):
                 logdata("show imdb/tmdb ", text_clear)
         except Exception as e:
-            logdata(e)
-            logdata("Error: can't find Playstream2 in live_to_stream")
+            print(e)
+            print("Error: can't find Playstream2 in live_to_stream")
 
     def slinkPlay(self, url):
         name = self.name
         ref = "{0}:{1}".format(url, name)
-        logdata('final reference:   ', ref)
+        print('final reference:   ', ref)
         sref = eServiceReference(ref)
         sref.setName(name)
         self.session.nav.stopService()
@@ -2599,15 +2750,15 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         currentindex = 0
         streamtypelist = ["4097"]
 
-        # if streamlink:
-            # streamtypelist.append("5002")  # ref = '5002:0:1:0:0:0:0:0:0:0:http%3a//127.0.0.1%3a8088/' + url
-            # streaml = True
-        # if os.path.exists("/usr/bin/gstplayer"):
-            # streamtypelist.append("5001")
-        # if os.path.exists("/usr/bin/exteplayer3"):
-            # streamtypelist.append("5002")
-        # if os.path.exists("/usr/bin/apt-get"):
-            # streamtypelist.append("8193")
+        if streamlink:
+            streamtypelist.append("5002")  # ref = '5002:0:1:0:0:0:0:0:0:0:http%3a//127.0.0.1%3a8088/' + url
+            streaml = True
+        if os.path.exists("/usr/bin/gstplayer"):
+            streamtypelist.append("5001")
+        if os.path.exists("/usr/bin/exteplayer3"):
+            streamtypelist.append("5002")
+        if os.path.exists("/usr/bin/apt-get"):
+            streamtypelist.append("8193")
         for index, item in enumerate(streamtypelist, start=0):
             if str(item) == str(self.servicetype):
                 currentindex = index
@@ -2648,12 +2799,10 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
             os.remove('/tmp/hls.avi')
         self.session.nav.stopService()
         self.session.nav.playService(self.srefInit)
-
         try:
             self.timerCache.stop()
         except:
             pass
-
         if not self.new_aspect == self.init_aspect:
             try:
                 self.setAspect(self.init_aspect)
@@ -2725,6 +2874,7 @@ class myconfig(Screen, ConfigListScreen):
         self.list.append(getConfigListEntry(_('Force Services Player Reference type'), config.plugins.filmxy.servicesforce, _("Force Service Player Reference")))
         self["config"].list = self.list
         self["config"].l.setList(self.list)
+        # self.setInfo()
 
     def setInfo(self):
         try:
@@ -2790,7 +2940,7 @@ class myconfig(Screen, ConfigListScreen):
              inhibitDirs=['/bin', '/boot', '/dev', '/home', '/lib', '/proc', '/run', '/sbin', '/sys', '/var'],
              minFree=15)
         except Exception as e:
-            logdata('openDirectoryBrowser get failed: ', e)
+            print('openDirectoryBrowser get failed: ', e)
 
     def openDirectoryBrowserCB(self, path):
         if path is not None:

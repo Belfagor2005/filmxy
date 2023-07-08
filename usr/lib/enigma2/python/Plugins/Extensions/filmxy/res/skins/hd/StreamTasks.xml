@@ -1,4 +1,4 @@
-<!-- ***** PLAYLIST FOLDER 1920x1080 ***** 26/03/2022 /-->
+<!-- ***** PLAYLIST FOLDER 1280,720 ***** 26/03/2022 /-->
 <screen name="StreamTasks" position="0,0" size="1280,720" title="Video Download List" backgroundColor="#ff000000" flags="wfNoBorder">
 	<ePixmap position="0,0" size="1280,720" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/main3.png" zPosition="1" />
 	<ePixmap position="153,10" size="123,114" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/icon.png" alphatest="blend" zPosition="3" />
@@ -7,7 +7,7 @@
 	<widget source="global.CurrentTime" render="Label" position="925,70" size="266,53" font="Regular;22" halign="right" valign="center" foregroundColor="#808080" backgroundColor="#101010" transparent="1" zPosition="2">
 		<convert type="ClockToText">Format %A %d %B %H:%M:%S</convert>
 	</widget>
-	<eLabel text="MovieList" position="295,42" size="478,66" font="Regular;32" halign="left" valign="center" foregroundColor="#ffffff" backgroundColor="#101010" transparent="1" zPosition="5" />
+	<eLabel text="MovieList" position="295,42" size="478,66" halign="left" valign="center" foregroundColor="#ffffff" backgroundColor="#101010" transparent="1" zPosition="5" />
 	<!-- Movie List -->
 	<widget source="movielist" render="Listbox" position="150,151" size="1046,431" scrollbarMode="showOnDemand" transparent="1" zPosition="2" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/slider.png">
 		<convert type="TemplatedMultiContent">
@@ -28,5 +28,4 @@
 	<widget name="key_red" position="235,613" size="210,60" valign="center" halign="left" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
 	<ePixmap name="green" position="531,620" zPosition="2" size="210,60" pixmap="skin_default/buttons/green.png" transparent="1" alphatest="on" />
 	<widget name="key_green" position="618,607" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
-	
 </screen>
