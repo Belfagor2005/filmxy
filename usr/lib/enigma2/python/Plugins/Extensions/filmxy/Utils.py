@@ -18,7 +18,7 @@ screenwidth = getDesktop(0).size()
 # pythonFull = float(str(sys.version_info.major) + '.' + str(sys.version_info.minor))
 pythonVer = sys.version_info.major
 # PY3 = version_info[0] == 3
-
+import requests
 PY2 = False
 PY3 = False
 PY34 = False

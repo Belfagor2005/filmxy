@@ -1,9 +1,13 @@
 from os import unlink
 import requests
 from twisted.internet import reactor
-from urllib.request import urlopen, Request
-
 from enigma import eTimer
+try:
+    from urllib.request import urlopen
+    from urllib.request import Request
+except:
+    from urllib2 import urlopen
+    from urllib2 import Request
 
 
 class DownloadWithProgress:
