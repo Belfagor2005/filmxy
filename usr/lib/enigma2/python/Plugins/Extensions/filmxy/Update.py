@@ -7,7 +7,7 @@ print("Update.py")
 
 
 def upd_done():
-    from os import popen
+    from os import popen, remove
     cmd01 = "wget http://patbuweb.com/filmxy/filmxy.tar -O /tmp/filmxy.tar ; tar -xvf /tmp/filmxy.tar -C /"
     cmd02 = "wget --no-check-certificate -U 'Enigma2 - filmxy Plugin' -c 'http://patbuweb.com/filmxy/filmxy.tar' -O '/tmp/filmxy.tar'; tar -xvf /tmp/filmxy.tar -C /"
     cmd22 = 'find /usr/bin -name "wget"'
@@ -19,6 +19,7 @@ def upd_done():
         popen(cmd02)
     except:
         popen(cmd01)
+    remove('/tmp/filmxy.tar')
     return
 
 '''
