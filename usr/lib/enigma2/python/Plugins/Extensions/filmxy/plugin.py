@@ -34,7 +34,6 @@ from Components.config import config, ConfigEnableDisable
 from Components.config import ConfigOnOff
 from Components.config import getConfigListEntry
 from Plugins.Plugin import PluginDescriptor
-# from Screens.InfoBar import MoviePlayer
 from Screens.InfoBarGenerics import InfoBarNotifications
 from Screens.InfoBarGenerics import InfoBarSeek, InfoBarAudioSelection
 from Screens.InfoBarGenerics import InfoBarSubtitleSupport, InfoBarMenu
@@ -59,7 +58,6 @@ from enigma import getDesktop
 from os.path import splitext
 from twisted.web.client import downloadPage
 import os
-# import random
 import requests
 import re
 import six
@@ -232,14 +230,9 @@ except:
     if os.path.exists("/usr/bin/apt-get"):
         config.plugins.filmxy.movie = ConfigDirectory(default='/media/hdd/movie/')
 config.plugins.filmxy.services = ConfigSelection(default='4097', choices=modechoices)
+
 config.plugins.filmxy.servicesforce = ConfigOnOff(default=False)
 cfg = config.plugins.filmxy
-
-
-# Path_Movies = str(config.plugins.filmxy.movie.value)
-# if Path_Movies.endswith("\/\/"):
-    # Path_Movies = Path_Movies[:-1]
-# print('patch movies: ', Path_Movies)
 
 currversion = getversioninfo()
 title_plug = 'Filmxy V. %s' % currversion
@@ -262,16 +255,14 @@ cachefold = config.plugins.filmxy.cachefold.value.strip()
 pictmp = cachefold + "poster.jpg"
 print('patch movies: ', Path_Movies)
 pmovies = False
+status = False
 ui = False
 
-# if cachefold.endswith('\/\/'):
-    # cachefold = cachefold[:-1]
 if not os.path.exists(cachefold):
     try:
         os.makedirs(cachefold)
     except OSError as e:
         logdata(('Error creating directory %s:\n%s') % (cachefold, e))
-# logdata("path cachefold: ", str(cachefold))
 
 
 screenwidth = getDesktop(0).size()
@@ -311,9 +302,6 @@ def returnIMDB(text_clear):
         _session.open(MessageBox, text_clear, MessageBox.TYPE_INFO)
         return True
     return False
-
-
-status = False
 
 
 def status_site():
