@@ -13,7 +13,7 @@ Info http://t.me/tivustream
 from __future__ import print_function
 from . import Utils
 from . import html_conv
-from . import _
+from . import _, paypal
 try:
     from Components.AVSwitch import eAVSwitch
 except Exception:
@@ -180,13 +180,6 @@ def getversioninfo():
     logdata("Plugin ", plugin_path)
     logdata("Version ", currversion)
     return (currversion)
-
-
-def paypal():
-    conthelp = "If you like what I do you\n"
-    conthelp += "can contribute with a coffee\n"
-    conthelp += "scan the qr code and donate € 1.00"
-    return conthelp
 
 
 try:

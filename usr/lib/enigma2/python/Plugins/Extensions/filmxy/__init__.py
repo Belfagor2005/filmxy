@@ -14,6 +14,13 @@ if os.path.exists("/var/lib/dpkg/status"):
     isDreamOS = True
 
 
+def paypal():
+    conthelp = "If you like what I do you\n"
+    conthelp += "can contribute with a coffee\n"
+    conthelp += "scan the qr code and donate € 1.00"
+    return conthelp
+
+
 def localeInit():
     if isDreamOS:  # check if opendreambox image
         lang = language.getLanguage()[:2]  # getLanguage returns e.g. "fi_FI" for "language_country"
