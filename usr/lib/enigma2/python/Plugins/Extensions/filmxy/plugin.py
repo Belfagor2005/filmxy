@@ -15,9 +15,9 @@ from . import Utils
 from . import html_conv
 from . import _, paypal
 try:
-    from Components.AVSwitch import eAVSwitch
+    from Components.AVSwitch import eAVSwitch as AVSwitch
 except Exception:
-    from Components.AVSwitch import iAVSwitch as eAVSwitch
+    from Components.AVSwitch import iAVSwitch as AVSwitch
 from Components.ActionMap import ActionMap
 from Components.Button import Button
 from Components.ConfigList import ConfigListScreen
@@ -524,7 +524,7 @@ class Filmxymain(Screen):
         self['key_red'] = Button(_('Exit'))
         self.currentList = 'list'
         self.picload = ePicLoad()
-        self.scale = eAVSwitch().getFramebufferScale()
+        self.scale = AVSwitch().getFramebufferScale()
         self.names = []
         self.urls = []
         self.pics = []
@@ -683,7 +683,7 @@ class Filmxymain(Screen):
                     self['poster'].instance.setPixmap(gPixmapPtr())
                 else:
                     self['poster'].instance.setPixmap(None)
-                self.scale = eAVSwitch().getFramebufferScale()
+                self.scale = AVSwitch().getFramebufferScale()
                 self.picload = ePicLoad()
                 self.picload.setPara((size.width(),
                                       size.height(),
@@ -735,7 +735,7 @@ class live_to_stream(Screen):
         self['status'] = Label('SERVER STATUS')
         # self["poster"].hide()
         self.picload = ePicLoad()
-        self.scale = eAVSwitch().getFramebufferScale()
+        self.scale = AVSwitch().getFramebufferScale()
         self['key_red'] = Button(_('Back'))
         self.names = []
         self.urls = []
@@ -1034,7 +1034,7 @@ class live_to_stream(Screen):
             png = no_cover
         size = self['poster'].instance.size()
         self.picload = ePicLoad()
-        self.scale = eAVSwitch().getFramebufferScale()
+        self.scale = AVSwitch().getFramebufferScale()
         self.picload.setPara((size.width(),
                               size.height(),
                               self.scale[0],
@@ -1080,7 +1080,7 @@ class pagesX(Screen):
         self['status'] = Label('SERVER STATUS')
         # self["poster"].hide()
         self.picload = ePicLoad()
-        self.scale = eAVSwitch().getFramebufferScale()
+        self.scale = AVSwitch().getFramebufferScale()
         self['key_red'] = Button(_('Back'))
         self.names = []
         self.urls = []
@@ -1185,7 +1185,7 @@ class pagesX(Screen):
         self["poster"].hide()
         size = self['poster'].instance.size()
         self.picload = ePicLoad()
-        self.scale = eAVSwitch().getFramebufferScale()
+        self.scale = AVSwitch().getFramebufferScale()
         self.picload.setPara((size.width(),
                               size.height(),
                               self.scale[0],
@@ -1234,7 +1234,7 @@ class azvideo(Screen):
         self['status'] = Label('SERVER STATUS')
         # self["poster"].hide()
         self.picload = ePicLoad()
-        self.scale = eAVSwitch().getFramebufferScale()
+        self.scale = AVSwitch().getFramebufferScale()
         self['key_red'] = Button(_('Back'))
         self.names = []
         self.urls = []
@@ -1460,7 +1460,7 @@ class azvideo(Screen):
         self["poster"].hide()
         size = self['poster'].instance.size()
         self.picload = ePicLoad()
-        self.scale = eAVSwitch().getFramebufferScale()
+        self.scale = AVSwitch().getFramebufferScale()
         self.picload.setPara((size.width(),
                               size.height(),
                               self.scale[0],
@@ -1508,7 +1508,7 @@ class pagevideo3(Screen):
         self['status'] = Label('SERVER STATUS')
         # self["poster"].hide()
         self.picload = ePicLoad()
-        self.scale = eAVSwitch().getFramebufferScale()
+        self.scale = AVSwitch().getFramebufferScale()
         self['key_red'] = Button(_('Back'))
         self.names = []
         self.urls = []
@@ -1805,7 +1805,7 @@ class pagevideo3(Screen):
         self.picload = ePicLoad()
         self["poster"].hide()
         size = self['poster'].instance.size()
-        self.scale = eAVSwitch().getFramebufferScale()
+        self.scale = AVSwitch().getFramebufferScale()
         self.picload.setPara((size.width(),
                               size.height(),
                               self.scale[0],
@@ -1851,7 +1851,7 @@ class Video5list(Screen):
         self['status'] = Label('SERVER STATUS')
         # self["poster"].hide()
         self.picload = ePicLoad()
-        self.scale = eAVSwitch().getFramebufferScale()
+        self.scale = AVSwitch().getFramebufferScale()
         self['key_red'] = Button(_('Back'))
         self.names = []
         self.urls = []
@@ -2091,7 +2091,7 @@ class Video5list(Screen):
         self.picload = ePicLoad()
         self["poster"].hide()
         size = self['poster'].instance.size()
-        self.scale = eAVSwitch().getFramebufferScale()
+        self.scale = AVSwitch().getFramebufferScale()
         self.picload.setPara((size.width(),
                               size.height(),
                               self.scale[0],
@@ -2456,7 +2456,7 @@ class Playchoice(Screen):
         self.picload = ePicLoad()
         self["poster"].hide()
         size = self['poster'].instance.size()
-        self.scale = eAVSwitch().getFramebufferScale()
+        self.scale = AVSwitch().getFramebufferScale()
         self.picload.setPara((size.width(),
                               size.height(),
                               self.scale[0],
@@ -2632,7 +2632,7 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         return
 
     def getAspect(self):
-        return eAVSwitch().getAspectRatioSetting()
+        return AVSwitch().getAspectRatioSetting()
 
     def getAspectString(self, aspectnum):
         return {
@@ -2657,7 +2657,7 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         }
         config.av.aspectratio.setValue(map[aspect])
         try:
-            eAVSwitch().setAspectRatio(aspect)
+            AVSwitch().setAspectRatio(aspect)
         except:
             pass
 
