@@ -14,10 +14,12 @@ from __future__ import print_function
 from . import Utils
 from . import html_conv
 from . import _, paypal
+import codecs
+from Components.AVSwitch import AVSwitch
 try:
-    from Components.AVSwitch import eAVSwitch as AVSwitch
-except Exception:
-    from Components.AVSwitch import iAVSwitch as AVSwitch
+    from Components.AVSwitch import iAVSwitch
+except:
+    from enigma import eAVSwitch
 from Components.ActionMap import ActionMap
 from Components.Button import Button
 from Components.ConfigList import ConfigListScreen
@@ -505,7 +507,7 @@ class Filmxymain(Screen):
         _session = session
         nextmodule = 'Filmxymain'
         skin = os.path.join(skin_path, 'Filmxymain.xml')
-        with open(skin, 'r') as f:
+        with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
         self.setup_title = ('HOME FILMXY')
         self['list'] = rvList([])
@@ -523,8 +525,8 @@ class Filmxymain(Screen):
         self['info'].setText('Select')
         self['key_red'] = Button(_('Exit'))
         self.currentList = 'list'
-        self.picload = ePicLoad()
-        self.scale = AVSwitch().getFramebufferScale()
+        # self.picload = ePicLoad()
+        # self.scale = AVSwitch().getFramebufferScale()
         self.names = []
         self.urls = []
         self.pics = []
@@ -715,7 +717,7 @@ class live_to_stream(Screen):
         global _session
         _session = session
         skin = os.path.join(skin_path, 'Filmxymain.xml')
-        with open(skin, 'r') as f:
+        with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
         self.setup_title = ('HOME FILMXY')
         self.setTitle(title_plug)
@@ -734,8 +736,8 @@ class live_to_stream(Screen):
         self['statusred'].hide()
         self['status'] = Label('SERVER STATUS')
         # self["poster"].hide()
-        self.picload = ePicLoad()
-        self.scale = AVSwitch().getFramebufferScale()
+        # self.picload = ePicLoad()
+        # self.scale = AVSwitch().getFramebufferScale()
         self['key_red'] = Button(_('Back'))
         self.names = []
         self.urls = []
@@ -814,7 +816,7 @@ class live_to_stream(Screen):
                         pic = pixmaps
                     else:
                         pic = no_cover
-                    self.names.append(name)
+                    self.names.append(str(name))
                     self.urls.append(url)
                     self.pics.append(pic)
                     self.infos.append(self.desc)
@@ -832,7 +834,7 @@ class live_to_stream(Screen):
                         pic = pixmaps
                     else:
                         pic = no_cover
-                    self.names.append(name)
+                    self.names.append(str(name))
                     self.urls.append(url)
                     self.pics.append(pic)
                     self.infos.append(self.desc)
@@ -850,7 +852,7 @@ class live_to_stream(Screen):
                         pic = pixmaps
                     else:
                         pic = no_cover
-                    self.names.append(name)
+                    self.names.append(str(name))
                     self.urls.append(url)
                     self.pics.append(pic)
                     self.infos.append(self.desc)
@@ -870,7 +872,7 @@ class live_to_stream(Screen):
                         pic = pixmaps
                     else:
                         pic = no_cover
-                    self.names.append(name)
+                    self.names.append(str(name))
                     self.urls.append(url1)
                     self.pics.append(pic)
                     self.infos.append(self.desc)
@@ -1005,20 +1007,6 @@ class live_to_stream(Screen):
                 print("* error ** %s" % e)
                 pass
 
-    # def downloadPic(self, output, poster):
-        # try:
-            # if output is not None:
-                # f = open(poster, 'wb')
-                # f.write(output)
-                # f.close()
-            # # self.poster_resize(poster)
-            # self["poster"].instance.setScale(1)
-            # self["poster"].instance.setPixmapFromFile(poster)
-            # self['poster'].show()
-        # except Exception as e:
-            # logdata('error ', e)
-        # return
-
     def downloadError(self, png):
         try:
             if fileExists(png):
@@ -1060,7 +1048,7 @@ class pagesX(Screen):
         global _session
         _session = session
         skin = os.path.join(skin_path, 'Filmxymain.xml')
-        with open(skin, 'r') as f:
+        with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
         self.setup_title = ('HOME FILMXY')
         self.setTitle(title_plug)
@@ -1079,8 +1067,8 @@ class pagesX(Screen):
         self['statusred'].hide()
         self['status'] = Label('SERVER STATUS')
         # self["poster"].hide()
-        self.picload = ePicLoad()
-        self.scale = AVSwitch().getFramebufferScale()
+        # self.picload = ePicLoad()
+        # self.scale = AVSwitch().getFramebufferScale()
         self['key_red'] = Button(_('Back'))
         self.names = []
         self.urls = []
@@ -1140,7 +1128,7 @@ class pagesX(Screen):
                 url1 = self.url + "page/" + str(page) + "/"
                 name = "Page " + str(page)
                 info = self.name
-                self.names.append(name)
+                self.names.append(str(name))
                 self.urls.append(url1)
                 pic = self.pic
                 self.pics.append(pic)
@@ -1214,7 +1202,7 @@ class azvideo(Screen):
         global _session
         _session = session
         skin = os.path.join(skin_path, 'Filmxymain.xml')
-        with open(skin, 'r') as f:
+        with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
         self.setup_title = ('HOME FILMXY')
         self.setTitle(title_plug)
@@ -1233,8 +1221,8 @@ class azvideo(Screen):
         self['statusred'].hide()
         self['status'] = Label('SERVER STATUS')
         # self["poster"].hide()
-        self.picload = ePicLoad()
-        self.scale = AVSwitch().getFramebufferScale()
+        # self.picload = ePicLoad()
+        # self.scale = AVSwitch().getFramebufferScale()
         self['key_red'] = Button(_('Back'))
         self.names = []
         self.urls = []
@@ -1341,7 +1329,7 @@ class azvideo(Screen):
                     pic = pixmaps
                 else:
                     pic = no_cover
-                self.names.append(name)
+                self.names.append(str(name))
                 self.urls.append(url1)
                 self.pics.append(pic)
                 self.infos.append(self.desc)
@@ -1433,20 +1421,6 @@ class azvideo(Screen):
                 print("* error ** %s" % e)
                 pass
 
-    # def downloadPic(self, output, poster):
-        # try:
-            # if output is not None:
-                # f = open(poster, 'wb')
-                # f.write(output)
-                # f.close()
-            # # self.poster_resize(poster)
-            # self["poster"].instance.setScale(1)
-            # self["poster"].instance.setPixmapFromFile(poster)
-            # self['poster'].show()
-        # except Exception as e:
-            # logdata('error ', e)
-        # return
-
     def downloadError(self, png):
         try:
             if fileExists(png):
@@ -1488,7 +1462,7 @@ class pagevideo3(Screen):
         global _session
         _session = session
         skin = os.path.join(skin_path, 'Filmxymain.xml')
-        with open(skin, 'r') as f:
+        with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
         self.setup_title = ('HOME FILMXY')
         self.setTitle(title_plug)
@@ -1507,8 +1481,8 @@ class pagevideo3(Screen):
         self['statusred'].hide()
         self['status'] = Label('SERVER STATUS')
         # self["poster"].hide()
-        self.picload = ePicLoad()
-        self.scale = AVSwitch().getFramebufferScale()
+        # self.picload = ePicLoad()
+        # self.scale = AVSwitch().getFramebufferScale()
         self['key_red'] = Button(_('Back'))
         self.names = []
         self.urls = []
@@ -1687,7 +1661,7 @@ class pagevideo3(Screen):
                 info = info.replace('<p>', '').replace('</p>', '').replace('&hellip;', '...')
                 self.urls.append(url1)
                 self.pics.append(pic)
-                self.names.append(name)
+                self.names.append(str(name))
                 self.infosadd.append(infoadd)
                 self.sizes.append(size2)
                 self.infos.append(info)
@@ -1768,20 +1742,6 @@ class pagevideo3(Screen):
             print("Error: pagevideo3")
         return
 
-    # def downloadPic(self, output, poster):
-        # try:
-            # if output is not None:
-                # f = open(poster, 'wb')
-                # f.write(output)
-                # f.close()
-            # # self.poster_resize(poster)
-            # self["poster"].instance.setScale(1)
-            # self["poster"].instance.setPixmapFromFile(poster)
-            # self['poster'].show()
-        # except Exception as e:
-            # logdata('error ', e)
-        # return
-
     def downloadPic(self, data, pictmp):
         if os.path.exists(pictmp):
             try:
@@ -1831,7 +1791,7 @@ class Video5list(Screen):
         global _session
         _session = session
         skin = os.path.join(skin_path, 'Filmxymain.xml')
-        with open(skin, 'r') as f:
+        with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
         self.setup_title = ('HOME FILMXY')
         self.setTitle(title_plug)
@@ -1850,8 +1810,8 @@ class Video5list(Screen):
         self['statusred'].hide()
         self['status'] = Label('SERVER STATUS')
         # self["poster"].hide()
-        self.picload = ePicLoad()
-        self.scale = AVSwitch().getFramebufferScale()
+        # self.picload = ePicLoad()
+        # self.scale = AVSwitch().getFramebufferScale()
         self['key_red'] = Button(_('Back'))
         self.names = []
         self.urls = []
@@ -1969,7 +1929,7 @@ class Video5list(Screen):
                     info = self.desc
                     if "racaty" not in name.lower():
                         continue
-                    self.names.append(name)
+                    self.names.append(str(name))
                     self.urls.append(url)
                     self.pics.append(pic)
                     self.infos.append(info)
@@ -2054,20 +2014,6 @@ class Video5list(Screen):
             print("Error: can't find file or read data in Playchoice")
         return
 
-    # def downloadPic(self, output, poster):
-        # try:
-            # if output is not None:
-                # f = open(poster, 'wb')
-                # f.write(output)
-                # f.close()
-            # # self.poster_resize(poster)
-            # self["poster"].instance.setScale(1)
-            # self["poster"].instance.setPixmapFromFile(poster)
-            # self['poster'].show()
-        # except Exception as e:
-            # logdata('error ', e)
-        # return
-
     def downloadPic(self, data, pictmp):
         if os.path.exists(pictmp):
             try:
@@ -2115,7 +2061,7 @@ class Playchoice(Screen):
         Screen.__init__(self, session)
         self.session = session
         skin = os.path.join(skin_path, 'Playchoice.xml')
-        with open(skin, 'r') as f:
+        with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
         f.close()
         self.setup_title = ('Select Player Stream')
@@ -2382,7 +2328,7 @@ class Playchoice(Screen):
             ref = '5002:0:1:0:0:0:0:0:0:0:' + 'http%3a//127.0.0.1%3a8088/' + str(url)
             sref = eServiceReference(ref)
             logdata('SREF: ', sref)
-            sref.setName(name)
+            sref.setName(str(name))
             self.session.open(Playstream2, name, sref)
         else:
             self.session.open(MessageBox, _('Install Streamlink first'), MessageBox.TYPE_INFO, timeout=5)
@@ -2632,34 +2578,34 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         return
 
     def getAspect(self):
-        return AVSwitch().getAspectRatioSetting()
+        try:
+            aspect = iAVSwitch.getAspectRatioSetting()
+        except:
+            aspect = eAVSwitch.getAspectRatioSetting()
+        return aspect
 
     def getAspectString(self, aspectnum):
-        return {
-            0: '4:3 Letterbox',
-            1: '4:3 PanScan',
-            2: '16:9',
-            3: '16:9 always',
-            4: '16:10 Letterbox',
-            5: '16:10 PanScan',
-            6: '16:9 Letterbox'
-        }[aspectnum]
+        return {0: '4:3 Letterbox',
+                1: '4:3 PanScan',
+                2: '16:9',
+                3: '16:9 always',
+                4: '16:10 Letterbox',
+                5: '16:10 PanScan',
+                6: '16:9 Letterbox'}[aspectnum]
 
     def setAspect(self, aspect):
-        map = {
-            0: '4_3_letterbox',
-            1: '4_3_panscan',
-            2: '16_9',
-            3: '16_9_always',
-            4: '16_10_letterbox',
-            5: '16_10_panscan',
-            6: '16_9_letterbox'
-        }
+        map = {0: '4_3_letterbox',
+               1: '4_3_panscan',
+               2: '16_9',
+               3: '16_9_always',
+               4: '16_10_letterbox',
+               5: '16_10_panscan',
+               6: '16_9_letterbox'}
         config.av.aspectratio.setValue(map[aspect])
         try:
-            AVSwitch().setAspectRatio(aspect)
+            iAVSwitch.setAspectRatio(aspect)
         except:
-            pass
+            eAVSwitch.setAspectRatio(aspect)
 
     def av(self):
         temp = int(self.getAspect())
@@ -2683,7 +2629,7 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         ref = "{0}:{1}".format(url, name)
         print('final reference:   ', ref)
         sref = eServiceReference(ref)
-        sref.setName(name)
+        sref.setName(str(name))
         self.session.nav.stopService()
         self.session.nav.playService(sref)
 
@@ -2718,7 +2664,7 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
             ref = "{0}:0:1:0:0:0:0:0:0:0:{1}:{2}".format(servicetype, url, name)
         logdata('final reference:   ', ref)
         sref = eServiceReference(ref)
-        sref.setName(name)
+        sref.setName(str(name))
         self.session.nav.stopService()
         self.session.nav.playService(sref)
 
@@ -2990,7 +2936,7 @@ class StreamTasks(Screen):
         Screen.__init__(self, session)
         self.session = session
         skin = os.path.join(skin_path, 'StreamTasks.xml')
-        with open(skin, 'r') as f:
+        with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
         self.setup_title = ('Filmxy Movies')
         from Components.Sources.List import List
