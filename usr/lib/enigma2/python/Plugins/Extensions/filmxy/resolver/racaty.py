@@ -19,7 +19,9 @@
 from __future__ import print_function
 import re
 from .net import Net
-from .common import RAND_UA
+# from .common import RAND_UA
+from .Utils import RequestAgent
+RAND_UA = RequestAgent()
 try:
     from urllib import quote_plus
 except:

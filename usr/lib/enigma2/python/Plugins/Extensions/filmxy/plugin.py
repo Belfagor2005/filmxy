@@ -13,7 +13,7 @@ Info http://t.me/tivustream
 from __future__ import print_function
 from . import Utils
 from . import html_conv
-from . import _, paypal
+from . import _, paypal, wanStatus
 import codecs
 from Components.AVSwitch import AVSwitch
 try:
@@ -568,14 +568,13 @@ class Filmxymain(Screen):
 
     def __layoutFinished(self):
         status = status_site()
+        self['statusgreen'].hide()
+        self['statusred'].show()
+        self['status'].setText('SERVER OFF')
         if status is True:
             self['statusgreen'].show()
             self['statusred'].hide()
             self['status'].setText('SERVER ON')
-        else:
-            self['statusgreen'].hide()
-            self['statusred'].show()
-            self['status'].setText('SERVER OFF')
         self.setTitle(self.setup_title)
         # self.load_infos()
         self.load_poster()
@@ -608,28 +607,24 @@ class Filmxymain(Screen):
         sel = self.menu_list[idx]
         if sel == ('CATEGORIES'):
             name = 'CATEGORIES'
-            url = Host
             pic = piconmovie
             nextmodule = name.lower()
-            self.session.open(live_to_stream, name, url, pic, nextmodule)
+            self.session.open(live_to_stream, name, Host, pic, nextmodule)
         elif sel == ('COUNTRIES'):
             name = 'COUNTRIES'
-            url = Host
             pic = piconinter
             nextmodule = name.lower()
-            self.session.open(live_to_stream, name, url, pic, nextmodule)
+            self.session.open(live_to_stream, name, Host, pic, nextmodule)
         elif sel == 'YEARS':
             name = 'YEARS'
-            url = Host
             pic = piconold
             nextmodule = name.lower()
-            self.session.open(live_to_stream, name, url, pic, nextmodule)
+            self.session.open(live_to_stream, name, Host, pic, nextmodule)
         elif sel == ('A-Z'):
             name = 'A-Z'
-            url = Host
             pic = piconsearch
             nextmodule = name.lower()
-            self.session.open(live_to_stream, name, url, pic, nextmodule)
+            self.session.open(live_to_stream, name, Host, pic, nextmodule)
         else:
             if sel == ('INTERNATIONAL'):
                 self.zfreearhey()
@@ -915,14 +910,13 @@ class live_to_stream(Screen):
 
     def __layoutFinished(self):
         status = status_site()
+        self['statusgreen'].hide()
+        self['statusred'].show()
+        self['status'].setText('SERVER OFF')
         if status is True:
             self['statusgreen'].show()
             self['statusred'].hide()
             self['status'].setText('SERVER ON')
-        else:
-            self['statusgreen'].hide()
-            self['statusred'].show()
-            self['status'].setText('SERVER OFF')
         self.load_infos()
         self.load_poster()
         self.setTitle(self.setup_title)
@@ -1100,14 +1094,13 @@ class pagesX(Screen):
 
     def __layoutFinished(self):
         status = status_site()
+        self['statusgreen'].hide()
+        self['statusred'].show()
+        self['status'].setText('SERVER OFF')
         if status is True:
             self['statusgreen'].show()
             self['statusred'].hide()
             self['status'].setText('SERVER ON')
-        else:
-            self['statusgreen'].hide()
-            self['statusred'].show()
-            self['status'].setText('SERVER OFF')
         self.setTitle(self.setup_title)
         self.poster_resize(self.pic)
 
@@ -1121,24 +1114,51 @@ class pagesX(Screen):
         self.urls = []
         self.pics = []
         self.infos = []
-        # https://www.filmxy.pw/genre/action/page/2/
-        pages = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
         try:
-            for page in pages:
-                url1 = self.url + "page/" + str(page) + "/"
-                name = "Page " + str(page)
+            pages = 50
+            i = 1
+            while i < pages:
+                url1 = self.url + "page/" + str(i) + "/"
+                name = "Page " + str(i)
+
                 info = self.name
                 self.names.append(str(name))
                 self.urls.append(url1)
                 pic = self.pic
                 self.pics.append(pic)
                 self.infos.append(info)
+                i += 1
             logdata("pages nextmodule: ", self.desc)
             showlist(self.names, self['list'])
         except Exception as e:
             print(e)
             print("Error: can't find file or read data in pagesX")
         return
+
+
+    # def readJsonFile(self):
+        # self.names = []
+        # self.urls = []
+        # self.pics = []
+        # self.infos = []
+        # # https://www.filmxy.pw/genre/action/page/2/
+        # pages = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+        # try:
+            # for page in pages:
+                # url1 = self.url + "page/" + str(page) + "/"
+                # name = "Page " + str(page)
+                # info = self.name
+                # self.names.append(str(name))
+                # self.urls.append(url1)
+                # pic = self.pic
+                # self.pics.append(pic)
+                # self.infos.append(info)
+            # logdata("pages nextmodule: ", self.desc)
+            # showlist(self.names, self['list'])
+        # except Exception as e:
+            # print(e)
+            # print("Error: can't find file or read data in pagesX")
+        # return
 
     def okRun(self):
         i = len(self.pics)
@@ -1276,14 +1296,13 @@ class azvideo(Screen):
 
     def __layoutFinished(self):
         status = status_site()
+        self['statusgreen'].hide()
+        self['statusred'].show()
+        self['status'].setText('SERVER OFF')
         if status is True:
             self['statusgreen'].show()
             self['statusred'].hide()
             self['status'].setText('SERVER ON')
-        else:
-            self['statusgreen'].hide()
-            self['statusred'].show()
-            self['status'].setText('SERVER OFF')
         self.setTitle(self.setup_title)
         self.load_infos()
         self.load_poster()
@@ -1538,14 +1557,13 @@ class pagevideo3(Screen):
 
     def __layoutFinished(self):
         status = status_site()
+        self['statusgreen'].hide()
+        self['statusred'].show()
+        self['status'].setText('SERVER OFF')
         if status is True:
             self['statusgreen'].show()
             self['statusred'].hide()
             self['status'].setText('SERVER ON')
-        else:
-            self['statusgreen'].hide()
-            self['statusred'].show()
-            self['status'].setText('SERVER OFF')
         self.setTitle(self.setup_title)
 
     def load_infos(self):
@@ -1865,14 +1883,13 @@ class Video5list(Screen):
 
     def __layoutFinished(self):
         status = status_site()
+        self['statusgreen'].hide()
+        self['statusred'].show()
+        self['status'].setText('SERVER OFF')
         if status is True:
             self['statusgreen'].show()
             self['statusred'].hide()
             self['status'].setText('SERVER ON')
-        else:
-            self['statusgreen'].hide()
-            self['statusred'].show()
-            self['status'].setText('SERVER OFF')
         self.setTitle(self.setup_title)
         self.load_infos()
         self.load_poster()
@@ -2789,10 +2806,11 @@ class myconfig(Screen, ConfigListScreen):
         payp = paypal()
         self["paypal"].setText(payp)
         self.setTitle(self.setup_title)
-        if not os.path.exists('/tmp/currentip'):
-            os.system('wget -qO- http://ipecho.net/plain > /tmp/currentip')
-        currentip1 = open('/tmp/currentip', 'r')
-        currentip = currentip1.read()
+        # if not os.path.exists('/tmp/currentip'):
+            # os.system('wget -qO- http://ipecho.net/plain > /tmp/currentip')
+        # currentip1 = open('/tmp/currentip', 'r')
+        # currentip = currentip1.read()
+        currentip = wanStatus()
         self['info'].setText(_('Settings FILMXY\nYour current IP is %s') % currentip)
 
     def createSetup(self):
@@ -2857,6 +2875,8 @@ class myconfig(Screen, ConfigListScreen):
             pass
 
     def openDirectoryBrowser(self, path):
+        # if fileExists("/usr/bin/apt-get"):
+            # path = None
         try:
             self.session.openWithCallback(
              self.openDirectoryBrowserCB,
@@ -3060,8 +3080,8 @@ class StreamTasks(Screen):
         if result:
             current = self["movielist"].getCurrent()
             sel = Path_Movies + current[1]
-            from os.path import exists as file_exists
-            if file_exists(sel):
+            from os.path import exists as fileExists
+            if fileExists(sel):
                 if self.Timer:
                     self.Timer.stop()
                 cmd = 'rm -f ' + sel

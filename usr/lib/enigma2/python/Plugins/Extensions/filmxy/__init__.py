@@ -21,6 +21,18 @@ def paypal():
     return conthelp
 
 
+def wanStatus():
+    publicIp = ''
+    try:
+        file = os.popen('wget -qO - ifconfig.me')
+        public = file.read()
+        publicIp = "Wan %s" % (str(public))
+    except:
+        if os.path.exists("/tmp/currentip"):
+            os.remove("/tmp/currentip")
+    return publicIp
+
+
 def localeInit():
     if isDreamOS:  # check if opendreambox image
         lang = language.getLanguage()[:2]  # getLanguage returns e.g. "fi_FI" for "language_country"

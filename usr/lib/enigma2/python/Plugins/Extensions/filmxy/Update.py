@@ -19,9 +19,9 @@ def upd_done():
             cmd23 = 'apt-get update && apt-get install wget'
         popen(cmd23)
     try:
-        popen(cmd02)
-    except:
         popen(cmd01)
+    except:
+        popen(cmd02)
     system('rm -rf /tmp/filmxy.tar')
     return
 

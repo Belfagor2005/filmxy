@@ -6,9 +6,9 @@
 	<widget name="poster" position="1250,150" size="420,588" alphatest="blend" scale="1" zPosition="3" />
 	<ePixmap position="1250,150" size="420,588" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/img/tvposter.png" zPosition="2" scale="1" />	
 	<!-- <widget name="statusgreen" alphatest="blend" position="1270,90" size="40,40" zPosition="5" />	 -->
-	<widget name="statusgreen" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/status-on.png" alphatest="blend" position="1420,40" size="40,40" zPosition="5" />
-	<widget name="statusred" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/status-off.png" alphatest="blend" position="1420,40" size="40,40" zPosition="5" />	
-	<widget name="status" position="1249,85" size="420,50" font="Regular; 40" foregroundColor="#ffb75b" backgroundColor="#101010" halign="center" transparent="1" zPosition="2" />
+	<widget name="statusgreen" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/status-on.png" alphatest="blend" position="1660,1005" size="40,40" zPosition="5" />
+	<widget name="statusred" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/status-off.png" alphatest="blend" position="1660,1005" size="40,40" zPosition="5" />	
+	<widget name="status" position="1234,1001" size="420,50" font="Regular; 40" foregroundColor="#ffb75b" backgroundColor="#101010" halign="right" transparent="1" zPosition="2" />
 	<widget source="desc" render="xyRunningText" position="226,768" size="821,220" font="Regular;30" foregroundColor="#ffb75b" backgroundColor="#101010" halign="center" transparent="1" zPosition="8" options="movetype=running,startpoint=0,direction=top,steptime=80,repeat=0,always=0,oneshot=0,startdelay=6000,wrap=1" />
 	<eLabel position="226,764" size="820,220" backgroundColor="#30000000" zPosition="1" />	
 	<widget name="descadd" position="1218,766" size="490,220" font="Regular;30" foregroundColor="#ffb75b" backgroundColor="#101010" halign="center" transparent="1" zPosition="8" />
