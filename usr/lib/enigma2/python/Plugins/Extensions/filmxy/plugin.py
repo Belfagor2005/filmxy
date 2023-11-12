@@ -693,7 +693,7 @@ class Filmxymain(Screen):
                                       self.scale[1],
                                       False,
                                       1,
-                                      '#FF000000'))
+                                      'FF000000'))
                 ptr = self.picload.getData()
                 if Utils.DreamOS():
                     if self.picload.startDecode(pixmaps, False) == 0:
