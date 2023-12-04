@@ -25,6 +25,7 @@ Modified for KodiDirect and IPTVworld by pcd
 import sys
 import threading
 import time
+import queue
 import os
 import re
 import operator
@@ -32,11 +33,6 @@ from random import choice
 from six.moves.urllib.request import urlopen
 from six.moves.urllib.request import Request
 from six.moves.urllib.parse import urlparse
-try:
-    import queue
-except ImportError:
-    import Queue as queue
-
 
 PY3 = sys.version_info.major >= 3
 
@@ -513,7 +509,7 @@ class hlsclient(threading.Thread):
 #        try:
         while self.thread.isAlive():
             if self._stop:
-                self.thread._Thread__stop()
+                self.hread._Thread__stop()
             medialist = list(self.handle_basic_m3u(self.url))
             if None in medialist:
                 # choose to start playback at the start, since this is a VOD stream

@@ -5,11 +5,11 @@
 	<widget name="description" position="298,1056" zPosition="4" size="1234,155" font="Regular; 46" foregroundColor="#fcc000" backgroundColor="#40000000" transparent="1" halign="left" valign="center" />
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/main2.png" position="0,0" size="2560,1440" zPosition="1" />
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/pC.png" alphatest="blend" position="1607,0" size="167,1440" zPosition="1" />
-    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/tvs.png" alphatest="blend" position="294,54" size="371,80" zPosition="5" />
+    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/tvs.png" alphatest="blend" position="294,54" scale="stretch" size="371,80" zPosition="5" />
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/sep.png" position="294,147" size="1294,11" alphatest="blend" zPosition="5" />
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/sep.png" position="294,1227" size="1294,11" alphatest="blend" zPosition="5" />
-	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/PayPal.png" position="2023,210" size="208,100" zPosition="2" alphatest="on" />
-	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/qr-codetvs.png" position="1919,320" size="427,427" zPosition="2" alphatest="on" />
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/PayPal.png" position="2023,210" size="208,100" scale="stretch" zPosition="2" alphatest="on" />
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/qr-codetvs.png" position="1919,320" size="427,427" scale="stretch" zPosition="2" alphatest="on" />
 	<widget name="paypal" position="1784,766" size="702,263" font="Regular;32" halign="center" foregroundColor="#ffffff" backgroundColor="#101010" transparent="1" zPosition="2" />
 	<eLabel position="1774,188" size="720,852" backgroundColor="#80000000" cornerRadius="20" zPosition="1" />
 	<!-- Menu List -->

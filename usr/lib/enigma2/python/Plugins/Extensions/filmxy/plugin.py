@@ -16,15 +16,6 @@ from . import html_conv
 from . import _, paypal, wanStatus
 import codecs
 from Components.AVSwitch import AVSwitch
-try:
-    from Components.AVSwitch import iAVSwitch
-except Exception as e:
-    print(e)
-
-try:
-    from enigma import eAVSwitch
-except Exception as e:
-    print(e)
 from Components.ActionMap import ActionMap
 from Components.Button import Button
 from Components.ConfigList import ConfigListScreen
@@ -2160,8 +2151,8 @@ class Playchoice(Screen):
         if result:
             logdata('--------------not m3u8-----------------')
             print('-------------- download init -----------------')
-            self.urlx = self.urlx.replace(' ', '%20')
-            self.urlx = self.urlx[:self.urlx.rfind("|")]
+            # self.urlx = self.urlx.replace(' ', '%20')
+            # self.urlx = self.urlx[:self.urlx.rfind("|")]
             # print('new url: ', self.urlx)
             path = urlparse(self.urlx).path
             ext = splitext(path)[1]
@@ -2280,18 +2271,36 @@ class Playchoice(Screen):
             url = self.url
             cmd = ''
             if idx == 0:
-                url = self.racatyx(name, url)
-                url = url[:url.rfind("|")]
-                url = url.replace(' ', '%20')
+                # url = self.racatyx(name, url)
+                from . import racatydl
+                url, name = racatydl.extract(url)
+                print('racaty name: ', name)
+                print('racaty url: ', url)
+                name = cleantitle(name)
+                # url = url[:url.rfind("|")]
+                # url = url.replace(' ', '%20').replace(':', '%3a')
                 print('okClicked new url: ', url)
-                self.play(name, url)
+                self.play(self.name1, url)
             elif idx == 1:
-                url = self.url
-                self.urlx = self.racatyx(name, url)
+                # url = self.url
+                # self.urlx = self.racatyx(name, url)
+                from . import racatydl
+                url, name = racatydl.extract(url)
+                print('racaty name: ', name)
+                print('racaty url: ', url)
+                name = cleantitle(name)
+                # url = url[:url.rfind("|")]
+                # url = url.replace(' ', '%20').replace(':', '%3a')
                 self.runRec(self.urlx)
             elif idx == 2:
-                self.name = self.name1
-                url = self.url.replace(':', '%3a')
+                # self.name = self.name1
+                from . import racatydl
+                url, name = racatydl.extract(url)
+                print('racaty name: ', name)
+                print('racaty url: ', url)
+                name = cleantitle(name)
+                # url = url[:url.rfind("|")]
+                # url = url.replace(' ', '%20').replace(':', '%3a')
                 try:
                     os.remove('/tmp/hls.avi')
                 except:
@@ -2303,7 +2312,14 @@ class Playchoice(Screen):
                 url = '/tmp/hls.avi'
                 self.play(self.name, url)
             elif idx == 3:
-                url = self.url.replace(':', '%3a')
+                from . import racatydl
+                url, name = racatydl.extract(url)
+                print('racaty name: ', name)
+                print('racaty url: ', url)
+                name = cleantitle(name)
+                # url = url[:url.rfind("|")]
+                # url = url.replace(' ', '%20').replace(':', '%3a')
+                # url = self.url.replace(' ', '%20').replace(':', '%3a')
                 try:
                     os.remove('/tmp/hls.avi')
                 except:
@@ -2312,24 +2328,30 @@ class Playchoice(Screen):
                 os.system(cmd)
                 os.system('sleep 3')
                 url = '/tmp/hls.avi'
-                self.name = self.name1
-                self.play(self.name, url)
+                self.play(self.name1, url)
             else:
                 if idx == 4:
-                    self.name = self.name1
-                    url = self.url.replace(':', '%3a')
-                    self.play2(self.name, url)
+                    # self.name = self.name1
+                    # url = self.url.replace(' ', '%20').replace(':', '%3a')
+                    from . import racatydl
+                    url, name = racatydl.extract(url)
+                    print('racaty name: ', name)
+                    print('racaty url: ', url)
+                    name = cleantitle(name)
+                    # url = url[:url.rfind("|")]
+                    # url = url.replace(' ', '%20').replace(':', '%3a')
+                    self.play2(self.name1, url)
             return
         except Exception as e:
             print(e)
             print("Error: can't find file or read data in Playchoice")
 
-    def playfile(self, serverint):
-        if 'None' not in str(self.url):
-            self.serverList[serverint].play(self.session, self.url, self.name)
-        else:
-            self.session.open(MessageBox, _('No link available'), MessageBox.TYPE_INFO, timeout=5)
-        self.close()
+    # def playfile(self, serverint):
+        # if 'None' not in str(self.url):
+            # self.serverList[serverint].play(self.session, self.url, self.name)
+        # else:
+            # self.session.open(MessageBox, _('No link available'), MessageBox.TYPE_INFO, timeout=5)
+        # self.close()
 
     def play(self, name, url):
         try:
@@ -2347,10 +2369,13 @@ class Playchoice(Screen):
             name = self.name
             url = url
             logdata('In filmxy url =', url)
-            ref = '5002:0:1:0:0:0:0:0:0:0:' + 'http%3a//127.0.0.1%3a8088/' + str(url)
-            sref = eServiceReference(ref)
-            logdata('SREF: ', sref)
+            # ref = '5002:0:1:0:0:0:0:0:0:0:' + 'http%3a//127.0.0.1%3a8088/' + str(url)
+            servicetype = '5002'
+            url = 'http%3a//127.0.0.1%3a8088/' + str(url)
+            sref = eServiceReference(int(servicetype), 0, url)
             sref.setName(str(name))
+            # sref = eServiceReference(ref)
+            logdata('SREF: ', sref)
             self.session.open(Playstream2, name, sref)
         else:
             self.session.open(MessageBox, _('Install Streamlink first'), MessageBox.TYPE_INFO, timeout=5)
@@ -2646,23 +2671,23 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         name = self.name
         ref = "{0}:{1}".format(url, name)
         print('final reference:   ', ref)
-        sref = eServiceReference(ref)
-        sref.setName(str(name))
+        # sref = eServiceReference(ref)
+        # sref.setName(str(name))
         self.session.nav.stopService()
-        self.session.nav.playService(sref)
+        self.session.nav.playService(ref)
 
     def openPlay(self, servicetype, url):
         name = self.name
-        url = url.replace(' ', '%20')
-        url = url.replace(':', '%3a')
+        # url = url.replace(' ', '%20')
+        # url = url.replace(':', '%3a')
 
         # servicetype = config.plugins.filmxy.services.getValue()
-        logdata("xmbc url 2=", url)
-        url = url.replace("&", "AxNxD").replace("=", "ExQ")
-        logdata("xmbc url 4=", url)
-        data = "&url=" + url + "&name=" + name + "\n"
-        logdata("xmbc data B=", data)
-        logdata("xmbc url 6=", url)
+        # logdata("xmbc url 2=", url)
+        # url = url.replace("&", "AxNxD").replace("=", "ExQ")
+        # logdata("xmbc url 4=", url)
+        # data = "&url=" + url + "&name=" + name + "\n"
+        # logdata("xmbc data B=", data)
+        # logdata("xmbc url 6=", url)
         self.timerCache = eTimer()
         try:
             self.timerCache.stop()
@@ -2676,12 +2701,15 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         self.timerCache.start(600000, False)
         # url = url[:url.rfind("|")]
         print('new url: ', url)
-        ref = "{0}:0:1:0:0:0:0:0:0:0:{1}:{2}".format(servicetype, url, name)
-        if streaml is True:
-            url = 'http://127.0.0.1:8088/' + str(url)
-            ref = "{0}:0:1:0:0:0:0:0:0:0:{1}:{2}".format(servicetype, url, name)
-        logdata('final reference:   ', ref)
-        sref = eServiceReference(ref)
+        # ref = "{0}:0:1:0:0:0:0:0:0:0:{1}:{2}".format(servicetype, url, name)
+        # if streaml is True:
+            # url = 'http://127.0.0.1:8088/' + str(url)
+            # ref = "{0}:0:1:0:0:0:0:0:0:0:{1}:{2}".format(servicetype, url, name)
+        # logdata('final reference:   ', ref)
+        
+        sref = eServiceReference(int(servicetype), 0, url)
+        
+        # sref = eServiceReference(ref)
         sref.setName(str(name))
         self.session.nav.stopService()
         self.session.nav.playService(sref)
@@ -2698,15 +2726,15 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         currentindex = 0
         streamtypelist = ["4097"]
 
-        if streamlink:
-            streamtypelist.append("5002")  # ref = '5002:0:1:0:0:0:0:0:0:0:http%3a//127.0.0.1%3a8088/' + url
-            streaml = True
-        if os.path.exists("/usr/bin/gstplayer"):
-            streamtypelist.append("5001")
-        if os.path.exists("/usr/bin/exteplayer3"):
-            streamtypelist.append("5002")
-        if os.path.exists("/usr/bin/apt-get"):
-            streamtypelist.append("8193")
+        # if streamlink:
+            # streamtypelist.append("5002")  # ref = '5002:0:1:0:0:0:0:0:0:0:http%3a//127.0.0.1%3a8088/' + url
+            # streaml = True
+        # if os.path.exists("/usr/bin/gstplayer"):
+            # streamtypelist.append("5001")
+        # if os.path.exists("/usr/bin/exteplayer3"):
+            # streamtypelist.append("5002")
+        # if os.path.exists("/usr/bin/apt-get"):
+            # streamtypelist.append("8193")
         for index, item in enumerate(streamtypelist, start=0):
             if str(item) == str(self.servicetype):
                 currentindex = index

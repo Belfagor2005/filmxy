@@ -4,7 +4,7 @@
 	<widget name="info" position="220,130" size="820,80" font="Regular;30" halign="center" valign="center" foregroundColor="yellow" backgroundColor="#202020" transparent="0" zPosition="5" />
 	<widget name="pth" position="534,1013" size="513,44" font="Regular;30" halign="right" foregroundColor="#808080" backgroundColor="#000000" transparent="1" zPosition="5" />
 	<widget name="poster" position="1250,150" size="420,588" alphatest="blend" scale="1" zPosition="3" />
-	<ePixmap position="1250,150" size="420,588" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/img/tvposter.png" zPosition="2" scale="1" />	
+	<ePixmap position="1250,150" size="420,588" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/img/tvposter.png" scale="stretch" zPosition="2" />	
 	<!-- <widget name="statusgreen" alphatest="blend" position="1270,90" size="40,40" zPosition="5" />	 -->
 	<widget name="statusgreen" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/status-on.png" alphatest="blend" position="1660,1005" size="40,40" zPosition="5" />
 	<widget name="statusred" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/status-off.png" alphatest="blend" position="1660,1005" size="40,40" zPosition="5" />	

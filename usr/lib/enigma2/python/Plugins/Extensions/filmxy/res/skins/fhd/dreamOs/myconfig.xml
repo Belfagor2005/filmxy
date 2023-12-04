@@ -8,8 +8,8 @@
     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/tvs.png" alphatest="blend" position="220,40" size="278,60" zPosition="5" />
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/sep.png" position="220,110" size="970,8" alphatest="blend" zPosition="5" />
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/sep.png" position="220,920" size="970,8" alphatest="blend" zPosition="5" />
-	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/PayPal.png" position="1517,157" size="156,75" zPosition="2" alphatest="on" />
-	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/qr-codetvs.png" position="1439,240" size="320,320" zPosition="2" alphatest="on" />
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/PayPal.png" position="1517,157" size="156,75" zPosition="2" scale="stretch" alphatest="on" />
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/qr-codetvs.png" position="1439,240" size="320,320" zPosition="2" scale="stretch" alphatest="on" />
 	<widget name="paypal" position="1338,574" size="526,197" font="Regular;24" halign="center" foregroundColor="#ffffff" backgroundColor="#101010" transparent="1" zPosition="2" />
 	<eLabel position="1330,141" size="540,639" backgroundColor="#80000000" cornerRadius="20" zPosition="1" />
 	<!-- Menu List -->

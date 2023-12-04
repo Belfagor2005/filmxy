@@ -11,9 +11,9 @@
 	<widget name="descadd" position="920,499" size="352,155" font="Regular; 20" foregroundColor="#ffb75b" backgroundColor="#101010" halign="center" transparent="1" zPosition="2" />
 	<eLabel position="920,499" size="352,155" backgroundColor="#30000000" zPosition="1" />
 	<widget name="poster" position="984,169" size="205,282" alphatest="blend" scale="1" zPosition="3" />
-	<ePixmap position="984,169" size="205,282" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/img/tvposter.png" zPosition="2" scale="1" />
+	<ePixmap position="984,169" size="205,282" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/img/tvposter.png" zPosition="2" scale="stretch" />
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/main22.png" position="0,0" size="1280,720" zPosition="1" />
-	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/tvs.png" alphatest="blend" position="146,21" size="143,40" scale="1" zPosition="5" />
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/tvs.png" alphatest="blend" position="146,21" size="143,40" scale="stretch" zPosition="5" />
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/sep.png" position="146,73" size="690,5" alphatest="blend" zPosition="5" />
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/sep.png" position="146,491" size="690,5" alphatest="blend" zPosition="5" />
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/sep.png" position="146,653" size="690,5" alphatest="blend" zPosition="5" />

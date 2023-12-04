@@ -4,7 +4,7 @@
     <widget name="info" position="294,174" size="1094,107" font="Regular;40" halign="center" valign="center" foregroundColor="yellow" backgroundColor="#202020" transparent="0" zPosition="5" />
     <widget name="pth" position="712,1361" size="684,46" font="Regular;40" halign="right" foregroundColor="#808080" backgroundColor="#000000" transparent="1" zPosition="5" />
     <widget name="poster" position="1667,200" size="560,784" alphatest="blend" scale="1" zPosition="3" />
-    <ePixmap position="1667,200" size="560,784" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/img/tvposter.png" zPosition="2" scale="1" />
+    <ePixmap position="1667,200" size="560,784" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/img/tvposter.png" zPosition="2" scale="stretch" />
     <!-- <widget name="statusgreen" alphatest="blend" position="1694,120" size="54,54" zPosition="5" />	 -->
     <widget name="statusgreen" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/status-on.png" alphatest="blend" position="2216,1344" size="54,54" zPosition="5" />
     <widget name="statusred" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/status-off.png" alphatest="blend" position="2217,1343" size="54,54" zPosition="5" />
@@ -15,7 +15,7 @@
     <eLabel position="1624,1022" size="654,294" backgroundColor="#30000000" zPosition="1" />
     <eLabel position="1810,323" size="411,564" backgroundColor="#30000000" zPosition="1" />
     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/main1.png" position="0,3" size="2560,1440" zPosition="-1" />
-    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/tvs.png" alphatest="blend" position="294,54" size="376,80" zPosition="5" />
+    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/tvs.png" alphatest="blend" scale="stretch" position="294,54" size="376,80" zPosition="5" />
     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/sep.png" position="294,147" size="1094,11" alphatest="blend" zPosition="5" />
     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/sep.png" position="294,1007" size="1094,11" alphatest="blend" zPosition="5" />
     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/sep.png" position="300,1320" size="1094,11" alphatest="blend" zPosition="5" />
