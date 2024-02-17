@@ -447,7 +447,7 @@ class rvList(MenuList):
             textfont = int(30)
             self.l.setFont(0, gFont('Regular', textfont))
         else:
-            self.l.setItemHeight(50)
+            self.l.setItemHeight(45)
             textfont = int(24)
             self.l.setFont(0, gFont('Regular', textfont))
 
@@ -470,11 +470,11 @@ def rvListEntry(name, idx):
         res.append(MultiContentEntryPixmapAlphaTest(pos=(5, 2), size=(55, 55), png=loadPNG(pngs)))
         res.append(MultiContentEntryText(pos=(80, 0), size=(1200, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     elif screenwidth.width() == 1920:
-        res.append(MultiContentEntryPixmapAlphaTest(pos=(5, 5), size=(40, 40), png=loadPNG(pngs)))
-        res.append(MultiContentEntryText(pos=(70, 0), size=(1000, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
+        res.append(MultiContentEntryPixmapAlphaTest(pos=(5, 5), size=(45, 45), png=loadPNG(pngs)))
+        res.append(MultiContentEntryText(pos=(70, 0), size=(1000, 45), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     else:
         res.append(MultiContentEntryPixmapAlphaTest(pos=(3, 3), size=(40, 40), png=loadPNG(pngs)))
-        res.append(MultiContentEntryText(pos=(50, 0), size=(500, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
+        res.append(MultiContentEntryText(pos=(50, 0), size=(500, 40), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     return res
 
 
@@ -2180,9 +2180,9 @@ class Playchoice(Screen):
                 # self.downloading = True
                 # pmovies = True
 
-                cmd = "wget -U '%s' -c '%s' -O '%s'" % ('Enigma2 - Filxy Plugin', self.urlx, self.in_tmp)
+                cmd = "wget --no-cache --no-dns-cache -U '%s' -c '%s' -O '%s' --post-data='action=purge'" % ('Enigma2 - Filxy Plugin', self.urlx, self.in_tmp)
                 if "https" in str(self.urlx):
-                    cmd = "wget --no-check-certificate -U '%s' -c '%s' -O '%s'" % ('Enigma2 - Filxy Plugin', self.urlx, self.in_tmp)
+                    cmd = "wget --no-check-certificate --no-cache --no-dns-cache -U '%s' -c '%s' -O '%s' --post-data='action=purge'" % ('Enigma2 - Filxy Plugin', self.urlx, self.in_tmp)
                 print('cmd comand wget: ', cmd)
                 try:
                     ui = True
@@ -2835,10 +2835,6 @@ class myconfig(Screen, ConfigListScreen):
         payp = paypal()
         self["paypal"].setText(payp)
         self.setTitle(self.setup_title)
-        # if not os.path.exists('/tmp/currentip'):
-            # os.system('wget -qO- http://ipecho.net/plain > /tmp/currentip')
-        # currentip1 = open('/tmp/currentip', 'r')
-        # currentip = currentip1.read()
         currentip = wanStatus()
         self['info'].setText(_('Settings FILMXY\nYour current IP is %s') % currentip)
 
