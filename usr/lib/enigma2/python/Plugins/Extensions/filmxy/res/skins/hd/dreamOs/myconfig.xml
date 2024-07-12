@@ -6,7 +6,7 @@
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/main22.png" position="0,0" size="1280,720" zPosition="1" />
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/tvs.png" alphatest="blend" position="151,7" size="278,60" zPosition="5" />
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/sep.png" position="146,73" size="690,5" alphatest="blend" zPosition="5" />
-	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/sep.png" position="146,603" size="690,5" alphatest="blend" zPosition="5" />
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/sep.png" position="146,593" size="690,5" alphatest="blend" zPosition="5" />
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/PayPal.png" position="994,73" size="156,75" scale="stretch" zPosition="2" alphatest="on" />
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/qr-codetvshd.png" position="965,156" size="225,225" scale="stretch" zPosition="2" alphatest="on" />
 	<widget name="paypal" position="917,391" size="344,305" font="Regular;24" halign="center" foregroundColor="#ffffff" backgroundColor="#101010" transparent="1" zPosition="2" />
@@ -14,12 +14,12 @@
 	<!-- Menu List -->
 	<widget name="config" position="146,158" size="690,350" itemHeight="50" scrollbarMode="showOnDemand" transparent="1" zPosition="5" foregroundColor="#00a0a0a0" foregroundColorSelected="#ffffff" backgroundColor="#20000000" backgroundColorSelected="#0b2049" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/hd/sliderb.png" />
 	<!-- Colors 1220 -->
-	<ePixmap name="red" position="146,611" zPosition="2" size="210,60" pixmap="skin_default/buttons/red.png" transparent="1" alphatest="on" />
-	<widget name="key_red" position="146,610" size="210,60" valign="center" halign="left" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
-	<ePixmap name="green" position="621,610" zPosition="2" size="210,60" pixmap="skin_default/buttons/green.png" transparent="1" alphatest="on" />
-	<widget name="key_green" position="619,610" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
-	<ePixmap name="yellow" position="145,670" zPosition="2" size="210,60" pixmap="skin_default/buttons/yellow.png" transparent="1" alphatest="on" />
-	<widget name="key_yellow" position="145,670" size="210,60" valign="center" halign="left" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
-    <widget name="blue" alphatest="on" position="619,670" size="210,60" pixmap="skin_default/buttons/blue.png" zPosition="3" transparent="1" />
-	<widget name="key_blue" position="619,670" size="210,60" valign="center" halign="center" zPosition="3" foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
+	<eLabel backgroundColor="red" position="145,656" size="210,6" zPosition="10" />
+	<eLabel backgroundColor="green" position="620,660" size="210,6" zPosition="10" />
+	<eLabel backgroundColor="yellow" position="143,713" size="210,6" zPosition="10" />
+	<eLabel backgroundColor="blue" position="620,713" size="210,6" zPosition="10" />
+	<widget name="key_red" position="146,610" size="210,50" valign="center" halign="left" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
+	<widget name="key_green" position="619,610" size="210,50" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
+	<widget name="key_yellow" position="145,665" size="210,50" valign="center" halign="left" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
+	<widget name="key_blue" position="619,665" size="210,50" valign="center" halign="center" zPosition="3" foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
 </screen>

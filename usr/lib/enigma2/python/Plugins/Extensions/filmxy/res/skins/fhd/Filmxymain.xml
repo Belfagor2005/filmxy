@@ -5,7 +5,6 @@
 	<widget name="pth" position="534,1013" size="513,44" font="Regular;30" halign="right" foregroundColor="#808080" backgroundColor="#000000" transparent="1" zPosition="5" />
 	<widget name="poster" position="1250,150" size="420,588" alphatest="blend" scale="1" zPosition="3" />
 	<ePixmap position="1250,150" size="420,588" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/img/tvposter.png" scale="stretch" zPosition="2" />	
-	<!-- <widget name="statusgreen" alphatest="blend" position="1270,90" size="40,40" zPosition="5" />	 -->
 	<widget name="statusgreen" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/status-on.png" alphatest="blend" position="1660,1005" size="40,40" zPosition="5" />
 	<widget name="statusred" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/status-off.png" alphatest="blend" position="1660,1005" size="40,40" zPosition="5" />	
 	<widget name="status" position="1234,1001" size="420,50" font="Regular; 40" foregroundColor="#ffb75b" backgroundColor="#101010" halign="right" transparent="1" zPosition="2" />
@@ -15,7 +14,6 @@
 	<eLabel position="1218,766" size="490,220" backgroundColor="#30000000" zPosition="1" />
 	<eLabel position="1357,242" size="308,423" backgroundColor="#30000000" zPosition="1" />
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/main1.png" position="0,2" size="1920,1080" zPosition="-1" />
-    
     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/tvs.png" alphatest="blend" position="220,40" size="282,60" zPosition="5" />
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/sep.png" position="220,110" size="820,8" alphatest="blend" zPosition="5" />
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/sep.png" position="220,755" size="820,8" alphatest="blend" zPosition="5" />
@@ -24,6 +22,6 @@
 	<!-- Menu List -->
 	<widget name="list" position="220,224" size="821,516" scrollbarMode="showOnDemand" transparent="1" zPosition="5" foregroundColor="#00a0a0a0" foregroundColorSelected="#ffffff" backgroundColor="#20000000" backgroundColorSelected="#0b2049" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/sliderb.png" />
 	<!-- Colors 1220 -->
-	<ePixmap name="red" position="227,1008" zPosition="2" size="210,60" pixmap="skin_default/buttons/red.png" transparent="1" alphatest="on" />
+    <eLabel backgroundColor="red" position="227,1064" size="210,6" zPosition="10" />
 	<widget name="key_red" position="227,1006" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
 </screen>

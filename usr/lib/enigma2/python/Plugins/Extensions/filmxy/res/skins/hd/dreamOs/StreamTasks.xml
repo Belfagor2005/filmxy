@@ -24,8 +24,8 @@
 	</widget>
 	<!-- Buttons Colors -->
 	<eLabel position="146,603" size="1046,3" backgroundColor="#202020" zPosition="1" />
-	<ePixmap name="red" position="146,620" zPosition="2" size="210,60" pixmap="skin_default/buttons/red.png" transparent="1" alphatest="on" />
+	<eLabel backgroundColor="red" position="236,607" size="210,6" zPosition="10" />
+	<eLabel backgroundColor="green" position="619,610" size="210,6" zPosition="10" />
 	<widget name="key_red" position="235,613" size="210,60" valign="center" halign="left" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
-	<ePixmap name="green" position="531,620" zPosition="2" size="210,60" pixmap="skin_default/buttons/green.png" transparent="1" alphatest="on" />
-	<widget name="key_green" position="618,607" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
+	<widget name="key_green" position="618,613" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
 </screen>

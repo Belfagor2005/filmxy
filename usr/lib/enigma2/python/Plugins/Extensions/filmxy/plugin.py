@@ -14,6 +14,8 @@ from __future__ import print_function
 from . import Utils
 from . import html_conv
 from . import _, paypal, wanStatus
+from .Downloader import DownloadWithProgress
+from .Console import Console as xConsole
 import codecs
 from Components.AVSwitch import AVSwitch
 from Components.ActionMap import ActionMap
@@ -21,41 +23,56 @@ from Components.Button import Button
 from Components.ConfigList import ConfigListScreen
 from Components.Label import Label
 from Components.MenuList import MenuList
-from Components.MultiContent import MultiContentEntryPixmapAlphaTest
-from Components.MultiContent import MultiContentEntryText
+from Components.MultiContent import (MultiContentEntryPixmapAlphaTest, MultiContentEntryText)
 from Components.Pixmap import Pixmap
 from Components.ProgressBar import ProgressBar
 from Components.ServiceEventTracker import ServiceEventTracker, InfoBarBase
 from Components.Sources.Progress import Progress
 from Components.Sources.StaticText import StaticText
 from Components.Task import Task, Condition, Job, job_manager
-from Components.config import ConfigDirectory, ConfigSubsection
-from Components.config import ConfigYesNo, ConfigSelection
-from Components.config import config, ConfigEnableDisable
-from Components.config import ConfigOnOff
-from Components.config import getConfigListEntry
+from Components.config import (
+    ConfigDirectory,
+    ConfigSubsection,
+    ConfigYesNo,
+    ConfigSelection,
+    config,
+    ConfigEnableDisable,
+    ConfigOnOff,
+    getConfigListEntry,
+)
+
 from Plugins.Plugin import PluginDescriptor
 from Screens.InfoBarGenerics import InfoBarNotifications
-from Screens.InfoBarGenerics import InfoBarSeek, InfoBarAudioSelection
-from Screens.InfoBarGenerics import InfoBarSubtitleSupport, InfoBarMenu
+from Screens.InfoBarGenerics import (
+    InfoBarSeek,
+    InfoBarAudioSelection,
+    InfoBarSubtitleSupport,
+    InfoBarMenu,
+)
 from Screens.LocationBox import LocationBox
 from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
 from Screens.Standby import TryQuitMainloop
 from Screens.TaskView import JobView
-from Tools.Directories import SCOPE_PLUGINS
-from Tools.Directories import resolveFilename, fileExists
+from Tools.Directories import (SCOPE_PLUGINS, resolveFilename, fileExists)
 from Tools.Downloader import downloadWithProgress
-from .Downloader import DownloadWithProgress
-from enigma import RT_VALIGN_CENTER
-from enigma import RT_HALIGN_LEFT
-from enigma import eListboxPythonMultiContent
-from enigma import ePicLoad, loadPNG
-from enigma import gFont, gPixmapPtr
-from enigma import eServiceReference
-from enigma import eTimer
-from enigma import iPlayableService
-from enigma import getDesktop
+
+from enigma import (
+    eListboxPythonMultiContent,
+    ePicLoad,
+    loadPNG,
+    gFont,
+    gPixmapPtr,
+    eServiceReference,
+    eTimer,
+    iPlayableService,
+    getDesktop,
+    RT_VALIGN_CENTER,
+    RT_HALIGN_LEFT,
+)
+# import unicodedata
+import json
+from datetime import datetime
 from os.path import splitext
 from twisted.web.client import downloadPage
 import os
@@ -65,9 +82,8 @@ import six
 import ssl
 import sys
 import time
-from requests import get, exceptions
-from requests.exceptions import HTTPError
-from twisted.internet.reactor import callInThread
+
+
 PY3 = False
 PY3 = sys.version_info.major >= 3
 print('Py3: ', PY3)
@@ -108,8 +124,6 @@ if PY3:
 
 try:
     from urllib.parse import urlparse, unquote
-    from urllib.request import urlretrieve, urlopen
-    from urllib.request import Request
     from urllib.error import URLError
     PY3 = True
     unicode = str
@@ -117,10 +131,7 @@ try:
     long = int
 except ImportError:
     from urlparse import urlparse
-    from urllib import urlretrieve
-    from urllib2 import Request
     from urllib import unquote
-    from urllib2 import urlopen
     from urllib2 import URLError
 
 if PY3:
@@ -130,11 +141,12 @@ plugin_path = resolveFilename(SCOPE_PLUGINS, "Extensions/{}".format('filmxy'))
 global skin_path, nextmodule, Path_Movies
 
 _session = None
-_firstStart = True
+# _firstStart = True
 # Host = "http://www.filmxy.pw/"
 Host = "https://www.filmxy.online/"
 referer = "http://www.filmxy.online"
-
+installer_url = 'aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL0JlbGZhZ29yMjAwNS9maWxteHkvbWFpbi9pbnN0YWxsZXIuc2g='
+developer_url = 'aHR0cHM6Ly9hcGkuZ2l0aHViLmNvbS9yZXBvcy9CZWxmYWdvcjIwMDUvZmlsbXh5'
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36',
            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8', 'Accept-Encoding': 'deflate'}
 
@@ -165,7 +177,7 @@ def cleantitle(title):
 
 
 def getversioninfo():
-    currversion = '1.3'
+    currversion = '1.4'
     version_file = os.path.join(plugin_path, '/version')
     if os.path.exists(version_file):
         try:
@@ -199,11 +211,7 @@ if sslverify:
             return ctx
 
 
-modechoices = [
-               ("4097", _("ServiceMp3(4097)")),
-               ("1", _("Hardware(1)")),
-              ]
-
+modechoices = [("4097", _("ServiceMp3(4097)")), ("1", _("Hardware(1)"))]
 if os.path.exists("/usr/bin/gstplayer"):
     modechoices.append(("5001", _("Gstreamer(5001)")))
 if os.path.exists("/usr/bin/exteplayer3"):
@@ -312,7 +320,6 @@ def status_site():
 
 
 def piconlocal(name):
-
     pngs = [
         ["tv", "movie"],
         ["commedia", "commedia"],
@@ -419,20 +426,19 @@ EXTFAM = "family"
 EXTREL = "religious"
 EXTSHP = "shop"
 EXTTRV = "travel"
-
 EXTDOWN = {
-        ".avi": "movie",
-        ".divx": "movie",
-        ".mpg": "movie",
-        ".mpeg": "movie",
-        ".mkv": "movie",
-        ".mov": "movie",
-        ".m4v": "movie",
-        ".flv": "movie",
-        ".m3u8": "movie",
-        ".relinker": "movie",
-        ".mp4": "movie",
-    }
+    ".avi": "movie",
+    ".divx": "movie",
+    ".mpg": "movie",
+    ".mpeg": "movie",
+    ".mkv": "movie",
+    ".mov": "movie",
+    ".m4v": "movie",
+    ".flv": "movie",
+    ".m3u8": "movie",
+    ".relinker": "movie",
+    ".mp4": "movie",
+}
 
 
 class rvList(MenuList):
@@ -489,10 +495,10 @@ def showlist(data, list):
 
 
 PanelMain = [
-             ('A-Z'),
-             ('CATEGORIES'),
-             ('COUNTRIES'),
-             ('YEARS')]
+    ('A-Z'),
+    ('CATEGORIES'),
+    ('COUNTRIES'),
+    ('YEARS')]
 
 
 class Filmxymain(Screen):
@@ -521,8 +527,6 @@ class Filmxymain(Screen):
         self['info'].setText('Select')
         self['key_red'] = Button(_('Exit'))
         self.currentList = 'list'
-        # self.picload = ePicLoad()
-        # self.scale = AVSwitch().getFramebufferScale()
         self.names = []
         self.urls = []
         self.pics = []
@@ -726,9 +730,6 @@ class live_to_stream(Screen):
         self['statusgreen'].hide()
         self['statusred'].hide()
         self['status'] = Label('SERVER STATUS')
-        # self["poster"].hide()
-        # self.picload = ePicLoad()
-        # self.scale = AVSwitch().getFramebufferScale()
         self['key_red'] = Button(_('Back'))
         self.names = []
         self.urls = []
@@ -799,11 +800,8 @@ class live_to_stream(Screen):
                 regexvideo = 'name:"(.*?)",link:"(.*?)"'
                 match = re.compile(regexvideo, re.DOTALL).findall(content2)
                 for name, url in match:
-                    # if 'adult' in name.lower():
-                        # continue
                     pixmaps = piconlocal(name)
                     if os.path.exists(pixmaps):
-                        # self.downloadPic(None, pixmaps)
                         pic = pixmaps
                     else:
                         pic = no_cover
@@ -821,7 +819,6 @@ class live_to_stream(Screen):
                 for name, url in match:
                     pixmaps = piconlocal(name)
                     if os.path.exists(pixmaps):
-                        # self.downloadPic(None, pixmaps)
                         pic = pixmaps
                     else:
                         pic = no_cover
@@ -974,8 +971,6 @@ class live_to_stream(Screen):
                         parsed_uri = urlparse(pixmaps)
                         domain = parsed_uri.hostname
                         sniFactory = SNIFactory(domain)
-                        # if six.PY3:
-                            # pixmaps = pixmaps.encode()
                         downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
                     else:
                         downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
@@ -1056,9 +1051,6 @@ class pagesX(Screen):
         self['statusred'] = Pixmap()
         self['statusred'].hide()
         self['status'] = Label('SERVER STATUS')
-        # self["poster"].hide()
-        # self.picload = ePicLoad()
-        # self.scale = AVSwitch().getFramebufferScale()
         self['key_red'] = Button(_('Back'))
         self.names = []
         self.urls = []
@@ -1130,31 +1122,6 @@ class pagesX(Screen):
             print(e)
             print("Error: can't find file or read data in pagesX")
         return
-
-
-    # def readJsonFile(self):
-        # self.names = []
-        # self.urls = []
-        # self.pics = []
-        # self.infos = []
-        # # https://www.filmxy.pw/genre/action/page/2/
-        # pages = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
-        # try:
-            # for page in pages:
-                # url1 = self.url + "page/" + str(page) + "/"
-                # name = "Page " + str(page)
-                # info = self.name
-                # self.names.append(str(name))
-                # self.urls.append(url1)
-                # pic = self.pic
-                # self.pics.append(pic)
-                # self.infos.append(info)
-            # logdata("pages nextmodule: ", self.desc)
-            # showlist(self.names, self['list'])
-        # except Exception as e:
-            # print(e)
-            # print("Error: can't find file or read data in pagesX")
-        # return
 
     def okRun(self):
         i = len(self.pics)
@@ -1236,9 +1203,6 @@ class azvideo(Screen):
         self['statusred'] = Pixmap()
         self['statusred'].hide()
         self['status'] = Label('SERVER STATUS')
-        # self["poster"].hide()
-        # self.picload = ePicLoad()
-        # self.scale = AVSwitch().getFramebufferScale()
         self['key_red'] = Button(_('Back'))
         self.names = []
         self.urls = []
@@ -1413,8 +1377,6 @@ class azvideo(Screen):
                         parsed_uri = urlparse(pixmaps)
                         domain = parsed_uri.hostname
                         sniFactory = SNIFactory(domain)
-                        # if six.PY3:
-                            # pixmaps = pixmaps.encode()
                         downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
                     else:
                         downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
@@ -1495,9 +1457,6 @@ class pagevideo3(Screen):
         self['statusred'] = Pixmap()
         self['statusred'].hide()
         self['status'] = Label('SERVER STATUS')
-        # self["poster"].hide()
-        # self.picload = ePicLoad()
-        # self.scale = AVSwitch().getFramebufferScale()
         self['key_red'] = Button(_('Back'))
         self.names = []
         self.urls = []
@@ -1576,11 +1535,8 @@ class pagevideo3(Screen):
                     self['desc'].setText(info)
                 if infoadd != '':
                     intot = str(infoadd)  # + '\n' + str(size2)
-                    # if size2:
                     intot = str(infoadd) + '\n' + str(size2)
                     self['descadd'].setText(intot)
-            # logdata('info = ', info)
-            # logdata('intot2 = ', intot)
             return
         except Exception as e:
             self['desc'].setText(' ')
@@ -1729,10 +1685,6 @@ class pagevideo3(Screen):
                 return
             idx = self['list'].getSelectionIndex()
             pixmaps = self.pics[idx]
-
-            # if str(res_plugin_path) in pixmaps:
-                # self.downloadPic(None, pixmaps)
-                # return
             if pixmaps != "" or pixmaps != "n/A" or pixmaps is not None or pixmaps != "null":
                 try:
                     if PY3:
@@ -1741,8 +1693,6 @@ class pagevideo3(Screen):
                         parsed_uri = urlparse(pixmaps)
                         domain = parsed_uri.hostname
                         sniFactory = SNIFactory(domain)
-                        # if six.PY3:
-                            # pixmaps = pixmaps.encode()
                         downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
                     else:
                         downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
@@ -1823,9 +1773,6 @@ class Video5list(Screen):
         self['statusred'] = Pixmap()
         self['statusred'].hide()
         self['status'] = Label('SERVER STATUS')
-        # self["poster"].hide()
-        # self.picload = ePicLoad()
-        # self.scale = AVSwitch().getFramebufferScale()
         self['key_red'] = Button(_('Back'))
         self.names = []
         self.urls = []
@@ -1918,8 +1865,6 @@ class Video5list(Screen):
         self.pics = []
         self.infos = []
         content = Utils.ReadUrl2(self.url, referer)
-        # if PY3:
-            # content = six.ensure_str(content)
         try:
             # regexvideo = 'id=tab-download.*?href=(.*?)target'
             # regexvideo = 'id=tab-download.*?href=(.*?)target.*?class=movie-poster.*?data-src=(.*?)src'
@@ -1946,7 +1891,6 @@ class Video5list(Screen):
                     self.urls.append(url)
                     self.pics.append(pic)
                     self.infos.append(info)
-            # logdata("Video5list nextmodule: ", self.desc)
             showlist(self.names, self['list'])
         except Exception as e:
             print(e)
@@ -2164,7 +2108,6 @@ class Playchoice(Screen):
             logdata('path download = ', self.in_tmp)
             try:
                 # useragent = "--header='User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36'"
-
                 # import subprocess
                 # # cmd = "wget %s -c '%s' -O '%s'" % (useragent, self.urlx, self.in_tmp)
                 # # if "https" in str(self.urlx):
@@ -2179,7 +2122,6 @@ class Playchoice(Screen):
                 # self['info'].setText(_('Download in progress... %s' % fileTitle))
                 # self.downloading = True
                 # pmovies = True
-
                 cmd = "wget --no-cache --no-dns-cache -U '%s' -c '%s' -O '%s' --post-data='action=purge'" % ('Enigma2 - Filxy Plugin', self.urlx, self.in_tmp)
                 if "https" in str(self.urlx):
                     cmd = "wget --no-check-certificate --no-cache --no-dns-cache -U '%s' -c '%s' -O '%s' --post-data='action=purge'" % ('Enigma2 - Filxy Plugin', self.urlx, self.in_tmp)
@@ -2346,17 +2288,8 @@ class Playchoice(Screen):
             print(e)
             print("Error: can't find file or read data in Playchoice")
 
-    # def playfile(self, serverint):
-        # if 'None' not in str(self.url):
-            # self.serverList[serverint].play(self.session, self.url, self.name)
-        # else:
-            # self.session.open(MessageBox, _('No link available'), MessageBox.TYPE_INFO, timeout=5)
-        # self.close()
-
     def play(self, name, url):
         try:
-            # print("Playstream2 name: ", name)
-            # print("Playstream2 url: ", url)
             if 'None' not in str(url) or url != '':
                 self.session.open(Playstream2, name, url)
             else:
@@ -2394,28 +2327,7 @@ class Playchoice(Screen):
             if i < 0:
                 return
             pixmaps = self.pic
-            # if str(res_plugin_path) in pixmaps:
             self.downloadPic(None, pixmaps)
-                # return
-            # pixmaps = six.ensure_binary(self.pics[idx])
-            # if pixmaps != "" or pixmaps != "n/A" or pixmaps is not None or pixmaps != "null":
-                # try:
-                    # if PY3:
-                        # pixmaps = six.ensure_binary(self.pic)
-                    # if pixmaps.startswith(b"https") and sslverify:
-                        # parsed_uri = urlparse(pixmaps)
-                        # domain = parsed_uri.hostname
-                        # sniFactory = SNIFactory(domain)
-                        # # if six.PY3:
-                            # # pixmaps = pixmaps.encode()
-                        # downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
-                    # else:
-                        # downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
-                # except Exception as e:
-                    # print(e)
-                    # print("Error: can't find file or read data live_to_stream")
-            # else:
-                # self.poster_resize(no_cover)
         except Exception as e:
             print(e)
             print("Error: can't find file or read data in Playchoice")
@@ -2427,7 +2339,6 @@ class Playchoice(Screen):
                 f = open(poster, 'wb')
                 f.write(output)
                 f.close()
-            # self.poster_resize(poster)
             self["poster"].instance.setScale(1)
             self["poster"].instance.setPixmapFromFile(poster)
             self['poster'].show()
@@ -2678,16 +2589,6 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
 
     def openPlay(self, servicetype, url):
         name = self.name
-        # url = url.replace(' ', '%20')
-        # url = url.replace(':', '%3a')
-
-        # servicetype = config.plugins.filmxy.services.getValue()
-        # logdata("xmbc url 2=", url)
-        # url = url.replace("&", "AxNxD").replace("=", "ExQ")
-        # logdata("xmbc url 4=", url)
-        # data = "&url=" + url + "&name=" + name + "\n"
-        # logdata("xmbc data B=", data)
-        # logdata("xmbc url 6=", url)
         self.timerCache = eTimer()
         try:
             self.timerCache.stop()
@@ -2706,9 +2607,7 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
             # url = 'http://127.0.0.1:8088/' + str(url)
             # ref = "{0}:0:1:0:0:0:0:0:0:0:{1}:{2}".format(servicetype, url, name)
         # logdata('final reference:   ', ref)
-        
         sref = eServiceReference(int(servicetype), 0, url)
-        
         # sref = eServiceReference(ref)
         sref.setName(str(name))
         self.session.nav.stopService()
@@ -2725,7 +2624,6 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
                 self.servicetype = "4097"
         currentindex = 0
         streamtypelist = ["4097"]
-
         # if streamlink:
             # streamtypelist.append("5002")  # ref = '5002:0:1:0:0:0:0:0:0:0:http%3a//127.0.0.1%3a8088/' + url
             # streaml = True
@@ -2805,31 +2703,102 @@ class myconfig(Screen, ConfigListScreen):
         self['description'] = Label('')
         self["paypal"] = Label()
         self['info'] = Label('')
-        self['key_yellow'] = Button(_('Choice'))
+        self['key_yellow'] = Button(_('Update'))
         self['key_green'] = Button(_('Save'))
         self['key_red'] = Button(_('Back'))
         self["key_blue"] = Button(_('Empty Cache'))
         self['title'] = Label(title_plug)
-        self["setupActions"] = ActionMap(['OkCancelActions',
-                                          'DirectionActions',
-                                          'ColorActions',
-                                          'ButtonSetupActions',
-                                          'VirtualKeyboardActions'], {'cancel': self.extnok,
-                                                                      'red': self.extnok,
-                                                                      'back': self.close,
-                                                                      'left': self.keyLeft,
-                                                                      'right': self.keyRight,
-                                                                      'showVirtualKeyboard': self.KeyText,
-                                                                      'yellow': self.Ok_edit,
-                                                                      'ok': self.Ok_edit,
-                                                                      'blue': self.cachedel,
-                                                                      'green': self.msgok}, -1)
+        self.Update = False
+        self['actions'] = ActionMap(['OkCancelActions',
+                                     'ColorActions',
+                                     'DirectionActions',
+                                     'HotkeyActions',
+                                     'InfobarEPGActions',
+                                     'ChannelSelectBaseActions',
+                                     'VirtualKeyboardActions'], {'ok': self.Ok_edit,
+                                                                 'back': self.close,
+                                                                 'cancel': self.extnok,
+                                                                 'left': self.keyLeft,
+                                                                 'right': self.keyRight,
+                                                                 'showVirtualKeyboard': self.KeyText,
+                                                                 'yellow': self.update_me,  # update_me,
+                                                                 'green': self.msgok,
+                                                                 'blue': self.cachedel,
+                                                                 'yellow_long': self.update_dev,
+                                                                 'info_long': self.update_dev,
+                                                                 'infolong': self.update_dev,
+                                                                 'showEventInfoPlugin': self.update_dev,
+                                                                 'red': self.extnok}, -1)
         self.list = []
         ConfigListScreen.__init__(self, self.list, session=self.session, on_change=self.changedEntry)
         self.createSetup()
+        self.timer = eTimer()
+        if os.path.exists('/var/lib/dpkg/status'):
+            self.timer_conn = self.timer.timeout.connect(self.check_vers)
+        else:
+            self.timer.callback.append(self.check_vers)
+        self.timer.start(500, 1)
         self.onLayoutFinish.append(self.layoutFinished)
         if self.setInfo not in self['config'].onSelectionChanged:
             self['config'].onSelectionChanged.append(self.setInfo)
+
+    def check_vers(self):
+        remote_version = '0.0'
+        remote_changelog = ''
+        req = Utils.Request(Utils.b64decoder(installer_url), headers={'User-Agent': 'Mozilla/5.0'})
+        page = Utils.urlopen(req).read()
+        if PY3:
+            data = page.decode("utf-8")
+        else:
+            data = page.encode("utf-8")
+        if data:
+            lines = data.split("\n")
+            for line in lines:
+                if line.startswith("version"):
+                    remote_version = line.split("=")
+                    remote_version = line.split("'")[1]
+                if line.startswith("changelog"):
+                    remote_changelog = line.split("=")
+                    remote_changelog = line.split("'")[1]
+                    break
+        self.new_version = remote_version
+        self.new_changelog = remote_changelog
+        # if float(currversion) < float(remote_version):
+        if currversion < remote_version:
+            self.Update = True
+            # self['key_yellow'].show()
+            self['key_green'].show()
+            self.session.open(MessageBox, _('New version %s is available\n\nChangelog: %s\n\nPress info_long or yellow_long button to start force updating.') % (self.new_version, self.new_changelog), MessageBox.TYPE_INFO, timeout=5)
+        # self.update_me()
+
+    def update_me(self):
+        if self.Update is True:
+            self.session.openWithCallback(self.install_update, MessageBox, _("New version %s is available.\n\nChangelog: %s \n\nDo you want to install it now?") % (self.new_version, self.new_changelog), MessageBox.TYPE_YESNO)
+        else:
+            self.session.open(MessageBox, _("Congrats! You already have the latest version..."),  MessageBox.TYPE_INFO, timeout=4)
+
+    def update_dev(self):
+        try:
+            req = Utils.Request(Utils.b64decoder(developer_url), headers={'User-Agent': 'Mozilla/5.0'})
+            page = Utils.urlopen(req).read()
+            data = json.loads(page)
+            remote_date = data['pushed_at']
+            strp_remote_date = datetime.strptime(remote_date, '%Y-%m-%dT%H:%M:%SZ')
+            remote_date = strp_remote_date.strftime('%Y-%m-%d')
+            self.session.openWithCallback(self.install_update, MessageBox, _("Do you want to install update ( %s ) now?") % (remote_date), MessageBox.TYPE_YESNO)
+        except Exception as e:
+            print('error xcons:', e)
+
+    def install_update(self, answer=False):
+        if answer:
+            cmd1 = 'wget -q "--no-check-certificate" ' + Utils.b64decoder(installer_url) + ' -O - | /bin/sh'
+            self.session.open(xConsole, 'Upgrading...', cmdlist=[cmd1], finishedCallback=self.myCallback, closeOnSuccess=False)
+        else:
+            self.session.open(MessageBox, _("Update Aborted!"),  MessageBox.TYPE_INFO, timeout=3)
+
+    def myCallback(self, result=None):
+        print('result:', result)
+        return
 
     def layoutFinished(self):
         payp = paypal()
@@ -2900,8 +2869,6 @@ class myconfig(Screen, ConfigListScreen):
             pass
 
     def openDirectoryBrowser(self, path):
-        # if fileExists("/usr/bin/apt-get"):
-            # path = None
         try:
             self.session.openWithCallback(
              self.openDirectoryBrowserCB,
@@ -3217,34 +3184,34 @@ class downloadTask(Task):
                 print(e)
 
 
-class AutoStartTimerFxy:
+# class AutoStartTimerFxy:
 
-    def __init__(self, session):
-        self.session = session
-        global _firstStart
-        logdata("*** running AutoStartTimerFxy ***")
-        if _firstStart:
-            self.runUpdate()
+    # def __init__(self, session):
+        # self.session = session
+        # logdata("*** running AutoStartTimerFxy ***")
+        # if _firstStart:
+            # self.runUpdate()
 
-    def runUpdate(self):
-        logdata("*** running update ***")
-        try:
-            from . import Update
-            Update.upd_done()
-            _firstStart = False
-        except Exception as e:
-            logdata('error Fxy', e)
+    # def runUpdate(self):
+        # logdata("*** running update ***")
+        # global _firstStart
+        # try:
+            # from . import Update
+            # Update.upd_done()
+            # _firstStart = False
+        # except Exception as e:
+            # logdata('error Fxy', e)
 
 
-def autostart(reason, session=None, **kwargs):
-    logdata("*** running autostart ***")
-    global autoStartTimerFxy
-    global _firstStart
-    if reason == 0:
-        if session is not None:
-            _firstStart = True
-            autoStartTimerFxy = AutoStartTimerFxy(session)
-    return
+# def autostart(reason, session=None, **kwargs):
+    # logdata("*** running autostart ***")
+    # global autoStartTimerFxy
+    # global _firstStart
+    # if reason == 0:
+        # if session is not None:
+            # _firstStart = True
+            # autoStartTimerFxy = AutoStartTimerFxy(session)
+    # return
 
 
 def main(session, **kwargs):
@@ -3270,6 +3237,6 @@ def Plugins(**kwargs):
     ico_path = 'logo.png'
     if not os.path.exists('/var/lib/dpkg/status'):
         ico_path = res_plugin_path + 'pics/logo.png'
-    result = [PluginDescriptor(name=desc_plug, description=title_plug, where=[PluginDescriptor.WHERE_SESSIONSTART], fnc=autostart),
-              PluginDescriptor(name=desc_plug, description=title_plug, where=PluginDescriptor.WHERE_PLUGINMENU, icon=ico_path, fnc=main)]
+    result = [PluginDescriptor(name=desc_plug, description=title_plug, where=PluginDescriptor.WHERE_PLUGINMENU, icon=ico_path, fnc=main)]
     return result
+# PluginDescriptor(name=desc_plug, description=title_plug, where=[PluginDescriptor.WHERE_SESSIONSTART], fnc=autostart),

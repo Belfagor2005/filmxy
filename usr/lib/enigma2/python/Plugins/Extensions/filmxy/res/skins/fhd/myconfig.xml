@@ -1,6 +1,6 @@
 <!-- Skin myconfig 01/10/2022 -->
 <screen name="myConfig" position="0,0" size="1920,1080" title="..::SETTINGS FILMXY::.." backgroundColor="#ff000000" flags="wfNoBorder">
-	<widget name="title" position="517,46" size="522,50" font="Regular;34" halign="left" valign="center" foregroundColor="#ffff00" backgroundColor="black" transparent="1" zPosition="5" />
+	<widget name="title" position="515,46" size="653,50" font="Regular;34" halign="left" valign="center" foregroundColor="#ffff00" backgroundColor="black" transparent="1" zPosition="5" />
 	<widget name="info" position="220,130" size="970,90" font="Regular;30" halign="center" valign="center" foregroundColor="yellow" backgroundColor="#202020" transparent="0" zPosition="5" />
 	<widget name="description" position="223,792" zPosition="4" size="925,116" font="Regular; 34" foregroundColor="#fcc000" backgroundColor="#40000000" transparent="1" halign="left" valign="center" />
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/main2.png" position="0,0" size="1920,1080" zPosition="1" />
@@ -15,12 +15,12 @@
 	<!-- Menu List -->
 	<widget name="config" position="220,230" size="970,550" font="Regular;30" itemHeight="50" scrollbarMode="showOnDemand" transparent="1" zPosition="5" foregroundColor="#00a0a0a0" foregroundColorSelected="#ffffff" backgroundColor="#20000000" backgroundColorSelected="#0b2049" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/sliderb.png" />
 	<!-- Colors 1220 -->
-	<ePixmap name="red" position="227,938" zPosition="2" size="210,60" pixmap="skin_default/buttons/red.png" transparent="1" alphatest="on" />
+	<eLabel backgroundColor="red" position="226,999" size="210,6" zPosition="10" />
+	<eLabel backgroundColor="green" position="978,999" size="210,6" zPosition="10" />
+	<eLabel backgroundColor="yellow" position="227,1069" size="210,6" zPosition="10" />
+	<eLabel backgroundColor="blue" position="980,1070" size="210,6" zPosition="10" />
 	<widget name="key_red" position="227,936" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
-	<ePixmap name="green" position="979,936" zPosition="2" size="210,60" pixmap="skin_default/buttons/green.png" transparent="1" alphatest="on" />
 	<widget name="key_green" position="980,936" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
-	<ePixmap name="yellow" position="227,1013" zPosition="2" size="210,60" pixmap="skin_default/buttons/yellow.png" transparent="1" alphatest="on" />
 	<widget name="key_yellow" position="227,1010" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
-	<ePixmap name="blue" position="981,1010" zPosition="2" size="210,60" pixmap="skin_default/buttons/blue.png" transparent="1" alphatest="on" />
 	<widget name="key_blue" position="981,1010" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />		
 </screen>

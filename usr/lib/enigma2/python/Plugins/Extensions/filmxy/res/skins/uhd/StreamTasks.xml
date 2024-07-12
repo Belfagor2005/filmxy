@@ -1,8 +1,8 @@
 <!-- ***** PLAYLIST FOLDER 1920x1080 ***** 15-05-2018 /-->
 <screen name="StreamTasks" position="0,0" size="2560,1440" title="Video Download List" backgroundColor="#ff000000" flags="wfNoBorder">
 	<eLabel text="MovieList" position="486,20" size="667,134" font="Regular;64" halign="left" valign="center" foregroundColor="#ffffff" backgroundColor="#101010" transparent="1" zPosition="3" />
-	<ePixmap position="0,0" size="2560,1440" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/main2.png" zPosition="1" />
-	<ePixmap position="283,12" size="160,156" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/icon.png" alphatest="blend" zPosition="1" />
+	<ePixmap position="0,0" size="2560,1440" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/main2.png" scale="stretch" zPosition="1" />
+	<ePixmap position="283,12" size="160,156" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/filmxy/res/pics/icon.png" scale="stretch" alphatest="blend" zPosition="1" />
 	<eLabel position="280,174" size="2027,7" backgroundColor="#202020" zPosition="2" />
 	<eLabel position="280,1307" size="2027,7" backgroundColor="#202020" zPosition="1" />	
 	<!-- Clock -->
@@ -24,8 +24,8 @@
 		</convert>
 	</widget>
 	<!-- Buttons Colors -->
-	<ePixmap name="red" position="303,1331" zPosition="2" size="280,80" pixmap="skin_default/buttons/red.png" transparent="1" alphatest="on" />
+	<eLabel backgroundColor="red" position="436,1401" size="280,6" zPosition="10" />
+	<eLabel backgroundColor="green" position="1306,1407" size="280,6" zPosition="10" />
 	<widget name="key_red" position="436,1322" size="280,80" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;40" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
-	<ePixmap name="green" position="1172,1331" zPosition="2" size="280,80" pixmap="skin_default/buttons/green.png" transparent="1" alphatest="on" />
 	<widget name="key_green" position="1307,1324" size="280,80" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;40" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
 </screen>
