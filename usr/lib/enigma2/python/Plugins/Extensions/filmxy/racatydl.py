@@ -24,12 +24,13 @@ SAFARI_USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit
 # Random user agent
 _USER_AGENTS = [FF_USER_AGENT, OPERA_USER_AGENT, EDGE_USER_AGENT, CHROME_USER_AGENT, SAFARI_USER_AGENT]
 RAND_UA = choice(_USER_AGENTS)
-# ██████╗  █████╗  ██████╗ █████╗ ████████╗██╗   ██╗     ██████╗ ██╗     
-# ██╔══██╗██╔══██╗██╔════╝██╔══██╗╚══██╔══╝╚██╗ ██╔╝     ██╔══██╗██║     
-# ██████╔╝███████║██║     ███████║   ██║    ╚████╔╝█████╗██║  ██║██║     
-# ██╔══██╗██╔══██║██║     ██╔══██║   ██║     ╚██╔╝ ╚════╝██║  ██║██║     
+# ██████╗  █████╗  ██████╗ █████╗ ████████╗██╗   ██╗     ██████╗ ██╗
+# ██╔══██╗██╔══██╗██╔════╝██╔══██╗╚══██╔══╝╚██╗ ██╔╝     ██╔══██╗██║
+# ██████╔╝███████║██║     ███████║   ██║    ╚████╔╝█████╗██║  ██║██║
+# ██╔══██╗██╔══██║██║     ██╔══██║   ██║     ╚██╔╝ ╚════╝██║  ██║██║
 # ██║  ██║██║  ██║╚██████╗██║  ██║   ██║      ██║        ██████╔╝███████╗
 # ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝   ╚═╝      ╚═╝        ╚═════╝ ╚══════╝
+
 
 def read_txt(abs):
     with open(abs) as f:
@@ -80,7 +81,7 @@ def extract(url):
     match = re.match(regex, url)
     _id = match.group(1)
 
-    payload='op=download2&id=' + str(_id) +'&rand=&referer=&method_free=&method_premium='
+    payload = 'op=download2&id=' + str(_id) + '&rand=&referer=&method_free=&method_premium='
 
     scraper = cfscrape.create_scraper()
     response = scraper.post(url, data=payload).text
@@ -158,4 +159,4 @@ if __name__ == '__main__':
         try:
             main(url)
         except Exception as e:
-            err('URL failed.')
+            err('URL failed.', e)
