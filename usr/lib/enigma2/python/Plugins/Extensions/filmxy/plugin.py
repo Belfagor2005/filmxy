@@ -11,12 +11,12 @@
 Info http://t.me/tivustream
 '''
 from __future__ import print_function
+from . import _, paypal, wanStatus
 from . import Utils
 from . import html_conv
-from . import _, paypal, wanStatus
 from .Downloader import DownloadWithProgress
 from .Console import Console as xConsole
-import codecs
+
 from Components.AVSwitch import AVSwitch
 from Components.ActionMap import ActionMap
 from Components.Button import Button
@@ -40,7 +40,6 @@ from Components.config import (
     ConfigOnOff,
     getConfigListEntry,
 )
-
 from Plugins.Plugin import PluginDescriptor
 from Screens.InfoBarGenerics import InfoBarNotifications
 from Screens.InfoBarGenerics import (
@@ -55,8 +54,7 @@ from Screens.Screen import Screen
 from Screens.Standby import TryQuitMainloop
 from Screens.TaskView import JobView
 from Tools.Directories import (SCOPE_PLUGINS, resolveFilename, fileExists)
-from Tools.Downloader import downloadWithProgress
-
+# from Tools.Downloader import downloadWithProgress
 from enigma import (
     eListboxPythonMultiContent,
     ePicLoad,
@@ -71,13 +69,14 @@ from enigma import (
     RT_HALIGN_LEFT,
 )
 # import unicodedata
-import json
 from datetime import datetime
 from os.path import splitext
 from twisted.web.client import downloadPage
+import codecs
+import json
 import os
-import requests
 import re
+import requests
 import six
 import ssl
 import sys
@@ -513,7 +512,7 @@ class Filmxymain(Screen):
             self.skin = f.read()
         self.setup_title = ('HOME FILMXY')
         self['list'] = rvList([])
-        self['pth'] = Label('')
+        self['pth'] = Label()
         self['pth'].setText(_('Cache folder ') + cachefold)
         self['poster'] = Pixmap()
         self['statusgreen'] = Pixmap()
@@ -523,7 +522,7 @@ class Filmxymain(Screen):
         self['status'] = Label('SERVER STATUS')
         self['desc'] = StaticText()
         self['descadd'] = Label('Press Menu for Coffe')
-        self['info'] = Label('')
+        self['info'] = Label()
         self['info'].setText('Select')
         self['key_red'] = Button(_('Exit'))
         self.currentList = 'list'
@@ -720,7 +719,7 @@ class live_to_stream(Screen):
         self['list'] = self.list
         self['list'] = rvList([])
         self['info'] = Label(name)
-        self['pth'] = Label('')
+        self['pth'] = Label()
         self['pth'].setText(_('Cache folder ') + cachefold)
         self['desc'] = StaticText()
         self['descadd'] = Label(_('Select your %s') % nextmodule)
@@ -1041,7 +1040,7 @@ class pagesX(Screen):
         self['list'] = self.list
         self['list'] = rvList([])
         self['info'] = Label(name)
-        self['pth'] = Label('')
+        self['pth'] = Label()
         self['pth'].setText(_('Cache folder ') + cachefold)
         self['desc'] = StaticText()
         self['descadd'] = Label(_('Select your %s') % nextmodule)
@@ -1193,7 +1192,7 @@ class azvideo(Screen):
         self['list'] = self.list
         self['list'] = rvList([])
         self['info'] = Label(name)
-        self['pth'] = Label('')
+        self['pth'] = Label()
         self['pth'].setText(_('Cache folder ') + cachefold)
         self['desc'] = StaticText()
         self['descadd'] = Label(_('Select you Stream'))
@@ -1447,10 +1446,10 @@ class pagevideo3(Screen):
         self['list'] = self.list
         self['list'] = rvList([])
         self['info'] = Label(name)
-        self['pth'] = Label('')
+        self['pth'] = Label()
         self['pth'].setText(_('Cache folder ') + cachefold)
         self['desc'] = StaticText()
-        self['descadd'] = Label('')
+        self['descadd'] = Label()
         self["poster"] = Pixmap()
         self['statusgreen'] = Pixmap()
         self['statusgreen'].hide()
@@ -1763,10 +1762,10 @@ class Video5list(Screen):
         self['list'] = self.list
         self['list'] = rvList([])
         self['info'] = Label(name)
-        self['pth'] = Label('')
+        self['pth'] = Label()
         self['pth'].setText(_('Cache folder ') + cachefold)
         self['desc'] = StaticText()
-        self['descadd'] = Label('')
+        self['descadd'] = Label()
         self["poster"] = Pixmap()
         self['statusgreen'] = Pixmap()
         self['statusgreen'].hide()
@@ -2700,9 +2699,9 @@ class myconfig(Screen, ConfigListScreen):
         self.setup_title = title_plug
         self.onChangedEntry = []
         self.session = session
-        self['description'] = Label('')
+        self['description'] = Label()
         self["paypal"] = Label()
-        self['info'] = Label('')
+        self['info'] = Label()
         self['key_yellow'] = Button(_('Update'))
         self['key_green'] = Button(_('Save'))
         self['key_red'] = Button(_('Back'))
@@ -3182,36 +3181,6 @@ class downloadTask(Task):
                 self.toolbox.download_finished(self.filename, self.filmtitle)
             except Exception as e:
                 print(e)
-
-
-# class AutoStartTimerFxy:
-
-    # def __init__(self, session):
-        # self.session = session
-        # logdata("*** running AutoStartTimerFxy ***")
-        # if _firstStart:
-            # self.runUpdate()
-
-    # def runUpdate(self):
-        # logdata("*** running update ***")
-        # global _firstStart
-        # try:
-            # from . import Update
-            # Update.upd_done()
-            # _firstStart = False
-        # except Exception as e:
-            # logdata('error Fxy', e)
-
-
-# def autostart(reason, session=None, **kwargs):
-    # logdata("*** running autostart ***")
-    # global autoStartTimerFxy
-    # global _firstStart
-    # if reason == 0:
-        # if session is not None:
-            # _firstStart = True
-            # autoStartTimerFxy = AutoStartTimerFxy(session)
-    # return
 
 
 def main(session, **kwargs):
