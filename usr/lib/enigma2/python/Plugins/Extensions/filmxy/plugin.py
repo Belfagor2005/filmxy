@@ -3191,9 +3191,20 @@ def main(session, **kwargs):
         traceback.print_exc()
 
 
+# def menu(menuid, **kwargs):
+    # if menuid == 'mainmenu':
+        # return [(desc_plug, main, title_plug, 44)]
+    # else:
+        # return []
+
+
 def menu(menuid, **kwargs):
     if menuid == 'mainmenu':
-        return [(desc_plug, main, title_plug, 44)]
+        from Tools.BoundFunction import boundFunction
+        return [(desc_plug),
+                 boundFunction(main, showExtentionMenuOption=True),
+                 title_plug,
+                 -1)]
     else:
         return []
 
