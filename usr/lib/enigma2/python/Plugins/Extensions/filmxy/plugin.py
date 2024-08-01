@@ -3199,14 +3199,15 @@ def main(session, **kwargs):
 
 
 def menu(menuid, **kwargs):
-    if menuid == 'mainmenu':
-        from Tools.BoundFunction import boundFunction
-        return [(desc_plug),
-                 boundFunction(main, showExtentionMenuOption=True),
-                 title_plug,
-                 -1)]
-    else:
-        return []
+    return [(desc_plug, main(), title_plug, 44)] if menuid == "mainmenu" else []
+    # if menuid == 'mainmenu':
+        # from Tools.BoundFunction import boundFunction
+        # return [(desc_plug),
+                 # boundFunction(main(), showExtentionMenuOption=True),
+                 # title_plug,
+                 # -1)]
+    # else:
+        # return []
 
 
 def mainmenu(session, **kwargs):
