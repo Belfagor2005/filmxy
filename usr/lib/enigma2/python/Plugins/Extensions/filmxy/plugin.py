@@ -2709,7 +2709,6 @@ class myconfig(Screen, ConfigListScreen):
         self['title'] = Label(title_plug)
         self.Update = False
         self['actions'] = ActionMap(['OkCancelActions',
-                                     'ColorActions',
                                      'DirectionActions',
                                      'HotkeyActions',
                                      'InfobarEPGActions',
