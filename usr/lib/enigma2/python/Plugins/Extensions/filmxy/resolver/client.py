@@ -67,8 +67,6 @@ finally:
 
 if six.PY2:
     _str = str
-    str = unicode
-    unicode = unicode
     basestring = basestring
 
     def bytes(b, encoding="ascii"):
