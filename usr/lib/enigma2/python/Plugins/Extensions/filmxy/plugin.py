@@ -492,13 +492,21 @@ def rvListEntry(name, idx):
 
 
 def showlist(data, list):
+    plist = []
+    for name in data:  # Iterazione più pythonica
+        plist.append(show_list_1(name))
+    list.setList(plist)
+
+"""
+def showlist(data, list):
     idx = 0
     plist = []
     for line in data:
         name = data[idx]
         plist.append(rvListEntry(name, idx))
         idx = idx + 1
-        list.setList(plist)
+    list.setList(plist)
+"""
 
 
 PanelMain = [
